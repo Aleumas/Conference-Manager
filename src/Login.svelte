@@ -4,17 +4,23 @@
 <div class='sign-in__container'>
     <div class='sign-in__content'>
         <h1> Conference Manager  </h1>
-        <input id='username' bind:value={username} placeholder="Username">
-        <input id='password' bind:value={password} placeholder="Password">
-        <button on:click={handleLogin}> Log in </button>
+        <input id='email' bind:value={email} placeholder="Email">
+        <input type='password' id='password' bind:value={password} placeholder="Password">
+        <button on:click="{handleLogin}"> Log in </button>
 
-        {#if user.loggedIn}
-        <p class='error' id='error'> The username or password you entered is incorrect.</p>
+        {#if visible}
+            {#if errorOccured}
+                <p class='error' id='error'> The username or password you entered is incorrect. </p>
+            {:else}
+                <p class='success'> Login succesful! </p>
+            {/if}
         {/if}
+
         <hr>
-        <p> Don't have an account? <a href="#"> Sign up </a> </p>
+        <p> Don't have an account? <a href='./Signup'> Sign up </a> </p>
     </div>
 </div>
+
 
 <style>
 
@@ -50,6 +56,12 @@
         margin-bottom: 5vh;
         margin-top: -1vh;
         color: red;
+    }
+
+    .success {
+        margin-bottom: 5vh;
+        margin-top: -1vh;
+        color: green;
     }
 
 
@@ -117,13 +129,53 @@
 </style>
 
 <script>
-    let username = ''; 
-    let password = '';
-    let user = { loggedIn: false };
 
+    // Navigation imports
+    import { Router, Link, Route } from "svelte-routing";
+    import Signup from "./Signup.svelte";
+    export let url = "";
+
+    // Firebase imports 
+    import firebase from "firebase/app";
+    import "firebase/analytics";
+    import "firebase/auth";
+    import "firebase/firestore";
+
+    // Firebase config
+    var firebaseConfig = {
+        apiKey: "AIzaSyAJ3JdkQaCpsBNQkdZ9C3TzzIuPdPI8wak",
+        authDomain: "conference-manager-f1c34.firebaseapp.com",
+        projectId: "conference-manager-f1c34",
+        storageBucket: "conference-manager-f1c34.appspot.com",
+        messagingSenderId: "236826523049",
+        appId: "1:236826523049:web:f57db357c14643491180b8",
+        measurementId: "G-LYR5JNKQJP"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    // Login variables
+    let email = ''; 
+    let password = '';
+    var visible = false;
+    var errorOccured = false;
+    var user = { loggedIn: false, errorOccured: false };
+    
+
+    // Login with firebase
     function handleLogin() {
-        if (username != '1' && password != '1') {
-            user.loggedIn = !user.loggedIn;
-        }
+        firebase.auth().signInWithEmailAndPassword(email, password) .then((userCredential) => {
+            visible = true;
+            errorOccured = false;
+            var user = userCredential.user;
+        })
+        .catch((error) => {
+            visible = true;
+            errorOccured = true;
+            var errorMessage = error.message;
+            console.log(errorMessage);
+        });
 	}
 </script>
