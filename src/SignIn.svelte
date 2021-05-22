@@ -4,11 +4,15 @@
 <div class='sign-in__container'>
     <div class='sign-in__content'>
         <h1> Conference Manager  </h1>
-        <input bind:value={username} placeholder="Username">
-        <input bind:value={password} placeholder="Password">
-        <button> Log in </button>
+        <input id='username' bind:value={username} placeholder="Username">
+        <input id='password' bind:value={password} placeholder="Password">
+        <button on:click={handleLogin}> Log in </button>
+
+        {#if user.loggedIn}
+        <p class='error' id='error'> The username or password you entered is incorrect.</p>
+        {/if}
         <hr>
-        <p> Don't have an account? <a href=""> Sign up </a> </p>
+        <p> Don't have an account? <a href="#"> Sign up </a> </p>
     </div>
 </div>
 
@@ -42,6 +46,12 @@
         transform: translateY(-50%);
         width: 100%;
     }
+    .error {
+        margin-bottom: 5vh;
+        margin-top: -1vh;
+        color: red;
+    }
+
 
     h1 {
         padding-bottom: 2vh;
@@ -82,12 +92,11 @@
         border-radius: 2vh;
     }
 
-
     hr {
         width: 70%;
         height: 2px;
         border: none;
-        background-color: BFBFBF;
+        background-color: #BFBFBF;
     }
 
     p {
@@ -110,4 +119,11 @@
 <script>
     let username = ''; 
     let password = '';
+    let user = { loggedIn: false };
+
+    function handleLogin() {
+        if (username != '1' && password != '1') {
+            user.loggedIn = !user.loggedIn;
+        }
+	}
 </script>

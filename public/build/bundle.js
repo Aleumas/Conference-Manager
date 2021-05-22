@@ -353,6 +353,37 @@ var app = (function () {
 
     const file = "src/SignIn.svelte";
 
+    // (11:8) {#if user.loggedIn}
+    function create_if_block(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "The username or password you entered is incorrect.";
+    			attr_dev(p, "class", "error svelte-1wpzo1g");
+    			attr_dev(p, "id", "error");
+    			add_location(p, file, 11, 8, 518);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(11:8) {#if user.loggedIn}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$1(ctx) {
     	let link0;
     	let t0;
@@ -368,13 +399,15 @@ var app = (function () {
     	let t5;
     	let button;
     	let t7;
-    	let hr;
     	let t8;
-    	let p;
+    	let hr;
     	let t9;
+    	let p;
+    	let t10;
     	let a;
     	let mounted;
     	let dispose;
+    	let if_block = /*user*/ ctx[2].loggedIn && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
@@ -394,40 +427,44 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "Log in";
     			t7 = space();
-    			hr = element("hr");
+    			if (if_block) if_block.c();
     			t8 = space();
+    			hr = element("hr");
+    			t9 = space();
     			p = element("p");
-    			t9 = text("Don't have an account? ");
+    			t10 = text("Don't have an account? ");
     			a = element("a");
     			a.textContent = "Sign up";
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
-    			attr_dev(link0, "class", "svelte-jhw4cd");
+    			attr_dev(link0, "class", "svelte-1wpzo1g");
     			add_location(link0, file, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
-    			attr_dev(link1, "class", "svelte-jhw4cd");
+    			attr_dev(link1, "class", "svelte-1wpzo1g");
     			add_location(link1, file, 1, 0, 57);
-    			attr_dev(h1, "class", "svelte-jhw4cd");
+    			attr_dev(h1, "class", "svelte-1wpzo1g");
     			add_location(h1, file, 5, 8, 243);
+    			attr_dev(input0, "id", "username");
     			attr_dev(input0, "placeholder", "Username");
-    			attr_dev(input0, "class", "svelte-jhw4cd");
+    			attr_dev(input0, "class", "svelte-1wpzo1g");
     			add_location(input0, file, 6, 8, 282);
+    			attr_dev(input1, "id", "password");
     			attr_dev(input1, "placeholder", "Password");
-    			attr_dev(input1, "class", "svelte-jhw4cd");
-    			add_location(input1, file, 7, 8, 343);
-    			attr_dev(button, "class", "svelte-jhw4cd");
-    			add_location(button, file, 8, 8, 404);
-    			attr_dev(hr, "class", "svelte-jhw4cd");
-    			add_location(hr, file, 9, 8, 438);
-    			attr_dev(a, "href", "");
-    			attr_dev(a, "class", "svelte-jhw4cd");
-    			add_location(a, file, 10, 35, 478);
-    			attr_dev(p, "class", "svelte-jhw4cd");
-    			add_location(p, file, 10, 8, 451);
-    			attr_dev(div0, "class", "sign-in__content svelte-jhw4cd");
+    			attr_dev(input1, "class", "svelte-1wpzo1g");
+    			add_location(input1, file, 7, 8, 357);
+    			attr_dev(button, "class", "svelte-1wpzo1g");
+    			add_location(button, file, 8, 8, 432);
+    			attr_dev(hr, "class", "svelte-1wpzo1g");
+    			add_location(hr, file, 13, 8, 624);
+    			attr_dev(a, "href", "#");
+    			attr_dev(a, "class", "svelte-1wpzo1g");
+    			add_location(a, file, 14, 35, 664);
+    			attr_dev(p, "class", "svelte-1wpzo1g");
+    			add_location(p, file, 14, 8, 637);
+    			attr_dev(div0, "class", "sign-in__content svelte-1wpzo1g");
     			add_location(div0, file, 4, 4, 204);
-    			attr_dev(div1, "class", "sign-in__container svelte-jhw4cd");
+    			attr_dev(div1, "class", "sign-in__container svelte-1wpzo1g");
     			add_location(div1, file, 3, 0, 167);
     		},
     		l: function claim(nodes) {
@@ -450,16 +487,19 @@ var app = (function () {
     			append_dev(div0, t5);
     			append_dev(div0, button);
     			append_dev(div0, t7);
-    			append_dev(div0, hr);
+    			if (if_block) if_block.m(div0, null);
     			append_dev(div0, t8);
+    			append_dev(div0, hr);
+    			append_dev(div0, t9);
     			append_dev(div0, p);
-    			append_dev(p, t9);
+    			append_dev(p, t10);
     			append_dev(p, a);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[2]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[3])
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[4]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[5]),
+    					listen_dev(button, "click", /*handleLogin*/ ctx[3], false, false, false)
     				];
 
     				mounted = true;
@@ -473,6 +513,17 @@ var app = (function () {
     			if (dirty & /*password*/ 2 && input1.value !== /*password*/ ctx[1]) {
     				set_input_value(input1, /*password*/ ctx[1]);
     			}
+
+    			if (/*user*/ ctx[2].loggedIn) {
+    				if (if_block) ; else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(div0, t8);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
     		},
     		i: noop,
     		o: noop,
@@ -482,6 +533,7 @@ var app = (function () {
     			if (detaching) detach_dev(link1);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div1);
+    			if (if_block) if_block.d();
     			mounted = false;
     			run_all(dispose);
     		}
@@ -503,6 +555,14 @@ var app = (function () {
     	validate_slots("SignIn", slots, []);
     	let username = "";
     	let password = "";
+    	let user = { loggedIn: false };
+
+    	function handleLogin() {
+    		if (username != "1" && password != "1") {
+    			$$invalidate(2, user.loggedIn = !user.loggedIn, user);
+    		}
+    	}
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -519,18 +579,26 @@ var app = (function () {
     		$$invalidate(1, password);
     	}
 
-    	$$self.$capture_state = () => ({ username, password });
+    	$$self.$capture_state = () => ({ username, password, user, handleLogin });
 
     	$$self.$inject_state = $$props => {
     		if ("username" in $$props) $$invalidate(0, username = $$props.username);
     		if ("password" in $$props) $$invalidate(1, password = $$props.password);
+    		if ("user" in $$props) $$invalidate(2, user = $$props.user);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [username, password, input0_input_handler, input1_input_handler];
+    	return [
+    		username,
+    		password,
+    		user,
+    		handleLogin,
+    		input0_input_handler,
+    		input1_input_handler
+    	];
     }
 
     class SignIn extends SvelteComponentDev {
