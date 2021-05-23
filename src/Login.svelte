@@ -1,23 +1,24 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<div class='background'>
+    <div class='sign-in__container' id='container'>
+        <div class='sign-in__content load-animation__fade' >
+            <h1> Conference Manager  </h1>
+            <input id='email' bind:value={email} placeholder="Email">
+            <input type='password' id='password' bind:value={password} placeholder="Password">
+            <button on:click="{handleLogin}"> Login </button>
 
-<div class='sign-in__container'>
-    <div class='sign-in__content'>
-        <h1> Conference Manager  </h1>
-        <input id='email' bind:value={email} placeholder="Email">
-        <input type='password' id='password' bind:value={password} placeholder="Password">
-        <button on:click="{handleLogin}"> Log in </button>
-
-        {#if visible}
-            {#if errorOccured}
-                <p class='error' id='error'> The username or password you entered is incorrect. </p>
-            {:else}
-                <p class='success'> Login succesful! </p>
+            {#if visible}
+                {#if errorOccured}
+                    <p class='error' id='error'> The username or password you entered is incorrect. </p>
+                {:else}
+                    <p class='success'> Login succesful! </p>
+                {/if}
             {/if}
-        {/if}
 
-        <hr>
-        <p> Don't have an account? <a href='./Signup'> Sign up </a> </p>
+            <hr>
+            <p> Don't have an account? <a href='./Signup'> Sign up </a> </p>
+        </div>
     </div>
 </div>
 
@@ -28,7 +29,6 @@
 
     :global(body) {
         padding: 0;
-        background-color: #EEEEEE; 
         font-family: Montserrat;
     }
 
@@ -50,7 +50,7 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        width: 100%;
+        width: 40vw;
     }
     .error {
         margin-bottom: 5vh;
@@ -63,7 +63,23 @@
         margin-top: -1vh;
         color: green;
     }
+    
+    .load-animation__fade {
+        animation: fade 1.5s;
+    }
+    
+    .load-animation__extend {
+        animation: extend 10.5s ease-in-out;
+    }
 
+    .background {
+        width: 100%;
+        height: 100%;
+        background-image: url('/hero.jpg') ; 
+        background-size:contain;
+        background-color: #4C82F8;
+        background-blend-mode: multiply;
+    }
 
     h1 {
         padding-bottom: 2vh;
@@ -125,43 +141,57 @@
     ::placeholder {
         color: #BFBFBF;
     }
-     
+
+    @keyframes fade {
+
+        from  {
+            opacity: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        to {
+            opacity: 1;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+
+    @keyframes extend {
+
+        0% {
+            width: 40%;
+            border-top-left-radius: 5vh;
+            border-bottom-left-radius: 5vh;
+        }
+
+        50% {
+            width: 38%;
+            border-top-left-radius: 5vh;
+            border-bottom-left-radius: 5vh;
+        }
+
+        100% {
+            width: 100%;
+            border-top-left-radius: 0vh;
+            border-bottom-left-radius: 0vh;
+        }
+
+    }
 </style>
 
 <script>
+    import { isLoggedin } from './main.js';
+    import Router from 'page';
 
-    // Navigation imports
-    import { Router, Link, Route } from "svelte-routing";
-    import Signup from "./Signup.svelte";
-    export let url = "";
-
-    // Firebase imports 
+    // Firebase import
     import firebase from "firebase/app";
-    import "firebase/analytics";
-    import "firebase/auth";
-    import "firebase/firestore";
-
-    // Firebase config
-    var firebaseConfig = {
-        apiKey: "AIzaSyAJ3JdkQaCpsBNQkdZ9C3TzzIuPdPI8wak",
-        authDomain: "conference-manager-f1c34.firebaseapp.com",
-        projectId: "conference-manager-f1c34",
-        storageBucket: "conference-manager-f1c34.appspot.com",
-        messagingSenderId: "236826523049",
-        appId: "1:236826523049:web:f57db357c14643491180b8",
-        measurementId: "G-LYR5JNKQJP"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
 
     // Login variables
     let email = ''; 
     let password = '';
     var visible = false;
     var errorOccured = false;
-    var user = { loggedIn: false, errorOccured: false };
     
 
     // Login with firebase
@@ -169,13 +199,19 @@
         firebase.auth().signInWithEmailAndPassword(email, password) .then((userCredential) => {
             visible = true;
             errorOccured = false;
-            var user = userCredential.user;
+            isLoggedin.update(n => true);
+            Router.redirect('/Role');
         })
         .catch((error) => {
             visible = true;
             errorOccured = true;
-            var errorMessage = error.message;
-            console.log(errorMessage);
         });
 	}
+
+    // Exit animation
+    window.onbeforeunload = function(e){
+        document.getElementById('container').className = 'load-animation__extend';
+        console.log("The end");
+        console.log(e);
+    }
 </script>
