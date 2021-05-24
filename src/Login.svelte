@@ -1,5 +1,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
 <div class='background'>
     <div class='sign-in__container' id='container'>
         <div class='sign-in__content load-animation__fade' >
@@ -181,11 +182,16 @@
 </style>
 
 <script>
-    import { isLoggedin } from './main.js';
-    import Router from 'page';
 
+
+    // General imports 
+    import { store } from './store.js';
+    import Router from 'page';
+    
+    
     // Firebase import
     import firebase from "firebase/app";
+
 
     // Login variables
     let email = ''; 
@@ -197,10 +203,33 @@
     // Login with firebase
     function handleLogin() {
         firebase.auth().signInWithEmailAndPassword(email, password) .then((userCredential) => {
+            // Set boolean values
             visible = true;
             errorOccured = false;
-            isLoggedin.update(n => true);
-            Router.redirect('/Role');
+            store.set(true);
+
+            // Change login state
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    // Logged in
+                    Router.redirect('/Role');
+                } else {
+                    // Logged out
+                }
+            });
+
+            // Make login persistant 
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log('persisted');
+                return firebase.auth().signInWithEmailAndPassword(email, password);
+            })
+            .catch((error) => {
+                // Handle Errors here.
+                var errorMessage = error.message;
+                console.log('failed to persist');
+            });
+
         })
         .catch((error) => {
             visible = true;
@@ -208,10 +237,4 @@
         });
 	}
 
-    // Exit animation
-    window.onbeforeunload = function(e){
-        document.getElementById('container').className = 'load-animation__extend';
-        console.log("The end");
-        console.log(e);
-    }
 </script>

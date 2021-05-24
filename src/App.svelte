@@ -4,6 +4,7 @@
     import "firebase/analytics";
     import "firebase/auth";
     import "firebase/firestore";
+    import "firebase/database";
 
     // Firebase config
     var firebaseConfig = {
@@ -13,6 +14,7 @@
         storageBucket: "conference-manager-f1c34.appspot.com",
         messagingSenderId: "236826523049",
         appId: "1:236826523049:web:f57db357c14643491180b8",
+		databaseURL: "https://conference-manager-f1c34-default-rtdb.firebaseio.com/",
         measurementId: "G-LYR5JNKQJP"
     };
 
@@ -21,21 +23,38 @@
     firebase.analytics();
 
     import Router from 'page';
-    import { isLoggedin } from './main.js';
+    import { store } from './store.js';
     import Login from './Login.svelte'
 	import Signup from './Signup.svelte'
 	import Role from './Role.svelte'
+    import Planner from './Planner.svelte';
 
-	let loginValue;
 
-    const unsubscribe = isLoggedin.subscribe(value => {
-		loginValue = value;
+	let isLoggedin;
+
+    store.subscribe(value => {
+		isLoggedin = value;
 	}); 
+
 
 	let page;
 	let params;
+	var user = firebase.auth().currentUser;
 
-	Router('/', () => page = Login);
+	console.log(user);
+	Router('/',
+		// (ctx, next) => {
+		// 	console.log(user);
+		// 	if (user) {
+		// 		Router.redirect('/Role');
+		// 	} else {
+		// 		Router.redirect('/Signup');
+		// 	}
+		// }, 
+		() => page = Login);
+
+
+
 
 	Router('/Signup', (ctx, next) => {
 		params = ctx.params;
@@ -46,6 +65,11 @@
 		params = ctx.params;
 		next();
 	}, () => page = Role);
+
+	Router('/Planner', (ctx, next) => {
+		params = ctx.params;
+		next();
+	}, () => page = Planner);
 
 	Router.start();
 </script>

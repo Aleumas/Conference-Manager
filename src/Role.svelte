@@ -1,17 +1,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-<div class='container'>
-        <h1>Conference role</h1>
+
+
+<div class='container load-animation'>
+    <h1>Conference role</h1>
     <div class='content inline'>
 
         <div id='left' class='inline'>
-            <button class='left'> Planner </button>
+            <button on:click={() => writeUserChoice('planner')}> Planner </button>
         </div>
 
         <p class='inline'> — or — </p>
 
         <div id='right' class='inline'>
-            <button> Attendee </button>
+            <button on:click={() => writeUserChoice('attendee')}> Attendee </button>
         </div>
 
         <svg class='group-svg' width="199" height="158" viewBox="0 0 199 158" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -107,6 +109,10 @@
         top: 40%;
         transform: translateY(-50%);
         width: 100%;
+    }
+
+    .load-animation {
+        animation: fadeIn 1s linear;
     }
 
     h1 {
@@ -225,3 +231,24 @@
         100% { background-color: #F88A4C; }
     }
 </style>
+
+
+<script>
+    // General imports
+    import Router from 'page';
+
+    // Firebase import
+    import firebase from "firebase/app";
+
+    // Save choice to firebase
+    function writeUserChoice(choice) {
+        var user = firebase.auth().currentUser;
+
+        if (choice == 'planner') {
+            Router.redirect('/Planner');
+        }
+        firebase.database().ref('users/' + user.uid).set({
+            choice: choice
+        });
+    }
+</script>

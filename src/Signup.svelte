@@ -1,23 +1,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
-<div class='sign-in__container'>
-    <div class='sign-in__content load-animation'>
-        <h1> Conference Manager  </h1>
-        <input id='email' bind:value={email} placeholder="Email">
-        <input type='password' id='password' bind:value={password} placeholder="Password">
-        <button on:click="{handleLogin}"> Sign up</button>
+<div class='background'>
+    <div class='sign-in__container'>
+        <div class='sign-in__content load-animation'>
+            <h1> Conference Manager  </h1>
+            <input id='email' bind:value={email} placeholder="Email">
+            <input type='password' id='password' bind:value={password} placeholder="Password">
+            <button on:click="{handleSignup}"> Sign up</button>
 
-        {#if visible}
-            {#if errorOccured}
-                <p class='error' id='error'> {errorMessage} </p>
-            {:else}
-                <p class='success'> Sign up succesful! </p>
+            {#if visible}
+                {#if errorOccured}
+                    <p class='error' id='error'> {errorMessage} </p>
+                {:else}
+                    <p class='success'> Sign up succesful! </p>
+                {/if}
             {/if}
-        {/if}
 
-        <hr>
-        <p> Have an account? <a href='./'> Login </a> </p>
+            <hr>
+            <p> Have an account? <a href='./'> Login </a> </p>
+        </div>
     </div>
 </div>
 
@@ -52,6 +54,16 @@
         transform: translateY(-50%);
         width: 100%;
     }
+
+    .background {
+        width: 100%;
+        height: 100%;
+        background-image: url('/hero.jpg') ; 
+        background-size:contain;
+        background-color: #4C82F8;
+        background-blend-mode: multiply;
+    }
+    
     .error {
         margin-bottom: 5vh;
         margin-top: -1vh;
@@ -148,6 +160,7 @@
 </style>
 
 <script>
+    import Router from 'page';
 
     // Firebase import
     import firebase from "firebase/app";
@@ -160,12 +173,34 @@
     var errorOccured = false;
     
 
-    // Login with firebase
-    function handleLogin() {
+    // Signup with firebase
+    function handleSignup() {
         firebase.auth().createUserWithEmailAndPassword(email, password) .then((userCredential) => {
             visible = true;
             errorOccured = false;
-            var user = userCredential.user;
+
+            // Change login state
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    // Logged in
+                    Router.redirect('/Role');
+                } else {
+                    // Logged out
+                }
+            });
+
+            // Make login persistant 
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log('persisted');
+                return firebase.auth().signInWithEmailAndPassword(email, password);
+            })
+            .catch((error) => {
+                // Handle Errors here.
+                var errorMessage = error.message;
+                console.log('failed to persist');
+            });
+
         })
         .catch((error) => {
             visible = true;
