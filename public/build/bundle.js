@@ -44032,7 +44032,7 @@ var app = (function () {
     	let t0;
     	let link1;
     	let t1;
-    	let div2;
+    	let div5;
     	let div0;
     	let t2;
     	let div1;
@@ -44043,6 +44043,13 @@ var app = (function () {
     	let li1;
     	let button0;
     	let t6;
+    	let div4;
+    	let div3;
+    	let div2;
+    	let p0;
+    	let t8;
+    	let p1;
+    	let t10;
     	let button1;
     	let mounted;
     	let dispose;
@@ -44053,7 +44060,7 @@ var app = (function () {
     			t0 = space();
     			link1 = element("link");
     			t1 = space();
-    			div2 = element("div");
+    			div5 = element("div");
     			div0 = element("div");
     			t2 = space();
     			div1 = element("div");
@@ -44066,30 +44073,49 @@ var app = (function () {
     			button0 = element("button");
     			button0.textContent = "Logout";
     			t6 = space();
+    			div4 = element("div");
+    			div3 = element("div");
+    			div2 = element("div");
+    			p0 = element("p");
+    			p0.textContent = "Active Conferences";
+    			t8 = space();
+    			p1 = element("p");
+    			p1.textContent = "0";
+    			t10 = space();
     			button1 = element("button");
     			button1.textContent = "+ Add an event";
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			add_location(link0, file, 0, 0, 0);
-    			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+    			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file, 1, 0, 57);
-    			attr_dev(div0, "class", "background svelte-btmf6h");
-    			add_location(div0, file, 4, 4, 200);
-    			attr_dev(h1, "class", "svelte-btmf6h");
-    			add_location(h1, file, 7, 16, 288);
-    			add_location(li0, file, 7, 12, 284);
-    			attr_dev(button0, "class", "logout svelte-btmf6h");
-    			add_location(button0, file, 8, 16, 330);
-    			add_location(li1, file, 8, 12, 326);
-    			attr_dev(ul, "class", "svelte-btmf6h");
-    			add_location(ul, file, 6, 8, 264);
-    			attr_dev(div1, "class", "header svelte-btmf6h");
-    			add_location(div1, file, 5, 4, 235);
-    			attr_dev(button1, "class", "add-event svelte-btmf6h");
-    			add_location(button1, file, 12, 4, 422);
-    			attr_dev(div2, "class", "load-animation svelte-btmf6h");
-    			add_location(div2, file, 3, 0, 167);
+    			attr_dev(div0, "class", "background svelte-16qbhdw");
+    			add_location(div0, file, 4, 4, 204);
+    			attr_dev(h1, "class", "svelte-16qbhdw");
+    			add_location(h1, file, 7, 16, 292);
+    			add_location(li0, file, 7, 12, 288);
+    			attr_dev(button0, "class", "logout svelte-16qbhdw");
+    			add_location(button0, file, 8, 16, 334);
+    			add_location(li1, file, 8, 12, 330);
+    			attr_dev(ul, "class", "svelte-16qbhdw");
+    			add_location(ul, file, 6, 8, 268);
+    			attr_dev(div1, "class", "header svelte-16qbhdw");
+    			add_location(div1, file, 5, 4, 239);
+    			attr_dev(p0, "class", "stats-title svelte-16qbhdw");
+    			add_location(p0, file, 14, 16, 548);
+    			attr_dev(p1, "class", "stat svelte-16qbhdw");
+    			add_location(p1, file, 15, 16, 610);
+    			attr_dev(div2, "class", "center svelte-16qbhdw");
+    			add_location(div2, file, 13, 12, 511);
+    			attr_dev(div3, "class", "active-conferences svelte-16qbhdw");
+    			add_location(div3, file, 12, 8, 465);
+    			attr_dev(div4, "class", "stats-bar svelte-16qbhdw");
+    			add_location(div4, file, 11, 4, 433);
+    			attr_dev(button1, "class", "add-event svelte-16qbhdw");
+    			add_location(button1, file, 27, 4, 985);
+    			attr_dev(div5, "class", "load-animation svelte-16qbhdw");
+    			add_location(div5, file, 3, 0, 171);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -44099,21 +44125,28 @@ var app = (function () {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, link1, anchor);
     			insert_dev(target, t1, anchor);
-    			insert_dev(target, div2, anchor);
-    			append_dev(div2, div0);
-    			append_dev(div2, t2);
-    			append_dev(div2, div1);
+    			insert_dev(target, div5, anchor);
+    			append_dev(div5, div0);
+    			append_dev(div5, t2);
+    			append_dev(div5, div1);
     			append_dev(div1, ul);
     			append_dev(ul, li0);
     			append_dev(li0, h1);
     			append_dev(ul, t4);
     			append_dev(ul, li1);
     			append_dev(li1, button0);
-    			append_dev(div2, t6);
-    			append_dev(div2, button1);
+    			append_dev(div5, t6);
+    			append_dev(div5, div4);
+    			append_dev(div4, div3);
+    			append_dev(div3, div2);
+    			append_dev(div2, p0);
+    			append_dev(div2, t8);
+    			append_dev(div2, p1);
+    			append_dev(div5, t10);
+    			append_dev(div5, button1);
 
     			if (!mounted) {
-    				dispose = listen_dev(button0, "click", /*logout*/ ctx[0], false, false, false);
+    				dispose = listen_dev(button0, "click", /*click_handler*/ ctx[1], false, false, false);
     				mounted = true;
     			}
     		},
@@ -44125,7 +44158,7 @@ var app = (function () {
     			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(link1);
     			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(div2);
+    			if (detaching) detach_dev(div5);
     			mounted = false;
     			dispose();
     		}
@@ -44165,8 +44198,9 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1$1.warn(`<Planner> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = () => logout();
     	$$self.$capture_state = () => ({ Router: page, firebase: firebase$1, logout });
-    	return [logout];
+    	return [logout, click_handler];
     }
 
     class Planner extends SvelteComponentDev {

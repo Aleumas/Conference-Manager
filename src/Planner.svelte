@@ -1,21 +1,68 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
 
 <div class='load-animation'>
     <div class='background'></div>
     <div class='header'>
         <ul>   
             <li><h1> Dashboard </h1></li>
-            <li><button class='logout' on:click={logout}>Logout</button></li>
+            <li><button class='logout' on:click={() => logout()}>Logout</button></li>
         </ul>
     </div>
-
+    <div class='stats-bar'>
+        <div class='active-conferences'> 
+            <div class='center'>
+                <p class='stats-title'>Active Conferences</p>
+                <p class='stat'> 0 </p>
+            </div>
+        </div>
+        <!-- <div class='average-rating'>
+            <p class='stats-title'>Average Rating</p>
+            <p class='stat'> 0 </p>
+        </div> -->
+        <!-- <div class='average-rating'>
+            <p class='stats-title'>Average Rating</p>
+            <p class='stat'> 0 </p>
+        </div> -->
+    </div>
     <button class='add-event'>+ Add an event</button>
 
 </div>
 
 <style>
 
+    .center {
+        position: absolute;
+    }
+
+    .stats-bar {
+        position: relative;
+        display: inline;
+    }
+
+    .active-conferences {
+        margin-top: 0;
+        width: 25vw;
+        height: 6vw;
+        background-color: white;
+        border-radius: 2vh;
+    }
+
+    .stats-title {
+        color: #BFBFBF;
+        font-weight: 500;
+        padding-left: 20px;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+
+    .stat {
+        font-weight: 700;
+        font-size: larger;
+        padding-left: 20px;
+        margin-bottom: 0;
+        margin-top: 1vh;
+    }
 
     .header {
         display: inline;
