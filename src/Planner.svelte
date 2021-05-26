@@ -1,135 +1,123 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
 
-<div class='load-animation'>
-    <div class='background'></div>
-    <div class='header'>
+<div class='background'>
+    <div class='load-animation'>
+    <!-- <div class='header'>
         <ul>   
             <li><h1> Dashboard </h1></li>
             <li><button class='logout' on:click={() => logout()}>Logout</button></li>
         </ul>
+    </div> -->
+
+    <div class='right-panel'>
+        <!-- <Calendar class='frame' {today} year={2020}/> -->
     </div>
-    <div class='stats-bar'>
-        <div class='active-conferences'> 
-            <div class='center'>
-                <p class='stats-title'>Active Conferences</p>
-                <p class='stat'> 0 </p>
+
+    <div class='right-panel'>
+        <div class='profile-container'>
+            <img src={imageLink} alt='profile picture'/>
+            <h1> {name} </h1>
+            <h3> {position} </h3>
+        </div>
+        <hr>
+        <div class='info-container'>
+            <div class='info-titles'>
+                <p> Company </p>
+                <p> Joining Date </p>
+                <p> Conferences </p>
+            </div>
+            <div class='info'>
+                <p> {company} </p>
+                <p> {joiningDate} </p>
+                <p> {activeConferences} </p>
             </div>
         </div>
-        <!-- <div class='average-rating'>
-            <p class='stats-title'>Average Rating</p>
-            <p class='stat'> 0 </p>
-        </div> -->
-        <!-- <div class='average-rating'>
-            <p class='stats-title'>Average Rating</p>
-            <p class='stat'> 0 </p>
-        </div> -->
     </div>
-    <button class='add-event'>+ Add an event</button>
 
+    <!-- <button class='add-event'>+ Add an event</button> -->
+    </div>
 </div>
 
 <style>
-
-    .center {
-        position: absolute;
+    
+    .frame {
+        width: 10%;
+        height: 10%;
+    } 
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
     }
 
-    .stats-bar {
-        position: relative;
+    .info-container {
         display: inline;
     }
-
-    .active-conferences {
-        margin-top: 0;
-        width: 25vw;
-        height: 6vw;
-        background-color: white;
-        border-radius: 2vh;
-    }
-
-    .stats-title {
-        color: #BFBFBF;
-        font-weight: 500;
-        padding-left: 20px;
-        margin-bottom: 0;
-        margin-top: 0;
-    }
-
-    .stat {
+    .info-titles {
+        float: left;
+        color: #5C5C5C;
         font-weight: 700;
-        font-size: larger;
-        padding-left: 20px;
-        margin-bottom: 0;
-        margin-top: 1vh;
+        font-size: 1vmax;
+        margin-left: 10%;
     }
 
-    .header {
-        display: inline;
+    .info {
+        float: right;
+        font-size: 1vmax;
+        margin-right: 10%;
+        color: #5C5C5C;
+        font-weight: 500;
+    }
+
+    .right-panel {
+        display: block;
+        float: right;
         position: relative;
+        background-color: white;
+        width: 30vmax;
+        height: 25vmax;
+        border-radius: 3vh;
+        margin: 10px;
     }
 
     .background {
-        position: absolute;
-        background-color: #f5f5f5;
+        background-color: #EEEEEE;
         width: 100%;
         height: 100%;
-    }
-
-    .logout {
-        background-color: #F88A4C;
-        width: 10vw;
-        margin: 0;
-        padding: 0;
-        margin-right: 5vw;
-        margin-top: 0;
-        float: right;
-    }
-
-    .add-event {
-        position: absolute;
-        right: 5vw;
-        bottom: 5vw;
-        margin: 0;
-        z-index: 999;
     }
 
     .load-animation {
         animation: fadeIn 1s linear;
     }
-   
-    ul {
-        display: block;
-        list-style-type: none;
-        margin-top: 0;
-        padding-top: 0;
-    } 
 
-    h1 {
-        padding-bottom: 2vh;
-        color: #5C5C5C;
-        font-weight: 700;
-        font-size: xx-large;
-        margin: 0;
-        padding: 0;
-        float: left;
+    hr {
+        width: 80%;
+        height: 2px;
+        border: none;
+        background-color: #bfbfbf;
     }
 
-    button {
+    h3 {
+        font-size: 1.2vmax;
+        font-weight: 500;
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    h1 {
+        font-size: 2vmax;
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    img {
+        width: 5vmax;
+        margin-top: 4vh;
+        height: 10%;
         display: block;
-        width: 20vw;
-        height: 7vh;
         margin-left: auto;
         margin-right: auto;
-        margin-bottom: 5vh;
-        padding: 1vh;
-
-        color: white;
-        font-weight: 700;
-        background-color: #4C82F8;
-        font-size: medium;
-        border-radius: 2vh;
-        border: none;
     }
 
     @keyframes fadeIn {
@@ -142,6 +130,16 @@
 <script>
     import Router from 'page';
     import firebase from 'firebase/app';
+    import Calendar from './Calendar.svelte';
+    import Datepicker from 'svelte-calendar';
+
+    const today = new Date;
+    let imageLink = '/defaultProfilePicture.jpg'
+    let name = 'Leumas'
+    let position = 'CEO'
+    let company = 'Google';
+    let joiningDate = '01/08/2018';
+    let activeConferences = '34 Active';
 
     function logout() {
         Router.redirect('./');

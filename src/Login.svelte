@@ -2,7 +2,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
 <div class='background'>
-    <div class='sign-in__container' id='container'>
+    <div class='sign-in__container ' id='container'>
         <div class='sign-in__content load-animation__fade' >
             <h1> Conference Manager  </h1>
             <input id='email' bind:value={email} placeholder="Email">
@@ -69,14 +69,14 @@
         animation: fade 1.5s;
     }
     
-    .load-animation__extend {
+    /* .load-animation__extend {
         animation: extend 10.5s ease-in-out;
-    }
+    } */
 
     .background {
         width: 100%;
         height: 100%;
-        background-image: url('/hero.jpg') ; 
+        background-image: url('/hero.jpg'); 
         background-size:contain;
         background-color: #4C82F8;
         background-blend-mode: multiply;
@@ -125,7 +125,7 @@
         width: 70%;
         height: 2px;
         border: none;
-        background-color: #BFBFBF;
+        background-color: #bfbfbf;
     }
 
     p {
