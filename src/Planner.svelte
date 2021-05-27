@@ -10,10 +10,10 @@
         </ul>
     </div> -->
 
-    <div class='right-panel'>
-        <!-- <Calendar class='frame' {today} year={2020}/> -->
-    </div>
-
+    <!-- <div class='right-panel'>
+        <Calendar class='frame' {today} year={2020}/>
+    </div> -->
+<!-- 
     <div class='right-panel'>
         <div class='profile-container'>
             <img src={imageLink} alt='profile picture'/>
@@ -33,18 +33,123 @@
                 <p> {activeConferences} </p>
             </div>
         </div>
+    </div> -->
+    <h2> My conferences</h2>
+    <div class='info-title-container'>
+        <p class='info-category'> name </p>
+        <p class='info-category'> location </p>
+        <p class='info-category'> date </p>
+        <p class='info-category'> time </p>
+        <p class='info-category'> access </p>
+        <p></p>
     </div>
 
+    {#each userConferences as conf}
+        <div class='cell-container'> 
+            <p class='conf-info'> {conf.name} </p>
+            <p class='conf-info'> {conf.location} </p>
+            <p class='conf-info'> {conf.date} </p>
+            <p class='conf-info'> {conf.time} </p>
+
+            {#if conf.access == 'Private'} 
+                <p class='conf-info private'> {conf.access} </p>
+            {:else}
+                <p class='conf-info public'> {conf.access} </p>
+            {/if}
+
+            <button class='more'> ••• </button>
+        </div>
+    {/each}
     <!-- <button class='add-event'>+ Add an event</button> -->
     </div>
 </div>
 
 <style>
     
+    h2 {
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: 2vh;
+        padding-top: 2vh;
+        
+    }
+
+    .info-title-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 60vmax;
+        height: 5vmax;
+        border-radius: 3vh;
+        padding-left: 1vw;
+        padding-right: 1vw;
+        margin-left: 1vw;
+        margin-top: 0;
+        margin-bottom: -2vh;
+    }
+
+    .info-category {
+        font-weight: 500;
+    }
+
+    .more {
+        border: none;
+        background-color: white;
+        color:#5C5C5C;
+        font-weight: 700;
+        font-size: x-large;
+        margin-bottom: 0;
+    }
+
     .frame {
         width: 10%;
         height: 10%;
     } 
+
+    .conf-info {
+        font-weight: 400;
+    }
+
+    .private {
+        width: 10vw;
+        height: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 1vh;
+        font-weight: 700;
+        background-color: #E1BEBE;
+        color: #C88A8A;
+    }
+    
+    .public {
+        width: 10vw;
+        height: 40%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 1vh;
+        text-align: center;
+        font-weight: 700;
+        background-color: #C2E1BE;
+        color: #90C88A;
+    }
+
+    .cell-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 60vmax;
+        height: 5vmax;
+        border-radius: 3vh;
+        padding-left: 1vw;
+        padding-right: 1vw;
+        margin-left: 1vw;
+        margin-top: 2vh;
+        background-color: white;
+    }
+
     .profile-container {
         display: flex;
         justify-content: center;
@@ -53,7 +158,9 @@
 
     .info-container {
         display: inline;
+        margin-left: 90%;
     }
+
     .info-titles {
         float: left;
         color: #5C5C5C;
@@ -72,13 +179,13 @@
 
     .right-panel {
         display: block;
-        float: right;
         position: relative;
         background-color: white;
         width: 30vmax;
         height: 25vmax;
         border-radius: 3vh;
-        margin: 10px;
+        margin-left: 70%;
+        margin-top: 1%;
     }
 
     .background {
@@ -130,8 +237,6 @@
 <script>
     import Router from 'page';
     import firebase from 'firebase/app';
-    import Calendar from './Calendar.svelte';
-    import Datepicker from 'svelte-calendar';
 
     const today = new Date;
     let imageLink = '/defaultProfilePicture.jpg'
@@ -140,6 +245,10 @@
     let company = 'Google';
     let joiningDate = '01/08/2018';
     let activeConferences = '34 Active';
+    let userConferences = [
+        { name: 'Google I/O', location: 'Online', date: '20 May 2021', time: '01:00 PM', access: 'Public' },
+        { name: 'Apple WWDC', location: 'Online', date: '3 Aug 2021', time: '05:00 PM', access: 'Private' }
+    ]
 
     function logout() {
         Router.redirect('./');
