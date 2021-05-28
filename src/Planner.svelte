@@ -34,6 +34,12 @@
             </div>
         </div>
     </div> -->
+    <div class='left-panel'></div>
+    <h1> Conferences </h1>
+    <ul>
+        <li><button class='add-event' on:click={addConf}> + </button></li>
+        <li><button class='logout' on:click={() => logout()}>Logout</button></li>
+    </ul>
     <h2> My conferences</h2>
     <div class='info-title-container'>
         <p class='info-category'> name </p>
@@ -73,6 +79,19 @@
         padding-top: 2vh;
         
     }
+    
+    ul {
+        margin: 0;
+        padding-left: 1vw;
+    }
+
+    ul li {
+        display: inline-block;
+        list-style-type: none;
+        margin-top: 0;
+        margin-left: 0;
+        padding-top: 0;
+    } 
 
     .info-title-container {
         display: flex;
@@ -99,6 +118,36 @@
         font-weight: 700;
         font-size: x-large;
         margin-bottom: 0;
+    }
+
+    button {
+        display: inline-block;
+        width: 3vw;
+        height: 3vw;
+        margin-right: 0;
+        margin-bottom: 5vh;
+        padding: 1vh;
+        color: white;
+        font-weight: 700;
+        background-color: #4C82F8;
+        font-size: medium;
+        border-radius: 2vh;
+        border: none;
+    }
+
+    .logout {
+        background-color: #F88A4C;
+        width: 10vw;
+        margin: 0;
+        padding: 0;
+        margin-right: 5vw;
+        margin-top: 0;
+    }
+
+    .add-event {
+        margin: 0;
+        margin-top: 1vw;
+    
     }
 
     .frame {
@@ -216,6 +265,10 @@
         font-size: 2vmax;
         text-align: center;
         margin-bottom: 0;
+        margin-top: 0;
+        padding-top: 2vh;
+        padding-left: 1vw;
+        text-align: left;
     }
 
     img {
@@ -252,6 +305,11 @@
 
     function logout() {
         Router.redirect('./');
+    }
+
+    function addConf() {
+        userConferences = userConferences.concat( { name: 'Google I/O', location: 'Online', date: '20 May 2021', time: '01:00 PM', access: 'Public' });
+        console.log('New conf created');
     }
 
     firebase.auth().signOut().then(function() {
