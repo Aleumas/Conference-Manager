@@ -247,8 +247,23 @@
         if (choice == 'planner') {
             Router.redirect('/Planner');
         }
-        firebase.database().ref('users/' + user.uid).set({
-            choice: choice
+
+        let choiceRef = firebase.database().ref('users/' + user.uid + '/choice');
+        choiceRef.on('value', (snapshot) => {
+            const roleChoice = snapshot.val();
+
+            if (roleChoice == null)  {
+            firebase.database().ref('users/' + user.uid).set({
+                choice: choice
+            });
+            console.log('set');
+            } else { 
+                firebase.database().ref('users/' + user.uid).update({
+                    choice: choice
+                });
+            console.log('update');
+            }
         });
+
     }
 </script>

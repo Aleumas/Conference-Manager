@@ -51,7 +51,7 @@
     </div>
 
     {#each userConferences as conf}
-        <div class='cell-container'> 
+        <div class='cell-container load-animation'> 
             <p class='conf-info'> {conf.name} </p>
             <p class='conf-info'> {conf.location} </p>
             <p class='conf-info'> {conf.date} </p>
@@ -298,23 +298,34 @@
     let company = 'Google';
     let joiningDate = '01/08/2018';
     let activeConferences = '34 Active';
-    let userConferences = [
-        { name: 'Google I/O', location: 'Online', date: '20 May 2021', time: '01:00 PM', access: 'Public' },
-        { name: 'Apple WWDC', location: 'Online', date: '3 Aug 2021', time: '05:00 PM', access: 'Private' }
-    ]
+    let userConferences = [];
 
+    var user = firebase.auth().currentUser;
+
+    let confRef = firebase.database().ref('users/' + user.uid + '/conferences');
+    confRef.on('value', (snapshot) => {
+        const conferences = snapshot.val();
+
+        if (conferences != null) {
+            userConferences = conferences.conference;
+        }  
+    });
+
+    
     function logout() {
+        firebase.auth().signOut().then(function() {
+        console.log('Signed Out');
+        }, function(error) {
+
+        console.error('Sign Out Error', error);
+    });
         Router.redirect('./');
     }
 
     function addConf() {
-        userConferences = userConferences.concat( { name: 'Google I/O', location: 'Online', date: '20 May 2021', time: '01:00 PM', access: 'Public' });
-        console.log('New conf created');
+        Router.redirect('/AddConference');
     }
 
-    firebase.auth().signOut().then(function() {
-        console.log('Signed Out');
-        }, function(error) {
-        console.error('Sign Out Error', error);
-    });
+    
+
 </script>

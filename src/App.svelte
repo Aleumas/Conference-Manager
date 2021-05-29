@@ -28,7 +28,7 @@
 	import Signup from './Signup.svelte'
 	import Role from './Role.svelte'
     import Planner from './Planner.svelte';
-
+    import AddConference from './AddConference.svelte';
 
 	let isLoggedin;
 
@@ -71,6 +71,10 @@
 		next();
 	}, () => page = Planner);
 
+	Router('/AddConference', (ctx, next) => {
+		params = ctx.params;
+		next();
+	}, () => page = AddConference);
 	Router.start();
 </script>
 
