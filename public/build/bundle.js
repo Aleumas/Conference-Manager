@@ -4,6 +4,13 @@ var app = (function () {
     'use strict';
 
     function noop$1() { }
+    const identity = x => x;
+    function assign(tar, src) {
+        // @ts-ignore
+        for (const k in src)
+            tar[k] = src[k];
+        return tar;
+    }
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -26,6 +33,77 @@ var app = (function () {
     }
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
+    }
+    function create_slot(definition, ctx, $$scope, fn) {
+        if (definition) {
+            const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
+            return definition[0](slot_ctx);
+        }
+    }
+    function get_slot_context(definition, ctx, $$scope, fn) {
+        return definition[1] && fn
+            ? assign($$scope.ctx.slice(), definition[1](fn(ctx)))
+            : $$scope.ctx;
+    }
+    function get_slot_changes(definition, $$scope, dirty, fn) {
+        if (definition[2] && fn) {
+            const lets = definition[2](fn(dirty));
+            if ($$scope.dirty === undefined) {
+                return lets;
+            }
+            if (typeof lets === 'object') {
+                const merged = [];
+                const len = Math.max($$scope.dirty.length, lets.length);
+                for (let i = 0; i < len; i += 1) {
+                    merged[i] = $$scope.dirty[i] | lets[i];
+                }
+                return merged;
+            }
+            return $$scope.dirty | lets;
+        }
+        return $$scope.dirty;
+    }
+    function update_slot(slot, slot_definition, ctx, $$scope, dirty, get_slot_changes_fn, get_slot_context_fn) {
+        const slot_changes = get_slot_changes(slot_definition, $$scope, dirty, get_slot_changes_fn);
+        if (slot_changes) {
+            const slot_context = get_slot_context(slot_definition, ctx, $$scope, get_slot_context_fn);
+            slot.p(slot_context, slot_changes);
+        }
+    }
+
+    const is_client = typeof window !== 'undefined';
+    let now = is_client
+        ? () => window.performance.now()
+        : () => Date.now();
+    let raf = is_client ? cb => requestAnimationFrame(cb) : noop$1;
+
+    const tasks = new Set();
+    function run_tasks(now) {
+        tasks.forEach(task => {
+            if (!task.c(now)) {
+                tasks.delete(task);
+                task.f();
+            }
+        });
+        if (tasks.size !== 0)
+            raf(run_tasks);
+    }
+    /**
+     * Creates a new task that runs on each raf frame
+     * until it returns a falsy value or is aborted
+     */
+    function loop(callback) {
+        let task;
+        if (tasks.size === 0)
+            raf(run_tasks);
+        return {
+            promise: new Promise(fulfill => {
+                tasks.add(task = { c: callback, f: fulfill });
+            }),
+            abort() {
+                tasks.delete(task);
+            }
+        };
     }
 
     function append(target, node) {
@@ -74,15 +152,126 @@ var app = (function () {
     function set_input_value(input, value) {
         input.value = value == null ? '' : value;
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
+    function select_option(select, value) {
+        for (let i = 0; i < select.options.length; i += 1) {
+            const option = select.options[i];
+            if (option.__value === value) {
+                option.selected = true;
+                return;
+            }
+        }
+    }
+    function select_value(select) {
+        const selected_option = select.querySelector(':checked') || select.options[0];
+        return selected_option && selected_option.__value;
+    }
+    function toggle_class(element, name, toggle) {
+        element.classList[toggle ? 'add' : 'remove'](name);
+    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
         return e;
     }
 
+    const active_docs = new Set();
+    let active = 0;
+    // https://github.com/darkskyapp/string-hash/blob/master/index.js
+    function hash(str) {
+        let hash = 5381;
+        let i = str.length;
+        while (i--)
+            hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+        return hash >>> 0;
+    }
+    function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
+        const step = 16.666 / duration;
+        let keyframes = '{\n';
+        for (let p = 0; p <= 1; p += step) {
+            const t = a + (b - a) * ease(p);
+            keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
+        }
+        const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
+        const name = `__svelte_${hash(rule)}_${uid}`;
+        const doc = node.ownerDocument;
+        active_docs.add(doc);
+        const stylesheet = doc.__svelte_stylesheet || (doc.__svelte_stylesheet = doc.head.appendChild(element('style')).sheet);
+        const current_rules = doc.__svelte_rules || (doc.__svelte_rules = {});
+        if (!current_rules[name]) {
+            current_rules[name] = true;
+            stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
+        }
+        const animation = node.style.animation || '';
+        node.style.animation = `${animation ? `${animation}, ` : ''}${name} ${duration}ms linear ${delay}ms 1 both`;
+        active += 1;
+        return name;
+    }
+    function delete_rule(node, name) {
+        const previous = (node.style.animation || '').split(', ');
+        const next = previous.filter(name
+            ? anim => anim.indexOf(name) < 0 // remove specific animation
+            : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
+        );
+        const deleted = previous.length - next.length;
+        if (deleted) {
+            node.style.animation = next.join(', ');
+            active -= deleted;
+            if (!active)
+                clear_rules();
+        }
+    }
+    function clear_rules() {
+        raf(() => {
+            if (active)
+                return;
+            active_docs.forEach(doc => {
+                const stylesheet = doc.__svelte_stylesheet;
+                let i = stylesheet.cssRules.length;
+                while (i--)
+                    stylesheet.deleteRule(i);
+                doc.__svelte_rules = {};
+            });
+            active_docs.clear();
+        });
+    }
+
     let current_component;
     function set_current_component(component) {
         current_component = component;
+    }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error('Function called outside component initialization');
+        return current_component;
+    }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
+    }
+    function createEventDispatcher() {
+        const component = get_current_component();
+        return (type, detail) => {
+            const callbacks = component.$$.callbacks[type];
+            if (callbacks) {
+                // TODO are there situations where events could be dispatched
+                // in a server (non-DOM) environment?
+                const event = custom_event(type, detail);
+                callbacks.slice().forEach(fn => {
+                    fn.call(component, event);
+                });
+            }
+        };
+    }
+    // TODO figure out if we still want to support
+    // shorthand events, or if we want to implement
+    // a real bubbling mechanism
+    function bubble(component, event) {
+        const callbacks = component.$$.callbacks[event.type];
+        if (callbacks) {
+            callbacks.slice().forEach(fn => fn(event));
+        }
     }
 
     const dirty_components = [];
@@ -97,8 +286,15 @@ var app = (function () {
             resolved_promise.then(flush);
         }
     }
+    function tick() {
+        schedule_update();
+        return resolved_promise;
+    }
     function add_render_callback(fn) {
         render_callbacks.push(fn);
+    }
+    function add_flush_callback(fn) {
+        flush_callbacks.push(fn);
     }
     let flushing = false;
     const seen_callbacks = new Set();
@@ -148,6 +344,20 @@ var app = (function () {
             $$.after_update.forEach(add_render_callback);
         }
     }
+
+    let promise;
+    function wait() {
+        if (!promise) {
+            promise = Promise.resolve();
+            promise.then(() => {
+                promise = null;
+            });
+        }
+        return promise;
+    }
+    function dispatch(node, direction, kind) {
+        node.dispatchEvent(custom_event(`${direction ? 'intro' : 'outro'}${kind}`));
+    }
     const outroing = new Set();
     let outros;
     function group_outros() {
@@ -185,12 +395,229 @@ var app = (function () {
             block.o(local);
         }
     }
+    const null_transition = { duration: 0 };
+    function create_in_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = false;
+        let animation_name;
+        let task;
+        let uid = 0;
+        function cleanup() {
+            if (animation_name)
+                delete_rule(node, animation_name);
+        }
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop$1, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
+            tick(0, 1);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            if (task)
+                task.abort();
+            running = true;
+            add_render_callback(() => dispatch(node, true, 'start'));
+            task = loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(1, 0);
+                        dispatch(node, true, 'end');
+                        cleanup();
+                        return running = false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(t, 1 - t);
+                    }
+                }
+                return running;
+            });
+        }
+        let started = false;
+        return {
+            start() {
+                if (started)
+                    return;
+                delete_rule(node);
+                if (is_function(config)) {
+                    config = config();
+                    wait().then(go);
+                }
+                else {
+                    go();
+                }
+            },
+            invalidate() {
+                started = false;
+            },
+            end() {
+                if (running) {
+                    cleanup();
+                    running = false;
+                }
+            }
+        };
+    }
+    function create_out_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = true;
+        let animation_name;
+        const group = outros;
+        group.r += 1;
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop$1, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            add_render_callback(() => dispatch(node, false, 'start'));
+            loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(0, 1);
+                        dispatch(node, false, 'end');
+                        if (!--group.r) {
+                            // this will result in `end()` being called,
+                            // so we don't need to clean up here
+                            run_all(group.c);
+                        }
+                        return false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(1 - t, t);
+                    }
+                }
+                return running;
+            });
+        }
+        if (is_function(config)) {
+            wait().then(() => {
+                // @ts-ignore
+                config = config();
+                go();
+            });
+        }
+        else {
+            go();
+        }
+        return {
+            end(reset) {
+                if (reset && config.tick) {
+                    config.tick(1, 0);
+                }
+                if (running) {
+                    if (animation_name)
+                        delete_rule(node, animation_name);
+                    running = false;
+                }
+            }
+        };
+    }
 
     const globals = (typeof window !== 'undefined'
         ? window
         : typeof globalThis !== 'undefined'
             ? globalThis
             : global);
+    function outro_and_destroy_block(block, lookup) {
+        transition_out(block, 1, 1, () => {
+            lookup.delete(block.key);
+        });
+    }
+    function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, lookup, node, destroy, create_each_block, next, get_context) {
+        let o = old_blocks.length;
+        let n = list.length;
+        let i = o;
+        const old_indexes = {};
+        while (i--)
+            old_indexes[old_blocks[i].key] = i;
+        const new_blocks = [];
+        const new_lookup = new Map();
+        const deltas = new Map();
+        i = n;
+        while (i--) {
+            const child_ctx = get_context(ctx, list, i);
+            const key = get_key(child_ctx);
+            let block = lookup.get(key);
+            if (!block) {
+                block = create_each_block(key, child_ctx);
+                block.c();
+            }
+            else if (dynamic) {
+                block.p(child_ctx, dirty);
+            }
+            new_lookup.set(key, new_blocks[i] = block);
+            if (key in old_indexes)
+                deltas.set(key, Math.abs(i - old_indexes[key]));
+        }
+        const will_move = new Set();
+        const did_move = new Set();
+        function insert(block) {
+            transition_in(block, 1);
+            block.m(node, next);
+            lookup.set(block.key, block);
+            next = block.first;
+            n--;
+        }
+        while (o && n) {
+            const new_block = new_blocks[n - 1];
+            const old_block = old_blocks[o - 1];
+            const new_key = new_block.key;
+            const old_key = old_block.key;
+            if (new_block === old_block) {
+                // do nothing
+                next = new_block.first;
+                o--;
+                n--;
+            }
+            else if (!new_lookup.has(old_key)) {
+                // remove old block
+                destroy(old_block, lookup);
+                o--;
+            }
+            else if (!lookup.has(new_key) || will_move.has(new_key)) {
+                insert(new_block);
+            }
+            else if (did_move.has(old_key)) {
+                o--;
+            }
+            else if (deltas.get(new_key) > deltas.get(old_key)) {
+                did_move.add(new_key);
+                insert(new_block);
+            }
+            else {
+                will_move.add(old_key);
+                o--;
+            }
+        }
+        while (o--) {
+            const old_block = old_blocks[o];
+            if (!new_lookup.has(old_block.key))
+                destroy(old_block, lookup);
+        }
+        while (n)
+            insert(new_blocks[n - 1]);
+        return new_blocks;
+    }
+    function validate_each_keys(ctx, list, get_context, get_key) {
+        const keys = new Set();
+        for (let i = 0; i < list.length; i++) {
+            const key = get_key(get_context(ctx, list, i));
+            if (keys.has(key)) {
+                throw new Error('Cannot have duplicate keys in a keyed each');
+            }
+            keys.add(key);
+        }
+    }
+
+    function bind(component, name, callback) {
+        const index = component.$$.props[name];
+        if (index !== undefined) {
+            component.$$.bound[index] = callback;
+            callback(component.$$.ctx[index]);
+        }
+    }
     function create_component(block) {
         block && block.c();
     }
@@ -42570,10 +42997,10 @@ var app = (function () {
 
     const { console: console_1$5 } = globals;
 
-    const file$4 = "src/Login.svelte";
+    const file$9 = "src/Login.svelte";
 
     // (12:12) {#if visible}
-    function create_if_block$2(ctx) {
+    function create_if_block$3(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
@@ -42612,7 +43039,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$2.name,
+    		id: create_if_block$3.name,
     		type: "if",
     		source: "(12:12) {#if visible}",
     		ctx
@@ -42630,7 +43057,7 @@ var app = (function () {
     			p = element("p");
     			p.textContent = "Login succesful!";
     			attr_dev(p, "class", "success svelte-1qffzrv");
-    			add_location(p, file$4, 15, 20, 787);
+    			add_location(p, file$9, 15, 20, 787);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -42661,7 +43088,7 @@ var app = (function () {
     			p.textContent = "The username or password you entered is incorrect.";
     			attr_dev(p, "class", "error svelte-1qffzrv");
     			attr_dev(p, "id", "error");
-    			add_location(p, file$4, 13, 20, 658);
+    			add_location(p, file$9, 13, 20, 658);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -42682,7 +43109,7 @@ var app = (function () {
     	return block;
     }
 
-    function create_fragment$5(ctx) {
+    function create_fragment$a(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -42706,7 +43133,7 @@ var app = (function () {
     	let a;
     	let mounted;
     	let dispose;
-    	let if_block = /*visible*/ ctx[2] && create_if_block$2(ctx);
+    	let if_block = /*visible*/ ctx[2] && create_if_block$3(ctx);
 
     	const block = {
     		c: function create() {
@@ -42738,38 +43165,38 @@ var app = (function () {
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			attr_dev(link0, "class", "svelte-1qffzrv");
-    			add_location(link0, file$4, 0, 0, 0);
+    			add_location(link0, file$9, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			attr_dev(link1, "class", "svelte-1qffzrv");
-    			add_location(link1, file$4, 1, 0, 57);
+    			add_location(link1, file$9, 1, 0, 57);
     			attr_dev(h1, "class", "svelte-1qffzrv");
-    			add_location(h1, file$4, 6, 12, 318);
+    			add_location(h1, file$9, 6, 12, 318);
     			attr_dev(input0, "id", "email");
     			attr_dev(input0, "placeholder", "Email");
     			attr_dev(input0, "class", "svelte-1qffzrv");
-    			add_location(input0, file$4, 7, 12, 361);
+    			add_location(input0, file$9, 7, 12, 361);
     			attr_dev(input1, "type", "password");
     			attr_dev(input1, "id", "password");
     			attr_dev(input1, "placeholder", "Password");
     			attr_dev(input1, "class", "svelte-1qffzrv");
-    			add_location(input1, file$4, 8, 12, 431);
+    			add_location(input1, file$9, 8, 12, 431);
     			attr_dev(button, "class", "svelte-1qffzrv");
-    			add_location(button, file$4, 9, 12, 526);
+    			add_location(button, file$9, 9, 12, 526);
     			attr_dev(hr, "class", "svelte-1qffzrv");
-    			add_location(hr, file$4, 19, 12, 882);
+    			add_location(hr, file$9, 19, 12, 882);
     			attr_dev(a, "href", "./Signup");
     			attr_dev(a, "class", "svelte-1qffzrv");
-    			add_location(a, file$4, 20, 39, 926);
+    			add_location(a, file$9, 20, 39, 926);
     			attr_dev(p, "class", "svelte-1qffzrv");
-    			add_location(p, file$4, 20, 12, 899);
+    			add_location(p, file$9, 20, 12, 899);
     			attr_dev(div0, "class", "sign-in__content load-animation__fade svelte-1qffzrv");
-    			add_location(div0, file$4, 5, 8, 253);
+    			add_location(div0, file$9, 5, 8, 253);
     			attr_dev(div1, "class", "sign-in__container  svelte-1qffzrv");
     			attr_dev(div1, "id", "container");
-    			add_location(div1, file$4, 4, 4, 196);
+    			add_location(div1, file$9, 4, 4, 196);
     			attr_dev(div2, "class", "background svelte-1qffzrv");
-    			add_location(div2, file$4, 3, 0, 167);
+    			add_location(div2, file$9, 3, 0, 167);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -42823,7 +43250,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$2(ctx);
+    					if_block = create_if_block$3(ctx);
     					if_block.c();
     					if_block.m(div0, t8);
     				}
@@ -42848,7 +43275,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$5.name,
+    		id: create_fragment$a.name,
     		type: "component",
     		source: "",
     		ctx
@@ -42857,7 +43284,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$5($$self, $$props, $$invalidate) {
+    function instance$a($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Login", slots, []);
     	let email = "";
@@ -42950,13 +43377,13 @@ var app = (function () {
     class Login extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
+    		init(this, options, instance$a, create_fragment$a, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Login",
     			options,
-    			id: create_fragment$5.name
+    			id: create_fragment$a.name
     		});
     	}
     }
@@ -42965,10 +43392,10 @@ var app = (function () {
 
     const { console: console_1$4 } = globals;
 
-    const file$3 = "src/Signup.svelte";
+    const file$8 = "src/Signup.svelte";
 
     // (12:12) {#if visible}
-    function create_if_block$1(ctx) {
+    function create_if_block$2(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
@@ -43009,7 +43436,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$1.name,
+    		id: create_if_block$2.name,
     		type: "if",
     		source: "(12:12) {#if visible}",
     		ctx
@@ -43027,7 +43454,7 @@ var app = (function () {
     			p = element("p");
     			p.textContent = "Sign up succesful!";
     			attr_dev(p, "class", "success svelte-1ots9yc");
-    			add_location(p, file$3, 15, 20, 730);
+    			add_location(p, file$8, 15, 20, 730);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -43060,7 +43487,7 @@ var app = (function () {
     			t = text(/*errorMessage*/ ctx[2]);
     			attr_dev(p, "class", "error svelte-1ots9yc");
     			attr_dev(p, "id", "error");
-    			add_location(p, file$3, 13, 20, 637);
+    			add_location(p, file$8, 13, 20, 637);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -43085,7 +43512,7 @@ var app = (function () {
     	return block;
     }
 
-    function create_fragment$4(ctx) {
+    function create_fragment$9(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -43109,7 +43536,7 @@ var app = (function () {
     	let a;
     	let mounted;
     	let dispose;
-    	let if_block = /*visible*/ ctx[3] && create_if_block$1(ctx);
+    	let if_block = /*visible*/ ctx[3] && create_if_block$2(ctx);
 
     	const block = {
     		c: function create() {
@@ -43141,37 +43568,37 @@ var app = (function () {
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			attr_dev(link0, "class", "svelte-1ots9yc");
-    			add_location(link0, file$3, 0, 0, 0);
+    			add_location(link0, file$8, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			attr_dev(link1, "class", "svelte-1ots9yc");
-    			add_location(link1, file$3, 1, 0, 57);
+    			add_location(link1, file$8, 1, 0, 57);
     			attr_dev(h1, "class", "svelte-1ots9yc");
-    			add_location(h1, file$3, 6, 12, 295);
+    			add_location(h1, file$8, 6, 12, 295);
     			attr_dev(input0, "id", "email");
     			attr_dev(input0, "placeholder", "Email");
     			attr_dev(input0, "class", "svelte-1ots9yc");
-    			add_location(input0, file$3, 7, 12, 338);
+    			add_location(input0, file$8, 7, 12, 338);
     			attr_dev(input1, "type", "password");
     			attr_dev(input1, "id", "password");
     			attr_dev(input1, "placeholder", "Password");
     			attr_dev(input1, "class", "svelte-1ots9yc");
-    			add_location(input1, file$3, 8, 12, 408);
+    			add_location(input1, file$8, 8, 12, 408);
     			attr_dev(button, "class", "svelte-1ots9yc");
-    			add_location(button, file$3, 9, 12, 503);
+    			add_location(button, file$8, 9, 12, 503);
     			attr_dev(hr, "class", "svelte-1ots9yc");
-    			add_location(hr, file$3, 19, 12, 827);
+    			add_location(hr, file$8, 19, 12, 827);
     			attr_dev(a, "href", "./");
     			attr_dev(a, "class", "svelte-1ots9yc");
-    			add_location(a, file$3, 20, 33, 865);
+    			add_location(a, file$8, 20, 33, 865);
     			attr_dev(p, "class", "svelte-1ots9yc");
-    			add_location(p, file$3, 20, 12, 844);
+    			add_location(p, file$8, 20, 12, 844);
     			attr_dev(div0, "class", "sign-in__content load-animation svelte-1ots9yc");
-    			add_location(div0, file$3, 5, 8, 237);
+    			add_location(div0, file$8, 5, 8, 237);
     			attr_dev(div1, "class", "sign-in__container svelte-1ots9yc");
-    			add_location(div1, file$3, 4, 4, 196);
+    			add_location(div1, file$8, 4, 4, 196);
     			attr_dev(div2, "class", "background svelte-1ots9yc");
-    			add_location(div2, file$3, 3, 0, 167);
+    			add_location(div2, file$8, 3, 0, 167);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -43225,7 +43652,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$1(ctx);
+    					if_block = create_if_block$2(ctx);
     					if_block.c();
     					if_block.m(div0, t8);
     				}
@@ -43250,7 +43677,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$4.name,
+    		id: create_fragment$9.name,
     		type: "component",
     		source: "",
     		ctx
@@ -43259,7 +43686,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$4($$self, $$props, $$invalidate) {
+    function instance$9($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Signup", slots, []);
     	let email = "";
@@ -43353,13 +43780,13 @@ var app = (function () {
     class Signup extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
+    		init(this, options, instance$9, create_fragment$9, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Signup",
     			options,
-    			id: create_fragment$4.name
+    			id: create_fragment$9.name
     		});
     	}
     }
@@ -43368,9 +43795,9 @@ var app = (function () {
 
     const { console: console_1$3 } = globals;
 
-    const file$2 = "src/Role.svelte";
+    const file$7 = "src/Role.svelte";
 
-    function create_fragment$3(ctx) {
+    function create_fragment$8(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -43541,346 +43968,346 @@ var app = (function () {
     			p3.textContent = "Attend and participate in conferences";
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
-    			add_location(link0, file$2, 0, 0, 0);
+    			add_location(link0, file$7, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
-    			add_location(link1, file$2, 1, 0, 57);
+    			add_location(link1, file$7, 1, 0, 57);
     			attr_dev(h1, "class", "svelte-1113jpr");
-    			add_location(h1, file$2, 5, 4, 211);
+    			add_location(h1, file$7, 5, 4, 211);
     			attr_dev(button0, "class", "svelte-1113jpr");
-    			add_location(button0, file$2, 9, 12, 321);
+    			add_location(button0, file$7, 9, 12, 321);
     			attr_dev(div0, "id", "left");
     			attr_dev(div0, "class", "inline svelte-1113jpr");
-    			add_location(div0, file$2, 8, 8, 278);
+    			add_location(div0, file$7, 8, 8, 278);
     			attr_dev(p0, "class", "inline svelte-1113jpr");
-    			add_location(p0, file$2, 12, 8, 416);
+    			add_location(p0, file$7, 12, 8, 416);
     			attr_dev(button1, "class", "svelte-1113jpr");
-    			add_location(button1, file$2, 15, 12, 500);
+    			add_location(button1, file$7, 15, 12, 500);
     			attr_dev(div1, "id", "right");
     			attr_dev(div1, "class", "inline svelte-1113jpr");
-    			add_location(div1, file$2, 14, 8, 456);
+    			add_location(div1, file$7, 14, 8, 456);
     			attr_dev(path0, "d", "M195 93.217C195 95.8912 194.721 97.5404 194.38 98.5072C194.218 98.9666 194.068 99.1957 193.99 99.2937C193.952 99.3416 193.927 99.3634 193.918 99.3708C193.91 99.3779 193.904 99.3813 193.897 99.385C193.879 99.394 193.539 99.5572 192.462 99.3957C191.393 99.2352 190.005 98.8178 188.196 98.1277C186.693 97.5546 185.071 96.8614 183.251 96.0839C182.894 95.9315 182.53 95.7759 182.157 95.6174C179.924 94.6666 177.464 93.6385 174.854 92.6973C169.645 90.8185 163.66 89.217 157.244 89.217C150.828 89.217 144.843 90.8185 139.633 92.6973C137.024 93.6385 134.564 94.6666 132.331 95.6174C131.958 95.776 131.594 95.9316 131.237 96.0839C129.417 96.8615 127.794 97.5546 126.292 98.1277C124.483 98.8178 123.095 99.2352 122.025 99.3957C120.949 99.5572 120.608 99.394 120.591 99.385C120.584 99.3813 120.578 99.3779 120.57 99.3708C120.561 99.3634 120.536 99.3417 120.498 99.2937C120.42 99.1957 120.27 98.9666 120.108 98.5072C119.767 97.5404 119.488 95.8912 119.488 93.217C119.488 72.3649 136.392 55.4608 157.244 55.4608C178.096 55.4608 195 72.3649 195 93.217Z");
     			attr_dev(path0, "fill", "white");
     			attr_dev(path0, "stroke", "#4C82F8");
     			attr_dev(path0, "stroke-width", "8");
-    			add_location(path0, file$2, 19, 12, 727);
+    			add_location(path0, file$7, 19, 12, 727);
     			attr_dev(circle0, "cx", "157.244");
     			attr_dev(circle0, "cy", "31.1627");
     			attr_dev(circle0, "r", "20.9377");
     			attr_dev(circle0, "fill", "white");
     			attr_dev(circle0, "stroke", "#4C82F8");
     			attr_dev(circle0, "stroke-width", "8");
-    			add_location(circle0, file$2, 20, 12, 1837);
+    			add_location(circle0, file$7, 20, 12, 1837);
     			attr_dev(path1, "d", "M79.8382 97.1076C79.8382 99.7818 79.5589 101.431 79.2178 102.398C79.0557 102.857 78.9058 103.086 78.8279 103.184C78.7899 103.232 78.7652 103.254 78.7562 103.261C78.7477 103.268 78.7421 103.272 78.735 103.276C78.7174 103.285 78.377 103.448 77.3005 103.286C76.2313 103.126 74.8427 102.708 73.0338 102.018C71.5314 101.445 69.9088 100.752 68.0887 99.9745C67.732 99.8222 67.3678 99.6666 66.9953 99.508C64.7624 98.5572 62.3023 97.5291 59.6924 96.5879C54.483 94.7091 48.498 93.1076 42.082 93.1076C35.666 93.1076 29.681 94.7091 24.4716 96.5879C21.8617 97.5291 19.4017 98.5572 17.1687 99.508C16.7962 99.6666 16.432 99.8222 16.0753 99.9745C14.2552 100.752 12.6326 101.445 11.1302 102.018C9.32133 102.708 7.93273 103.126 6.86351 103.286C5.78697 103.448 5.4466 103.285 5.42904 103.276C5.42187 103.272 5.41635 103.268 5.40783 103.261C5.39885 103.254 5.37411 103.232 5.33608 103.184C5.25825 103.086 5.10832 102.857 4.94623 102.398C4.60509 101.431 4.32581 99.7818 4.32581 97.1076C4.32581 76.2555 21.2298 59.3514 42.082 59.3514C62.9342 59.3514 79.8382 76.2555 79.8382 97.1076Z");
     			attr_dev(path1, "fill", "white");
     			attr_dev(path1, "stroke", "#4C82F8");
     			attr_dev(path1, "stroke-width", "8");
-    			add_location(path1, file$2, 21, 12, 1944);
+    			add_location(path1, file$7, 21, 12, 1944);
     			attr_dev(circle1, "cx", "42.082");
     			attr_dev(circle1, "cy", "35.0533");
     			attr_dev(circle1, "r", "20.9377");
     			attr_dev(circle1, "fill", "white");
     			attr_dev(circle1, "stroke", "#4C82F8");
     			attr_dev(circle1, "stroke-width", "8");
-    			add_location(circle1, file$2, 22, 12, 3076);
+    			add_location(circle1, file$7, 22, 12, 3076);
     			attr_dev(path2, "d", "M135.085 86.9921C135.085 89.6662 134.806 91.3154 134.464 92.2823C134.302 92.7416 134.152 92.9707 134.075 93.0688C134.036 93.1167 134.012 93.1385 134.003 93.1459C133.994 93.1529 133.989 93.1564 133.982 93.16C133.964 93.169 133.624 93.3323 132.547 93.1707C131.478 93.0103 130.089 92.5928 128.28 91.9028C126.778 91.3296 125.155 90.6365 123.335 89.8589C122.979 89.7066 122.614 89.551 122.242 89.3924C120.009 88.4416 117.549 87.4135 114.939 86.4723C109.73 84.5935 103.745 82.9921 97.3286 82.9921C90.9126 82.9921 84.9276 84.5935 79.7182 86.4723C77.1083 87.4135 74.6482 88.4416 72.4153 89.3924C72.0428 89.551 71.6786 89.7066 71.3219 89.859C69.5017 90.6365 67.8792 91.3296 66.3768 91.9028C64.5679 92.5928 63.1793 93.0103 62.1101 93.1707C61.0336 93.3323 60.6932 93.169 60.6756 93.16C60.6685 93.1564 60.6629 93.1529 60.6544 93.1459C60.6454 93.1385 60.6207 93.1167 60.5827 93.0688C60.5048 92.9707 60.3549 92.7416 60.1928 92.2823C59.8517 91.3154 59.5724 89.6662 59.5724 86.9921C59.5724 66.1399 76.4764 49.2359 97.3286 49.2359C118.181 49.2359 135.085 66.1399 135.085 86.9921Z");
     			attr_dev(path2, "fill", "white");
     			attr_dev(path2, "stroke", "#4C82F8");
     			attr_dev(path2, "stroke-width", "8");
-    			add_location(path2, file$2, 23, 12, 3182);
+    			add_location(path2, file$7, 23, 12, 3182);
     			attr_dev(circle2, "cx", "97.3285");
     			attr_dev(circle2, "cy", "24.9377");
     			attr_dev(circle2, "r", "20.9377");
     			attr_dev(circle2, "fill", "white");
     			attr_dev(circle2, "stroke", "#4C82F8");
     			attr_dev(circle2, "stroke-width", "8");
-    			add_location(circle2, file$2, 24, 12, 4316);
+    			add_location(circle2, file$7, 24, 12, 4316);
     			attr_dev(circle3, "cx", "64.2321");
     			attr_dev(circle3, "cy", "51.4565");
     			attr_dev(circle3, "r", "30.4472");
     			attr_dev(circle3, "fill", "white");
-    			add_location(circle3, file$2, 25, 12, 4423);
+    			add_location(circle3, file$7, 25, 12, 4423);
     			attr_dev(circle4, "cx", "62.5754");
     			attr_dev(circle4, "cy", "110.493");
     			attr_dev(circle4, "r", "47.4653");
     			attr_dev(circle4, "fill", "white");
-    			add_location(circle4, file$2, 26, 12, 4496);
+    			add_location(circle4, file$7, 26, 12, 4496);
     			attr_dev(circle5, "cx", "136.497");
     			attr_dev(circle5, "cy", "109.715");
     			attr_dev(circle5, "r", "47.4653");
     			attr_dev(circle5, "fill", "white");
-    			add_location(circle5, file$2, 27, 12, 4569);
+    			add_location(circle5, file$7, 27, 12, 4569);
     			attr_dev(circle6, "cx", "135.819");
     			attr_dev(circle6, "cy", "49.9002");
     			attr_dev(circle6, "r", "30.4472");
     			attr_dev(circle6, "fill", "white");
-    			add_location(circle6, file$2, 28, 12, 4642);
+    			add_location(circle6, file$7, 28, 12, 4642);
     			attr_dev(path3, "d", "M172.959 112.67C172.959 115.344 172.68 116.993 172.339 117.96C172.177 118.42 172.027 118.649 171.949 118.747C171.911 118.795 171.886 118.816 171.877 118.824C171.869 118.831 171.863 118.834 171.856 118.838C171.838 118.847 171.498 119.01 170.421 118.849C169.352 118.688 167.964 118.271 166.155 117.581C164.652 117.008 163.03 116.314 161.21 115.537C160.853 115.385 160.489 115.229 160.116 115.07C157.883 114.12 155.423 113.091 152.813 112.15C147.604 110.271 141.619 108.67 135.203 108.67C128.787 108.67 122.802 110.271 117.593 112.15C114.983 113.091 112.523 114.12 110.29 115.07C109.917 115.229 109.553 115.385 109.196 115.537C107.376 116.314 105.754 117.008 104.251 117.581C102.442 118.271 101.054 118.688 99.9845 118.849C98.9079 119.01 98.5676 118.847 98.55 118.838C98.5428 118.834 98.5373 118.831 98.5288 118.824C98.5198 118.816 98.4951 118.795 98.4571 118.747C98.3792 118.649 98.2293 118.42 98.0672 117.96C97.7261 116.993 97.4468 115.344 97.4468 112.67C97.4468 91.8179 114.351 74.9138 135.203 74.9138C156.055 74.9138 172.959 91.8179 172.959 112.67Z");
     			attr_dev(path3, "fill", "white");
     			attr_dev(path3, "stroke", "#4C82F8");
     			attr_dev(path3, "stroke-width", "8");
-    			add_location(path3, file$2, 29, 12, 4715);
+    			add_location(path3, file$7, 29, 12, 4715);
     			attr_dev(circle7, "cx", "135.203");
     			attr_dev(circle7, "cy", "50.6157");
     			attr_dev(circle7, "r", "20.9377");
     			attr_dev(circle7, "fill", "white");
     			attr_dev(circle7, "stroke", "#4C82F8");
     			attr_dev(circle7, "stroke-width", "8");
-    			add_location(circle7, file$2, 30, 12, 5836);
+    			add_location(circle7, file$7, 30, 12, 5836);
     			attr_dev(path4, "d", "M101.626 112.67C101.626 115.344 101.346 116.993 101.005 117.96C100.843 118.42 100.693 118.649 100.615 118.747C100.577 118.795 100.553 118.816 100.544 118.824C100.535 118.831 100.529 118.834 100.522 118.838C100.505 118.847 100.164 119.01 99.0879 118.849C98.0186 118.688 96.63 118.271 94.8212 117.581C93.3187 117.008 91.6962 116.314 89.876 115.537C89.5194 115.385 89.1551 115.229 88.7827 115.07C86.5497 114.12 84.0896 113.091 81.4798 112.15C76.2703 110.271 70.2853 108.67 63.8694 108.67C57.4534 108.67 51.4684 110.271 46.2589 112.15C43.6491 113.091 41.189 114.12 38.956 115.07C38.5836 115.229 38.2193 115.385 37.8627 115.537C36.0425 116.314 34.42 117.008 32.9175 117.581C31.1087 118.271 29.7201 118.688 28.6509 118.849C27.5743 119.01 27.234 118.847 27.2164 118.838C27.2092 118.834 27.2037 118.831 27.1952 118.824C27.1862 118.816 27.1615 118.795 27.1234 118.747C27.0456 118.649 26.8957 118.42 26.7336 117.96C26.3924 116.993 26.1132 115.344 26.1132 112.67C26.1132 91.8179 43.0172 74.9138 63.8694 74.9138C84.7215 74.9138 101.626 91.8179 101.626 112.67Z");
     			attr_dev(path4, "fill", "white");
     			attr_dev(path4, "stroke", "#4C82F8");
     			attr_dev(path4, "stroke-width", "8");
-    			add_location(path4, file$2, 31, 12, 5943);
+    			add_location(path4, file$7, 31, 12, 5943);
     			attr_dev(circle8, "cx", "63.8694");
     			attr_dev(circle8, "cy", "50.6157");
     			attr_dev(circle8, "r", "20.9377");
     			attr_dev(circle8, "fill", "white");
     			attr_dev(circle8, "stroke", "#4C82F8");
     			attr_dev(circle8, "stroke-width", "8");
-    			add_location(circle8, file$2, 32, 12, 7062);
+    			add_location(circle8, file$7, 32, 12, 7062);
     			attr_dev(circle9, "cx", "98.9563");
     			attr_dev(circle9, "cy", "63.0845");
     			attr_dev(circle9, "r", "30.4472");
     			attr_dev(circle9, "fill", "white");
-    			add_location(circle9, file$2, 33, 12, 7169);
+    			add_location(circle9, file$7, 33, 12, 7169);
     			attr_dev(path5, "d", "M137.002 125.429C137.002 128.103 136.723 129.752 136.382 130.719C136.22 131.178 136.07 131.408 135.992 131.506C135.954 131.553 135.929 131.575 135.92 131.583C135.912 131.59 135.906 131.593 135.899 131.597C135.882 131.606 135.541 131.769 134.465 131.608C133.395 131.447 132.007 131.03 130.198 130.34C128.696 129.766 127.073 129.073 125.253 128.296C124.896 128.143 124.532 127.988 124.16 127.829C121.927 126.878 119.466 125.85 116.857 124.909C111.647 123.03 105.662 121.429 99.2462 121.429C92.8302 121.429 86.8452 123.03 81.6358 124.909C79.0259 125.85 76.5658 126.878 74.3329 127.829C73.9604 127.988 73.5962 128.143 73.2395 128.296C71.4193 129.073 69.7968 129.766 68.2944 130.34C66.4855 131.03 65.0969 131.447 64.0277 131.608C62.9512 131.769 62.6108 131.606 62.5932 131.597C62.5861 131.593 62.5805 131.59 62.572 131.583C62.563 131.575 62.5383 131.553 62.5003 131.506C62.4224 131.408 62.2725 131.178 62.1104 130.719C61.7693 129.752 61.49 128.103 61.49 125.429C61.49 104.577 78.394 87.6727 99.2462 87.6727C120.098 87.6727 137.002 104.577 137.002 125.429Z");
     			attr_dev(path5, "fill", "white");
     			attr_dev(path5, "stroke", "#4C82F8");
     			attr_dev(path5, "stroke-width", "8");
-    			add_location(path5, file$2, 34, 12, 7242);
+    			add_location(path5, file$7, 34, 12, 7242);
     			attr_dev(circle10, "cx", "99.2462");
     			attr_dev(circle10, "cy", "63.3745");
     			attr_dev(circle10, "r", "20.9377");
     			attr_dev(circle10, "fill", "white");
     			attr_dev(circle10, "stroke", "#4C82F8");
     			attr_dev(circle10, "stroke-width", "8");
-    			add_location(circle10, file$2, 35, 12, 8364);
+    			add_location(circle10, file$7, 35, 12, 8364);
     			attr_dev(svg0, "class", "group-svg svelte-1113jpr");
     			attr_dev(svg0, "width", "199");
     			attr_dev(svg0, "height", "158");
     			attr_dev(svg0, "viewBox", "0 0 199 158");
     			attr_dev(svg0, "fill", "none");
     			attr_dev(svg0, "xmlns", "http://www.w3.org/2000/svg");
-    			add_location(svg0, file$2, 18, 8, 597);
+    			add_location(svg0, file$7, 18, 8, 597);
     			attr_dev(path6, "d", "M195 93.217C195 95.8912 194.721 97.5404 194.38 98.5072C194.218 98.9666 194.068 99.1957 193.99 99.2937C193.952 99.3416 193.927 99.3634 193.918 99.3708C193.91 99.3779 193.904 99.3813 193.897 99.385C193.879 99.394 193.539 99.5572 192.462 99.3957C191.393 99.2352 190.005 98.8178 188.196 98.1277C186.693 97.5546 185.071 96.8614 183.251 96.0839C182.894 95.9315 182.53 95.7759 182.157 95.6174C179.924 94.6666 177.464 93.6385 174.854 92.6973C169.645 90.8185 163.66 89.217 157.244 89.217C150.828 89.217 144.843 90.8185 139.633 92.6973C137.024 93.6385 134.564 94.6666 132.331 95.6174C131.958 95.776 131.594 95.9316 131.237 96.0839C129.417 96.8615 127.794 97.5546 126.292 98.1277C124.483 98.8178 123.095 99.2352 122.025 99.3957C120.949 99.5572 120.608 99.394 120.591 99.385C120.584 99.3813 120.578 99.3779 120.57 99.3708C120.561 99.3634 120.536 99.3417 120.498 99.2937C120.42 99.1957 120.27 98.9666 120.108 98.5072C119.767 97.5404 119.488 95.8912 119.488 93.217C119.488 72.3649 136.392 55.4608 157.244 55.4608C178.096 55.4608 195 72.3649 195 93.217Z");
     			attr_dev(path6, "fill", "white");
     			attr_dev(path6, "stroke", "#4C82F8");
     			attr_dev(path6, "stroke-width", "8");
-    			add_location(path6, file$2, 39, 12, 8615);
+    			add_location(path6, file$7, 39, 12, 8615);
     			attr_dev(circle11, "cx", "157.244");
     			attr_dev(circle11, "cy", "31.1627");
     			attr_dev(circle11, "r", "20.9377");
     			attr_dev(circle11, "fill", "white");
     			attr_dev(circle11, "stroke", "#4C82F8");
     			attr_dev(circle11, "stroke-width", "8");
-    			add_location(circle11, file$2, 40, 12, 9725);
+    			add_location(circle11, file$7, 40, 12, 9725);
     			attr_dev(path7, "d", "M79.8382 97.1076C79.8382 99.7818 79.5589 101.431 79.2178 102.398C79.0557 102.857 78.9058 103.086 78.8279 103.184C78.7899 103.232 78.7652 103.254 78.7562 103.261C78.7477 103.268 78.7421 103.272 78.735 103.276C78.7174 103.285 78.377 103.448 77.3005 103.286C76.2313 103.126 74.8427 102.708 73.0338 102.018C71.5314 101.445 69.9088 100.752 68.0887 99.9745C67.732 99.8222 67.3678 99.6666 66.9953 99.508C64.7624 98.5572 62.3023 97.5291 59.6924 96.5879C54.483 94.7091 48.498 93.1076 42.082 93.1076C35.666 93.1076 29.681 94.7091 24.4716 96.5879C21.8617 97.5291 19.4017 98.5572 17.1687 99.508C16.7962 99.6666 16.432 99.8222 16.0753 99.9745C14.2552 100.752 12.6326 101.445 11.1302 102.018C9.32133 102.708 7.93273 103.126 6.86351 103.286C5.78697 103.448 5.4466 103.285 5.42904 103.276C5.42187 103.272 5.41635 103.268 5.40783 103.261C5.39885 103.254 5.37411 103.232 5.33608 103.184C5.25825 103.086 5.10832 102.857 4.94623 102.398C4.60509 101.431 4.32581 99.7818 4.32581 97.1076C4.32581 76.2555 21.2298 59.3514 42.082 59.3514C62.9342 59.3514 79.8382 76.2555 79.8382 97.1076Z");
     			attr_dev(path7, "fill", "white");
     			attr_dev(path7, "stroke", "#4C82F8");
     			attr_dev(path7, "stroke-width", "8");
-    			add_location(path7, file$2, 41, 12, 9832);
+    			add_location(path7, file$7, 41, 12, 9832);
     			attr_dev(circle12, "cx", "42.082");
     			attr_dev(circle12, "cy", "35.0533");
     			attr_dev(circle12, "r", "20.9377");
     			attr_dev(circle12, "fill", "white");
     			attr_dev(circle12, "stroke", "#4C82F8");
     			attr_dev(circle12, "stroke-width", "8");
-    			add_location(circle12, file$2, 42, 12, 10964);
+    			add_location(circle12, file$7, 42, 12, 10964);
     			attr_dev(path8, "d", "M135.085 86.9921C135.085 89.6662 134.806 91.3154 134.464 92.2823C134.302 92.7416 134.152 92.9707 134.075 93.0688C134.036 93.1167 134.012 93.1385 134.003 93.1459C133.994 93.1529 133.989 93.1564 133.982 93.16C133.964 93.169 133.624 93.3323 132.547 93.1707C131.478 93.0103 130.089 92.5928 128.28 91.9028C126.778 91.3296 125.155 90.6365 123.335 89.8589C122.979 89.7066 122.614 89.551 122.242 89.3924C120.009 88.4416 117.549 87.4135 114.939 86.4723C109.73 84.5935 103.745 82.9921 97.3286 82.9921C90.9126 82.9921 84.9276 84.5935 79.7182 86.4723C77.1083 87.4135 74.6482 88.4416 72.4153 89.3924C72.0428 89.551 71.6786 89.7066 71.3219 89.859C69.5017 90.6365 67.8792 91.3296 66.3768 91.9028C64.5679 92.5928 63.1793 93.0103 62.1101 93.1707C61.0336 93.3323 60.6932 93.169 60.6756 93.16C60.6685 93.1564 60.6629 93.1529 60.6544 93.1459C60.6454 93.1385 60.6207 93.1167 60.5827 93.0688C60.5048 92.9707 60.3549 92.7416 60.1928 92.2823C59.8517 91.3154 59.5724 89.6662 59.5724 86.9921C59.5724 66.1399 76.4764 49.2359 97.3286 49.2359C118.181 49.2359 135.085 66.1399 135.085 86.9921Z");
     			attr_dev(path8, "fill", "white");
     			attr_dev(path8, "stroke", "#4C82F8");
     			attr_dev(path8, "stroke-width", "8");
-    			add_location(path8, file$2, 43, 12, 11070);
+    			add_location(path8, file$7, 43, 12, 11070);
     			attr_dev(circle13, "cx", "97.3285");
     			attr_dev(circle13, "cy", "24.9377");
     			attr_dev(circle13, "r", "20.9377");
     			attr_dev(circle13, "fill", "white");
     			attr_dev(circle13, "stroke", "#4C82F8");
     			attr_dev(circle13, "stroke-width", "8");
-    			add_location(circle13, file$2, 44, 12, 12204);
+    			add_location(circle13, file$7, 44, 12, 12204);
     			attr_dev(circle14, "cx", "64.2321");
     			attr_dev(circle14, "cy", "51.4565");
     			attr_dev(circle14, "r", "30.4472");
     			attr_dev(circle14, "fill", "white");
-    			add_location(circle14, file$2, 45, 12, 12311);
+    			add_location(circle14, file$7, 45, 12, 12311);
     			attr_dev(circle15, "cx", "62.5754");
     			attr_dev(circle15, "cy", "110.493");
     			attr_dev(circle15, "r", "47.4653");
     			attr_dev(circle15, "fill", "white");
-    			add_location(circle15, file$2, 46, 12, 12384);
+    			add_location(circle15, file$7, 46, 12, 12384);
     			attr_dev(circle16, "cx", "136.497");
     			attr_dev(circle16, "cy", "109.715");
     			attr_dev(circle16, "r", "47.4653");
     			attr_dev(circle16, "fill", "white");
-    			add_location(circle16, file$2, 47, 12, 12457);
+    			add_location(circle16, file$7, 47, 12, 12457);
     			attr_dev(circle17, "cx", "135.819");
     			attr_dev(circle17, "cy", "49.9002");
     			attr_dev(circle17, "r", "30.4472");
     			attr_dev(circle17, "fill", "white");
-    			add_location(circle17, file$2, 48, 12, 12530);
+    			add_location(circle17, file$7, 48, 12, 12530);
     			attr_dev(path9, "d", "M172.959 112.67C172.959 115.344 172.68 116.993 172.339 117.96C172.177 118.42 172.027 118.649 171.949 118.747C171.911 118.795 171.886 118.816 171.877 118.824C171.869 118.831 171.863 118.834 171.856 118.838C171.838 118.847 171.498 119.01 170.421 118.849C169.352 118.688 167.964 118.271 166.155 117.581C164.652 117.008 163.03 116.314 161.21 115.537C160.853 115.385 160.489 115.229 160.116 115.07C157.883 114.12 155.423 113.091 152.813 112.15C147.604 110.271 141.619 108.67 135.203 108.67C128.787 108.67 122.802 110.271 117.593 112.15C114.983 113.091 112.523 114.12 110.29 115.07C109.917 115.229 109.553 115.385 109.196 115.537C107.376 116.314 105.754 117.008 104.251 117.581C102.442 118.271 101.054 118.688 99.9845 118.849C98.9079 119.01 98.5676 118.847 98.55 118.838C98.5428 118.834 98.5373 118.831 98.5288 118.824C98.5198 118.816 98.4951 118.795 98.4571 118.747C98.3792 118.649 98.2293 118.42 98.0672 117.96C97.7261 116.993 97.4468 115.344 97.4468 112.67C97.4468 91.8179 114.351 74.9138 135.203 74.9138C156.055 74.9138 172.959 91.8179 172.959 112.67Z");
     			attr_dev(path9, "fill", "white");
     			attr_dev(path9, "stroke", "#4C82F8");
     			attr_dev(path9, "stroke-width", "8");
-    			add_location(path9, file$2, 49, 12, 12603);
+    			add_location(path9, file$7, 49, 12, 12603);
     			attr_dev(circle18, "cx", "135.203");
     			attr_dev(circle18, "cy", "50.6157");
     			attr_dev(circle18, "r", "20.9377");
     			attr_dev(circle18, "fill", "white");
     			attr_dev(circle18, "stroke", "#4C82F8");
     			attr_dev(circle18, "stroke-width", "8");
-    			add_location(circle18, file$2, 50, 12, 13724);
+    			add_location(circle18, file$7, 50, 12, 13724);
     			attr_dev(path10, "d", "M101.626 112.67C101.626 115.344 101.346 116.993 101.005 117.96C100.843 118.42 100.693 118.649 100.615 118.747C100.577 118.795 100.553 118.816 100.544 118.824C100.535 118.831 100.529 118.834 100.522 118.838C100.505 118.847 100.164 119.01 99.0879 118.849C98.0186 118.688 96.63 118.271 94.8212 117.581C93.3187 117.008 91.6962 116.314 89.876 115.537C89.5194 115.385 89.1551 115.229 88.7827 115.07C86.5497 114.12 84.0896 113.091 81.4798 112.15C76.2703 110.271 70.2853 108.67 63.8694 108.67C57.4534 108.67 51.4684 110.271 46.2589 112.15C43.6491 113.091 41.189 114.12 38.956 115.07C38.5836 115.229 38.2193 115.385 37.8627 115.537C36.0425 116.314 34.42 117.008 32.9175 117.581C31.1087 118.271 29.7201 118.688 28.6509 118.849C27.5743 119.01 27.234 118.847 27.2164 118.838C27.2092 118.834 27.2037 118.831 27.1952 118.824C27.1862 118.816 27.1615 118.795 27.1234 118.747C27.0456 118.649 26.8957 118.42 26.7336 117.96C26.3924 116.993 26.1132 115.344 26.1132 112.67C26.1132 91.8179 43.0172 74.9138 63.8694 74.9138C84.7215 74.9138 101.626 91.8179 101.626 112.67Z");
     			attr_dev(path10, "fill", "white");
     			attr_dev(path10, "stroke", "#4C82F8");
     			attr_dev(path10, "stroke-width", "8");
-    			add_location(path10, file$2, 51, 12, 13831);
+    			add_location(path10, file$7, 51, 12, 13831);
     			attr_dev(circle19, "cx", "63.8694");
     			attr_dev(circle19, "cy", "50.6157");
     			attr_dev(circle19, "r", "20.9377");
     			attr_dev(circle19, "fill", "white");
     			attr_dev(circle19, "stroke", "#4C82F8");
     			attr_dev(circle19, "stroke-width", "8");
-    			add_location(circle19, file$2, 52, 12, 14950);
+    			add_location(circle19, file$7, 52, 12, 14950);
     			attr_dev(circle20, "cx", "98.9563");
     			attr_dev(circle20, "cy", "63.0845");
     			attr_dev(circle20, "r", "30.4472");
     			attr_dev(circle20, "fill", "white");
-    			add_location(circle20, file$2, 53, 12, 15057);
+    			add_location(circle20, file$7, 53, 12, 15057);
     			attr_dev(path11, "d", "M137.002 125.429C137.002 128.103 136.723 129.752 136.382 130.719C136.22 131.178 136.07 131.408 135.992 131.506C135.954 131.553 135.929 131.575 135.92 131.583C135.912 131.59 135.906 131.593 135.899 131.597C135.882 131.606 135.541 131.769 134.465 131.608C133.395 131.447 132.007 131.03 130.198 130.34C128.696 129.766 127.073 129.073 125.253 128.296C124.896 128.143 124.532 127.988 124.16 127.829C121.927 126.878 119.466 125.85 116.857 124.909C111.647 123.03 105.662 121.429 99.2462 121.429C92.8302 121.429 86.8452 123.03 81.6358 124.909C79.0259 125.85 76.5658 126.878 74.3329 127.829C73.9604 127.988 73.5962 128.143 73.2395 128.296C71.4193 129.073 69.7968 129.766 68.2944 130.34C66.4855 131.03 65.0969 131.447 64.0277 131.608C62.9512 131.769 62.6108 131.606 62.5932 131.597C62.5861 131.593 62.5805 131.59 62.572 131.583C62.563 131.575 62.5383 131.553 62.5003 131.506C62.4224 131.408 62.2725 131.178 62.1104 130.719C61.7693 129.752 61.49 128.103 61.49 125.429C61.49 104.577 78.394 87.6727 99.2462 87.6727C120.098 87.6727 137.002 104.577 137.002 125.429Z");
     			attr_dev(path11, "fill", "white");
     			attr_dev(path11, "stroke", "#F88A4C");
     			attr_dev(path11, "stroke-width", "8");
-    			add_location(path11, file$2, 54, 12, 15130);
+    			add_location(path11, file$7, 54, 12, 15130);
     			attr_dev(circle21, "cx", "99.2462");
     			attr_dev(circle21, "cy", "63.3745");
     			attr_dev(circle21, "r", "20.9377");
     			attr_dev(circle21, "fill", "white");
     			attr_dev(circle21, "stroke", "#F88A4C");
     			attr_dev(circle21, "stroke-width", "8");
-    			add_location(circle21, file$2, 55, 12, 16252);
+    			add_location(circle21, file$7, 55, 12, 16252);
     			attr_dev(svg1, "class", "planner-svg svelte-1113jpr");
     			attr_dev(svg1, "width", "199");
     			attr_dev(svg1, "height", "158");
     			attr_dev(svg1, "viewBox", "0 0 199 158");
     			attr_dev(svg1, "fill", "none");
     			attr_dev(svg1, "xmlns", "http://www.w3.org/2000/svg");
-    			add_location(svg1, file$2, 38, 8, 8483);
+    			add_location(svg1, file$7, 38, 8, 8483);
     			attr_dev(path12, "d", "M195 93.217C195 95.8912 194.721 97.5404 194.38 98.5072C194.218 98.9666 194.068 99.1957 193.99 99.2937C193.952 99.3416 193.927 99.3634 193.918 99.3708C193.91 99.3779 193.904 99.3813 193.897 99.385C193.879 99.394 193.539 99.5572 192.462 99.3957C191.393 99.2352 190.005 98.8178 188.196 98.1277C186.693 97.5546 185.071 96.8614 183.251 96.0839C182.894 95.9315 182.53 95.7759 182.157 95.6174C179.924 94.6666 177.464 93.6385 174.854 92.6973C169.645 90.8185 163.66 89.217 157.244 89.217C150.828 89.217 144.843 90.8185 139.633 92.6973C137.024 93.6385 134.564 94.6666 132.331 95.6174C131.958 95.776 131.594 95.9316 131.237 96.0839C129.417 96.8615 127.794 97.5546 126.292 98.1277C124.483 98.8178 123.095 99.2352 122.025 99.3957C120.949 99.5572 120.608 99.394 120.591 99.385C120.584 99.3813 120.578 99.3779 120.57 99.3708C120.561 99.3634 120.536 99.3417 120.498 99.2937C120.42 99.1957 120.27 98.9666 120.108 98.5072C119.767 97.5404 119.488 95.8912 119.488 93.217C119.488 72.3649 136.392 55.4608 157.244 55.4608C178.096 55.4608 195 72.3649 195 93.217Z");
     			attr_dev(path12, "fill", "white");
     			attr_dev(path12, "stroke", "#F88A4C");
     			attr_dev(path12, "stroke-width", "8");
-    			add_location(path12, file$2, 59, 12, 16504);
+    			add_location(path12, file$7, 59, 12, 16504);
     			attr_dev(circle22, "cx", "157.244");
     			attr_dev(circle22, "cy", "31.1627");
     			attr_dev(circle22, "r", "20.9377");
     			attr_dev(circle22, "fill", "white");
     			attr_dev(circle22, "stroke", "#F88A4C");
     			attr_dev(circle22, "stroke-width", "8");
-    			add_location(circle22, file$2, 60, 12, 17614);
+    			add_location(circle22, file$7, 60, 12, 17614);
     			attr_dev(path13, "d", "M79.8382 97.1076C79.8382 99.7818 79.5589 101.431 79.2178 102.398C79.0557 102.857 78.9058 103.086 78.8279 103.184C78.7899 103.232 78.7652 103.254 78.7562 103.261C78.7477 103.268 78.7421 103.272 78.735 103.276C78.7174 103.285 78.377 103.448 77.3005 103.286C76.2313 103.126 74.8427 102.708 73.0338 102.018C71.5314 101.445 69.9088 100.752 68.0887 99.9745C67.732 99.8222 67.3678 99.6666 66.9953 99.508C64.7624 98.5572 62.3023 97.5291 59.6924 96.5879C54.483 94.7091 48.498 93.1076 42.082 93.1076C35.666 93.1076 29.681 94.7091 24.4716 96.5879C21.8617 97.5291 19.4017 98.5572 17.1687 99.508C16.7962 99.6666 16.432 99.8222 16.0753 99.9745C14.2552 100.752 12.6326 101.445 11.1302 102.018C9.32133 102.708 7.93273 103.126 6.86351 103.286C5.78697 103.448 5.4466 103.285 5.42904 103.276C5.42187 103.272 5.41635 103.268 5.40783 103.261C5.39885 103.254 5.37411 103.232 5.33608 103.184C5.25825 103.086 5.10832 102.857 4.94623 102.398C4.60509 101.431 4.32581 99.7818 4.32581 97.1076C4.32581 76.2555 21.2298 59.3514 42.082 59.3514C62.9342 59.3514 79.8382 76.2555 79.8382 97.1076Z");
     			attr_dev(path13, "fill", "white");
     			attr_dev(path13, "stroke", "#F88A4C");
     			attr_dev(path13, "stroke-width", "8");
-    			add_location(path13, file$2, 61, 12, 17721);
+    			add_location(path13, file$7, 61, 12, 17721);
     			attr_dev(circle23, "cx", "42.082");
     			attr_dev(circle23, "cy", "35.0533");
     			attr_dev(circle23, "r", "20.9377");
     			attr_dev(circle23, "fill", "white");
     			attr_dev(circle23, "stroke", "#F88A4C");
     			attr_dev(circle23, "stroke-width", "8");
-    			add_location(circle23, file$2, 62, 12, 18853);
+    			add_location(circle23, file$7, 62, 12, 18853);
     			attr_dev(path14, "d", "M135.085 86.9921C135.085 89.6662 134.806 91.3154 134.464 92.2823C134.302 92.7416 134.152 92.9707 134.075 93.0688C134.036 93.1167 134.012 93.1385 134.003 93.1459C133.994 93.1529 133.989 93.1564 133.982 93.16C133.964 93.169 133.624 93.3323 132.547 93.1707C131.478 93.0103 130.089 92.5928 128.28 91.9028C126.778 91.3296 125.155 90.6365 123.335 89.8589C122.979 89.7066 122.614 89.551 122.242 89.3924C120.009 88.4416 117.549 87.4135 114.939 86.4723C109.73 84.5935 103.745 82.9921 97.3286 82.9921C90.9126 82.9921 84.9276 84.5935 79.7182 86.4723C77.1083 87.4135 74.6482 88.4416 72.4153 89.3924C72.0428 89.551 71.6786 89.7066 71.3219 89.859C69.5017 90.6365 67.8792 91.3296 66.3768 91.9028C64.5679 92.5928 63.1793 93.0103 62.1101 93.1707C61.0336 93.3323 60.6932 93.169 60.6756 93.16C60.6685 93.1564 60.6629 93.1529 60.6544 93.1459C60.6454 93.1385 60.6207 93.1167 60.5827 93.0688C60.5048 92.9707 60.3549 92.7416 60.1928 92.2823C59.8517 91.3154 59.5724 89.6662 59.5724 86.9921C59.5724 66.1399 76.4764 49.2359 97.3286 49.2359C118.181 49.2359 135.085 66.1399 135.085 86.9921Z");
     			attr_dev(path14, "fill", "white");
     			attr_dev(path14, "stroke", "#F88A4C");
     			attr_dev(path14, "stroke-width", "8");
-    			add_location(path14, file$2, 63, 12, 18959);
+    			add_location(path14, file$7, 63, 12, 18959);
     			attr_dev(circle24, "cx", "97.3285");
     			attr_dev(circle24, "cy", "24.9377");
     			attr_dev(circle24, "r", "20.9377");
     			attr_dev(circle24, "fill", "white");
     			attr_dev(circle24, "stroke", "#F88A4C");
     			attr_dev(circle24, "stroke-width", "8");
-    			add_location(circle24, file$2, 64, 12, 20093);
+    			add_location(circle24, file$7, 64, 12, 20093);
     			attr_dev(circle25, "cx", "64.2321");
     			attr_dev(circle25, "cy", "51.4565");
     			attr_dev(circle25, "r", "30.4472");
     			attr_dev(circle25, "fill", "white");
-    			add_location(circle25, file$2, 65, 12, 20200);
+    			add_location(circle25, file$7, 65, 12, 20200);
     			attr_dev(circle26, "cx", "62.5754");
     			attr_dev(circle26, "cy", "110.493");
     			attr_dev(circle26, "r", "47.4653");
     			attr_dev(circle26, "fill", "white");
-    			add_location(circle26, file$2, 66, 12, 20273);
+    			add_location(circle26, file$7, 66, 12, 20273);
     			attr_dev(circle27, "cx", "136.497");
     			attr_dev(circle27, "cy", "109.715");
     			attr_dev(circle27, "r", "47.4653");
     			attr_dev(circle27, "fill", "white");
-    			add_location(circle27, file$2, 67, 12, 20346);
+    			add_location(circle27, file$7, 67, 12, 20346);
     			attr_dev(circle28, "cx", "135.819");
     			attr_dev(circle28, "cy", "49.9002");
     			attr_dev(circle28, "r", "30.4472");
     			attr_dev(circle28, "fill", "white");
-    			add_location(circle28, file$2, 68, 12, 20419);
+    			add_location(circle28, file$7, 68, 12, 20419);
     			attr_dev(path15, "d", "M172.959 112.67C172.959 115.344 172.68 116.993 172.339 117.96C172.177 118.42 172.027 118.649 171.949 118.747C171.911 118.795 171.886 118.816 171.877 118.824C171.869 118.831 171.863 118.834 171.856 118.838C171.838 118.847 171.498 119.01 170.421 118.849C169.352 118.688 167.964 118.271 166.155 117.581C164.652 117.008 163.03 116.314 161.21 115.537C160.853 115.385 160.489 115.229 160.116 115.07C157.883 114.12 155.423 113.091 152.813 112.15C147.604 110.271 141.619 108.67 135.203 108.67C128.787 108.67 122.802 110.271 117.593 112.15C114.983 113.091 112.523 114.12 110.29 115.07C109.917 115.229 109.553 115.385 109.196 115.537C107.376 116.314 105.754 117.008 104.251 117.581C102.442 118.271 101.054 118.688 99.9845 118.849C98.9079 119.01 98.5676 118.847 98.55 118.838C98.5428 118.834 98.5373 118.831 98.5288 118.824C98.5198 118.816 98.4951 118.795 98.4571 118.747C98.3792 118.649 98.2293 118.42 98.0672 117.96C97.7261 116.993 97.4468 115.344 97.4468 112.67C97.4468 91.8179 114.351 74.9138 135.203 74.9138C156.055 74.9138 172.959 91.8179 172.959 112.67Z");
     			attr_dev(path15, "fill", "white");
     			attr_dev(path15, "stroke", "#4C82F8");
     			attr_dev(path15, "stroke-width", "8");
-    			add_location(path15, file$2, 69, 12, 20492);
+    			add_location(path15, file$7, 69, 12, 20492);
     			attr_dev(circle29, "cx", "135.203");
     			attr_dev(circle29, "cy", "50.6157");
     			attr_dev(circle29, "r", "20.9377");
     			attr_dev(circle29, "fill", "white");
     			attr_dev(circle29, "stroke", "#4C82F8");
     			attr_dev(circle29, "stroke-width", "8");
-    			add_location(circle29, file$2, 70, 12, 21613);
+    			add_location(circle29, file$7, 70, 12, 21613);
     			attr_dev(path16, "d", "M101.626 112.67C101.626 115.344 101.346 116.993 101.005 117.96C100.843 118.42 100.693 118.649 100.615 118.747C100.577 118.795 100.553 118.816 100.544 118.824C100.535 118.831 100.529 118.834 100.522 118.838C100.505 118.847 100.164 119.01 99.0879 118.849C98.0186 118.688 96.63 118.271 94.8212 117.581C93.3187 117.008 91.6962 116.314 89.876 115.537C89.5194 115.385 89.1551 115.229 88.7827 115.07C86.5497 114.12 84.0896 113.091 81.4798 112.15C76.2703 110.271 70.2853 108.67 63.8694 108.67C57.4534 108.67 51.4684 110.271 46.2589 112.15C43.6491 113.091 41.189 114.12 38.956 115.07C38.5836 115.229 38.2193 115.385 37.8627 115.537C36.0425 116.314 34.42 117.008 32.9175 117.581C31.1087 118.271 29.7201 118.688 28.6509 118.849C27.5743 119.01 27.234 118.847 27.2164 118.838C27.2092 118.834 27.2037 118.831 27.1952 118.824C27.1862 118.816 27.1615 118.795 27.1234 118.747C27.0456 118.649 26.8957 118.42 26.7336 117.96C26.3924 116.993 26.1132 115.344 26.1132 112.67C26.1132 91.8179 43.0172 74.9138 63.8694 74.9138C84.7215 74.9138 101.626 91.8179 101.626 112.67Z");
     			attr_dev(path16, "fill", "white");
     			attr_dev(path16, "stroke", "#4C82F8");
     			attr_dev(path16, "stroke-width", "8");
-    			add_location(path16, file$2, 71, 12, 21720);
+    			add_location(path16, file$7, 71, 12, 21720);
     			attr_dev(circle30, "cx", "63.8694");
     			attr_dev(circle30, "cy", "50.6157");
     			attr_dev(circle30, "r", "20.9377");
     			attr_dev(circle30, "fill", "white");
     			attr_dev(circle30, "stroke", "#4C82F8");
     			attr_dev(circle30, "stroke-width", "8");
-    			add_location(circle30, file$2, 72, 12, 22839);
+    			add_location(circle30, file$7, 72, 12, 22839);
     			attr_dev(circle31, "cx", "98.9563");
     			attr_dev(circle31, "cy", "63.0845");
     			attr_dev(circle31, "r", "30.4472");
     			attr_dev(circle31, "fill", "white");
-    			add_location(circle31, file$2, 73, 12, 22946);
+    			add_location(circle31, file$7, 73, 12, 22946);
     			attr_dev(path17, "d", "M137.002 125.429C137.002 128.103 136.723 129.752 136.382 130.719C136.22 131.178 136.07 131.408 135.992 131.506C135.954 131.553 135.929 131.575 135.92 131.583C135.912 131.59 135.906 131.593 135.899 131.597C135.882 131.606 135.541 131.769 134.465 131.608C133.395 131.447 132.007 131.03 130.198 130.34C128.696 129.766 127.073 129.073 125.253 128.296C124.896 128.143 124.532 127.988 124.16 127.829C121.927 126.878 119.466 125.85 116.857 124.909C111.647 123.03 105.662 121.429 99.2462 121.429C92.8302 121.429 86.8452 123.03 81.6358 124.909C79.0259 125.85 76.5658 126.878 74.3329 127.829C73.9604 127.988 73.5962 128.143 73.2395 128.296C71.4193 129.073 69.7968 129.766 68.2944 130.34C66.4855 131.03 65.0969 131.447 64.0277 131.608C62.9512 131.769 62.6108 131.606 62.5932 131.597C62.5861 131.593 62.5805 131.59 62.572 131.583C62.563 131.575 62.5383 131.553 62.5003 131.506C62.4224 131.408 62.2725 131.178 62.1104 130.719C61.7693 129.752 61.49 128.103 61.49 125.429C61.49 104.577 78.394 87.6727 99.2462 87.6727C120.098 87.6727 137.002 104.577 137.002 125.429Z");
     			attr_dev(path17, "fill", "white");
     			attr_dev(path17, "stroke", "#4C82F8");
     			attr_dev(path17, "stroke-width", "8");
-    			add_location(path17, file$2, 74, 12, 23019);
+    			add_location(path17, file$7, 74, 12, 23019);
     			attr_dev(circle32, "cx", "99.2462");
     			attr_dev(circle32, "cy", "63.3745");
     			attr_dev(circle32, "r", "20.9377");
     			attr_dev(circle32, "fill", "white");
     			attr_dev(circle32, "stroke", "#4C82F8");
     			attr_dev(circle32, "stroke-width", "8");
-    			add_location(circle32, file$2, 75, 12, 24141);
+    			add_location(circle32, file$7, 75, 12, 24141);
     			attr_dev(svg2, "class", "attendee-svg svelte-1113jpr");
     			attr_dev(svg2, "width", "199");
     			attr_dev(svg2, "height", "158");
     			attr_dev(svg2, "viewBox", "0 0 199 158");
     			attr_dev(svg2, "fill", "none");
     			attr_dev(svg2, "xmlns", "http://www.w3.org/2000/svg");
-    			add_location(svg2, file$2, 58, 8, 16371);
+    			add_location(svg2, file$7, 58, 8, 16371);
     			attr_dev(p1, "class", "default-choice choice svelte-1113jpr");
-    			add_location(p1, file$2, 79, 8, 24261);
+    			add_location(p1, file$7, 79, 8, 24261);
     			attr_dev(p2, "class", "planner-choice choice svelte-1113jpr");
-    			add_location(p2, file$2, 80, 8, 24320);
+    			add_location(p2, file$7, 80, 8, 24320);
     			attr_dev(p3, "class", "attendee-choice choice svelte-1113jpr");
-    			add_location(p3, file$2, 81, 8, 24395);
+    			add_location(p3, file$7, 81, 8, 24395);
     			attr_dev(div2, "class", "content inline svelte-1113jpr");
-    			add_location(div2, file$2, 6, 4, 240);
+    			add_location(div2, file$7, 6, 4, 240);
     			attr_dev(div3, "class", "container load-animation svelte-1113jpr");
-    			add_location(div3, file$2, 4, 0, 168);
+    			add_location(div3, file$7, 4, 0, 168);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -43990,7 +44417,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$3.name,
+    		id: create_fragment$8.name,
     		type: "component",
     		source: "",
     		ctx
@@ -43999,7 +44426,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$3($$self, $$props, $$invalidate) {
+    function instance$8($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Role", slots, []);
 
@@ -44040,13 +44467,13 @@ var app = (function () {
     class Role extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Role",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$8.name
     		});
     	}
     }
@@ -44054,9 +44481,9 @@ var app = (function () {
     /* src/Planner.svelte generated by Svelte v3.38.2 */
 
     const { console: console_1$2 } = globals;
-    const file$1 = "src/Planner.svelte";
+    const file$6 = "src/Planner.svelte";
 
-    function get_each_context(ctx, list, i) {
+    function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[13] = list[i];
     	return child_ctx;
@@ -44073,7 +44500,7 @@ var app = (function () {
     			p = element("p");
     			t = text(t_value);
     			attr_dev(p, "class", "conf-info public svelte-1okwg4u");
-    			add_location(p, file$1, 62, 16, 2166);
+    			add_location(p, file$6, 62, 16, 2166);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -44099,7 +44526,7 @@ var app = (function () {
     }
 
     // (60:12) {#if conf.access == 'Private'}
-    function create_if_block(ctx) {
+    function create_if_block$1(ctx) {
     	let p;
     	let t_value = /*conf*/ ctx[13].access + "";
     	let t;
@@ -44109,7 +44536,7 @@ var app = (function () {
     			p = element("p");
     			t = text(t_value);
     			attr_dev(p, "class", "conf-info private svelte-1okwg4u");
-    			add_location(p, file$1, 60, 16, 2081);
+    			add_location(p, file$6, 60, 16, 2081);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -44125,7 +44552,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block.name,
+    		id: create_if_block$1.name,
     		type: "if",
     		source: "(60:12) {#if conf.access == 'Private'}",
     		ctx
@@ -44135,7 +44562,7 @@ var app = (function () {
     }
 
     // (53:4) {#each userConferences as conf}
-    function create_each_block(ctx) {
+    function create_each_block$4(ctx) {
     	let div;
     	let p0;
     	let t0_value = /*conf*/ ctx[13].name + "";
@@ -44158,7 +44585,7 @@ var app = (function () {
     	let t10;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[13].access == "Private") return create_if_block;
+    		if (/*conf*/ ctx[13].access == "Private") return create_if_block$1;
     		return create_else_block;
     	}
 
@@ -44186,17 +44613,17 @@ var app = (function () {
     			button.textContent = "•••";
     			t10 = space();
     			attr_dev(p0, "class", "conf-info svelte-1okwg4u");
-    			add_location(p0, file$1, 54, 12, 1824);
+    			add_location(p0, file$6, 54, 12, 1824);
     			attr_dev(p1, "class", "conf-info svelte-1okwg4u");
-    			add_location(p1, file$1, 55, 12, 1875);
+    			add_location(p1, file$6, 55, 12, 1875);
     			attr_dev(p2, "class", "conf-info svelte-1okwg4u");
-    			add_location(p2, file$1, 56, 12, 1930);
+    			add_location(p2, file$6, 56, 12, 1930);
     			attr_dev(p3, "class", "conf-info svelte-1okwg4u");
-    			add_location(p3, file$1, 57, 12, 1981);
+    			add_location(p3, file$6, 57, 12, 1981);
     			attr_dev(button, "class", "more svelte-1okwg4u");
-    			add_location(button, file$1, 65, 12, 2245);
+    			add_location(button, file$6, 65, 12, 2245);
     			attr_dev(div, "class", "cell-container load-animation svelte-1okwg4u");
-    			add_location(div, file$1, 53, 8, 1767);
+    			add_location(div, file$6, 53, 8, 1767);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -44243,7 +44670,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block.name,
+    		id: create_each_block$4.name,
     		type: "each",
     		source: "(53:4) {#each userConferences as conf}",
     		ctx
@@ -44252,7 +44679,7 @@ var app = (function () {
     	return block;
     }
 
-    function create_fragment$2(ctx) {
+    function create_fragment$7(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -44292,7 +44719,7 @@ var app = (function () {
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    		each_blocks[i] = create_each_block$4(get_each_context$4(ctx, each_value, i));
     	}
 
     	const block = {
@@ -44345,43 +44772,43 @@ var app = (function () {
 
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
-    			add_location(link0, file$1, 0, 0, 0);
+    			add_location(link0, file$6, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
-    			add_location(link1, file$1, 1, 0, 57);
+    			add_location(link1, file$6, 1, 0, 57);
     			attr_dev(div0, "class", "left-panel");
-    			add_location(div0, file$1, 36, 4, 1167);
+    			add_location(div0, file$6, 36, 4, 1167);
     			attr_dev(h1, "class", "svelte-1okwg4u");
-    			add_location(h1, file$1, 37, 4, 1202);
+    			add_location(h1, file$6, 37, 4, 1202);
     			attr_dev(button0, "class", "add-event svelte-1okwg4u");
-    			add_location(button0, file$1, 39, 12, 1246);
+    			add_location(button0, file$6, 39, 12, 1246);
     			attr_dev(li0, "class", "svelte-1okwg4u");
-    			add_location(li0, file$1, 39, 8, 1242);
+    			add_location(li0, file$6, 39, 8, 1242);
     			attr_dev(button1, "class", "logout svelte-1okwg4u");
-    			add_location(button1, file$1, 40, 12, 1321);
+    			add_location(button1, file$6, 40, 12, 1321);
     			attr_dev(li1, "class", "svelte-1okwg4u");
-    			add_location(li1, file$1, 40, 8, 1317);
+    			add_location(li1, file$6, 40, 8, 1317);
     			attr_dev(ul, "class", "svelte-1okwg4u");
-    			add_location(ul, file$1, 38, 4, 1229);
+    			add_location(ul, file$6, 38, 4, 1229);
     			attr_dev(h2, "class", "svelte-1okwg4u");
-    			add_location(h2, file$1, 42, 4, 1405);
+    			add_location(h2, file$6, 42, 4, 1405);
     			attr_dev(p0, "class", "info-category svelte-1okwg4u");
-    			add_location(p0, file$1, 44, 8, 1477);
+    			add_location(p0, file$6, 44, 8, 1477);
     			attr_dev(p1, "class", "info-category svelte-1okwg4u");
-    			add_location(p1, file$1, 45, 8, 1521);
+    			add_location(p1, file$6, 45, 8, 1521);
     			attr_dev(p2, "class", "info-category svelte-1okwg4u");
-    			add_location(p2, file$1, 46, 8, 1569);
+    			add_location(p2, file$6, 46, 8, 1569);
     			attr_dev(p3, "class", "info-category svelte-1okwg4u");
-    			add_location(p3, file$1, 47, 8, 1613);
+    			add_location(p3, file$6, 47, 8, 1613);
     			attr_dev(p4, "class", "info-category svelte-1okwg4u");
-    			add_location(p4, file$1, 48, 8, 1657);
-    			add_location(p5, file$1, 49, 8, 1703);
+    			add_location(p4, file$6, 48, 8, 1657);
+    			add_location(p5, file$6, 49, 8, 1703);
     			attr_dev(div1, "class", "info-title-container svelte-1okwg4u");
-    			add_location(div1, file$1, 43, 4, 1434);
+    			add_location(div1, file$6, 43, 4, 1434);
     			attr_dev(div2, "class", "load-animation svelte-1okwg4u");
-    			add_location(div2, file$1, 4, 4, 200);
+    			add_location(div2, file$6, 4, 4, 200);
     			attr_dev(div3, "class", "background svelte-1okwg4u");
-    			add_location(div3, file$1, 3, 0, 171);
+    			add_location(div3, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -44440,12 +44867,12 @@ var app = (function () {
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context(ctx, each_value, i);
+    					const child_ctx = get_each_context$4(ctx, each_value, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i] = create_each_block$4(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(div2, null);
     					}
@@ -44474,7 +44901,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$2.name,
+    		id: create_fragment$7.name,
     		type: "component",
     		source: "",
     		ctx
@@ -44483,7 +44910,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$2($$self, $$props, $$invalidate) {
+    function instance$7($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Planner", slots, []);
     	const today = new Date();
@@ -44569,14 +44996,3104 @@ var app = (function () {
     class Planner extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Planner",
     			options,
+    			id: create_fragment$7.name
+    		});
+    	}
+    }
+
+    const getCalendarPage = (month, year, dayProps, weekStart = 0) => {
+      let date = new Date(year, month, 1);
+      date.setDate(date.getDate() - date.getDay() + weekStart);
+      let nextMonth = month === 11 ? 0 : month + 1;
+      // ensure days starts on Sunday
+      // and end on saturday
+      let weeks = [];
+      while (date.getMonth() !== nextMonth || date.getDay() !== weekStart || weeks.length !== 6) {
+        if (date.getDay() === weekStart) weeks.unshift({ days: [], id: `${year}${month}${year}${weeks.length}` });
+        const updated = Object.assign({
+          partOfMonth: date.getMonth() === month,
+          day: date.getDate(),
+          month: date.getMonth(),
+          year: date.getFullYear(),
+          date: new Date(date)
+        }, dayProps(date));
+        weeks[0].days.push(updated);
+        date.setDate(date.getDate() + 1);
+      }
+      weeks.reverse();
+      return { month, year, weeks };
+    };
+
+    const getDayPropsHandler = (start, end, selectableCallback) => {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date => {
+        const isInRange = date >= start && date <= end;
+        return {
+          isInRange,
+          selectable: isInRange && (!selectableCallback || selectableCallback(date)),
+          isToday: date.getTime() === today.getTime()
+        };
+      };
+    };
+
+    function getMonths(start, end, selectableCallback = null, weekStart = 0) {
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+      let endDate = new Date(end.getFullYear(), end.getMonth() + 1, 1);
+      let months = [];
+      let date = new Date(start.getFullYear(), start.getMonth(), 1);
+      let dayPropsHandler = getDayPropsHandler(start, end, selectableCallback);
+      while (date < endDate) {
+        months.push(getCalendarPage(date.getMonth(), date.getFullYear(), dayPropsHandler, weekStart));
+        date.setMonth(date.getMonth() + 1);
+      }
+      return months;
+    }
+
+    const areDatesEquivalent = (a, b) => a.getDate() === b.getDate()
+      && a.getMonth() === b.getMonth()
+      && a.getFullYear() === b.getFullYear();
+
+    function cubicOut(t) {
+        const f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
+        const o = +getComputedStyle(node).opacity;
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `opacity: ${t * o}`
+        };
+    }
+    function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 } = {}) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const od = target_opacity * (1 - opacity);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (t, u) => `
+			transform: ${transform} translate(${(1 - t) * x}px, ${(1 - t) * y}px);
+			opacity: ${target_opacity - (od * u)}`
+        };
+    }
+
+    /* node_modules/svelte-calendar/src/Components/Week.svelte generated by Svelte v3.38.2 */
+    const file$5 = "node_modules/svelte-calendar/src/Components/Week.svelte";
+
+    function get_each_context$3(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[7] = list[i];
+    	return child_ctx;
+    }
+
+    // (20:2) {#each days as day}
+    function create_each_block$3(ctx) {
+    	let div;
+    	let button;
+    	let t0_value = /*day*/ ctx[7].date.getDate() + "";
+    	let t0;
+    	let t1;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[6](/*day*/ ctx[7]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			button = element("button");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr_dev(button, "class", "day--label svelte-1f2gkwh");
+    			attr_dev(button, "type", "button");
+    			toggle_class(button, "selected", areDatesEquivalent(/*day*/ ctx[7].date, /*selected*/ ctx[1]));
+    			toggle_class(button, "highlighted", areDatesEquivalent(/*day*/ ctx[7].date, /*highlighted*/ ctx[2]));
+    			toggle_class(button, "shake-date", /*shouldShakeDate*/ ctx[3] && areDatesEquivalent(/*day*/ ctx[7].date, /*shouldShakeDate*/ ctx[3]));
+    			toggle_class(button, "disabled", !/*day*/ ctx[7].selectable);
+    			add_location(button, file$5, 26, 6, 652);
+    			attr_dev(div, "class", "day svelte-1f2gkwh");
+    			toggle_class(div, "outside-month", !/*day*/ ctx[7].partOfMonth);
+    			toggle_class(div, "is-today", /*day*/ ctx[7].isToday);
+    			toggle_class(div, "is-disabled", !/*day*/ ctx[7].selectable);
+    			add_location(div, file$5, 20, 4, 493);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, button);
+    			append_dev(button, t0);
+    			append_dev(div, t1);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*days*/ 1 && t0_value !== (t0_value = /*day*/ ctx[7].date.getDate() + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*areDatesEquivalent, days, selected*/ 3) {
+    				toggle_class(button, "selected", areDatesEquivalent(/*day*/ ctx[7].date, /*selected*/ ctx[1]));
+    			}
+
+    			if (dirty & /*areDatesEquivalent, days, highlighted*/ 5) {
+    				toggle_class(button, "highlighted", areDatesEquivalent(/*day*/ ctx[7].date, /*highlighted*/ ctx[2]));
+    			}
+
+    			if (dirty & /*shouldShakeDate, areDatesEquivalent, days*/ 9) {
+    				toggle_class(button, "shake-date", /*shouldShakeDate*/ ctx[3] && areDatesEquivalent(/*day*/ ctx[7].date, /*shouldShakeDate*/ ctx[3]));
+    			}
+
+    			if (dirty & /*days*/ 1) {
+    				toggle_class(button, "disabled", !/*day*/ ctx[7].selectable);
+    			}
+
+    			if (dirty & /*days*/ 1) {
+    				toggle_class(div, "outside-month", !/*day*/ ctx[7].partOfMonth);
+    			}
+
+    			if (dirty & /*days*/ 1) {
+    				toggle_class(div, "is-today", /*day*/ ctx[7].isToday);
+    			}
+
+    			if (dirty & /*days*/ 1) {
+    				toggle_class(div, "is-disabled", !/*day*/ ctx[7].selectable);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$3.name,
+    		type: "each",
+    		source: "(20:2) {#each days as day}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$6(ctx) {
+    	let div;
+    	let div_intro;
+    	let div_outro;
+    	let current;
+    	let each_value = /*days*/ ctx[0];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$3(get_each_context$3(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(div, "class", "week svelte-1f2gkwh");
+    			add_location(div, file$5, 14, 0, 341);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(new_ctx, [dirty]) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*days, areDatesEquivalent, selected, highlighted, shouldShakeDate, dispatch*/ 47) {
+    				each_value = /*days*/ ctx[0];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$3(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$3(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			if (local) {
+    				add_render_callback(() => {
+    					if (div_outro) div_outro.end(1);
+
+    					if (!div_intro) div_intro = create_in_transition(div, fly, {
+    						x: /*direction*/ ctx[4] * 50,
+    						duration: 180,
+    						delay: 90
+    					});
+
+    					div_intro.start();
+    				});
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			if (div_intro) div_intro.invalidate();
+
+    			if (local) {
+    				div_outro = create_out_transition(div, fade, { duration: 180 });
+    			}
+
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    			if (detaching && div_outro) div_outro.end();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$6.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$6($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Week", slots, []);
+    	const dispatch = createEventDispatcher();
+    	let { days } = $$props;
+    	let { selected } = $$props;
+    	let { highlighted } = $$props;
+    	let { shouldShakeDate } = $$props;
+    	let { direction } = $$props;
+    	const writable_props = ["days", "selected", "highlighted", "shouldShakeDate", "direction"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Week> was created with unknown prop '${key}'`);
+    	});
+
+    	const click_handler = day => dispatch("dateSelected", day.date);
+
+    	$$self.$$set = $$props => {
+    		if ("days" in $$props) $$invalidate(0, days = $$props.days);
+    		if ("selected" in $$props) $$invalidate(1, selected = $$props.selected);
+    		if ("highlighted" in $$props) $$invalidate(2, highlighted = $$props.highlighted);
+    		if ("shouldShakeDate" in $$props) $$invalidate(3, shouldShakeDate = $$props.shouldShakeDate);
+    		if ("direction" in $$props) $$invalidate(4, direction = $$props.direction);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		areDatesEquivalent,
+    		fly,
+    		fade,
+    		createEventDispatcher,
+    		dispatch,
+    		days,
+    		selected,
+    		highlighted,
+    		shouldShakeDate,
+    		direction
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("days" in $$props) $$invalidate(0, days = $$props.days);
+    		if ("selected" in $$props) $$invalidate(1, selected = $$props.selected);
+    		if ("highlighted" in $$props) $$invalidate(2, highlighted = $$props.highlighted);
+    		if ("shouldShakeDate" in $$props) $$invalidate(3, shouldShakeDate = $$props.shouldShakeDate);
+    		if ("direction" in $$props) $$invalidate(4, direction = $$props.direction);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		days,
+    		selected,
+    		highlighted,
+    		shouldShakeDate,
+    		direction,
+    		dispatch,
+    		click_handler
+    	];
+    }
+
+    class Week extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, {
+    			days: 0,
+    			selected: 1,
+    			highlighted: 2,
+    			shouldShakeDate: 3,
+    			direction: 4
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Week",
+    			options,
+    			id: create_fragment$6.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*days*/ ctx[0] === undefined && !("days" in props)) {
+    			console.warn("<Week> was created without expected prop 'days'");
+    		}
+
+    		if (/*selected*/ ctx[1] === undefined && !("selected" in props)) {
+    			console.warn("<Week> was created without expected prop 'selected'");
+    		}
+
+    		if (/*highlighted*/ ctx[2] === undefined && !("highlighted" in props)) {
+    			console.warn("<Week> was created without expected prop 'highlighted'");
+    		}
+
+    		if (/*shouldShakeDate*/ ctx[3] === undefined && !("shouldShakeDate" in props)) {
+    			console.warn("<Week> was created without expected prop 'shouldShakeDate'");
+    		}
+
+    		if (/*direction*/ ctx[4] === undefined && !("direction" in props)) {
+    			console.warn("<Week> was created without expected prop 'direction'");
+    		}
+    	}
+
+    	get days() {
+    		throw new Error("<Week>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set days(value) {
+    		throw new Error("<Week>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get selected() {
+    		throw new Error("<Week>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set selected(value) {
+    		throw new Error("<Week>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get highlighted() {
+    		throw new Error("<Week>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set highlighted(value) {
+    		throw new Error("<Week>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get shouldShakeDate() {
+    		throw new Error("<Week>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set shouldShakeDate(value) {
+    		throw new Error("<Week>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get direction() {
+    		throw new Error("<Week>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set direction(value) {
+    		throw new Error("<Week>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* node_modules/svelte-calendar/src/Components/Month.svelte generated by Svelte v3.38.2 */
+    const file$4 = "node_modules/svelte-calendar/src/Components/Month.svelte";
+
+    function get_each_context$2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[8] = list[i];
+    	return child_ctx;
+    }
+
+    // (20:2) {#each visibleMonth.weeks as week (week.id) }
+    function create_each_block$2(key_1, ctx) {
+    	let first;
+    	let week;
+    	let current;
+
+    	week = new Week({
+    			props: {
+    				days: /*week*/ ctx[8].days,
+    				selected: /*selected*/ ctx[1],
+    				highlighted: /*highlighted*/ ctx[2],
+    				shouldShakeDate: /*shouldShakeDate*/ ctx[3],
+    				direction: /*direction*/ ctx[4]
+    			},
+    			$$inline: true
+    		});
+
+    	week.$on("dateSelected", /*dateSelected_handler*/ ctx[7]);
+
+    	const block = {
+    		key: key_1,
+    		first: null,
+    		c: function create() {
+    			first = empty();
+    			create_component(week.$$.fragment);
+    			this.first = first;
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, first, anchor);
+    			mount_component(week, target, anchor);
+    			current = true;
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			const week_changes = {};
+    			if (dirty & /*visibleMonth*/ 1) week_changes.days = /*week*/ ctx[8].days;
+    			if (dirty & /*selected*/ 2) week_changes.selected = /*selected*/ ctx[1];
+    			if (dirty & /*highlighted*/ 4) week_changes.highlighted = /*highlighted*/ ctx[2];
+    			if (dirty & /*shouldShakeDate*/ 8) week_changes.shouldShakeDate = /*shouldShakeDate*/ ctx[3];
+    			if (dirty & /*direction*/ 16) week_changes.direction = /*direction*/ ctx[4];
+    			week.$set(week_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(week.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(week.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(first);
+    			destroy_component(week, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$2.name,
+    		type: "each",
+    		source: "(20:2) {#each visibleMonth.weeks as week (week.id) }",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$5(ctx) {
+    	let div;
+    	let each_blocks = [];
+    	let each_1_lookup = new Map();
+    	let current;
+    	let each_value = /*visibleMonth*/ ctx[0].weeks;
+    	validate_each_argument(each_value);
+    	const get_key = ctx => /*week*/ ctx[8].id;
+    	validate_each_keys(ctx, each_value, get_each_context$2, get_key);
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$2(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$2(key, child_ctx));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(div, "class", "month-container svelte-ny3kda");
+    			add_location(div, file$4, 18, 0, 284);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*visibleMonth, selected, highlighted, shouldShakeDate, direction*/ 31) {
+    				each_value = /*visibleMonth*/ ctx[0].weeks;
+    				validate_each_argument(each_value);
+    				group_outros();
+    				validate_each_keys(ctx, each_value, get_each_context$2, get_key);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, div, outro_and_destroy_block, create_each_block$2, null, get_each_context$2);
+    				check_outros();
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d();
+    			}
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$5.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$5($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Month", slots, []);
+    	let { id } = $$props;
+    	let { visibleMonth } = $$props;
+    	let { selected } = $$props;
+    	let { highlighted } = $$props;
+    	let { shouldShakeDate } = $$props;
+    	let lastId = id;
+    	let direction;
+    	const writable_props = ["id", "visibleMonth", "selected", "highlighted", "shouldShakeDate"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Month> was created with unknown prop '${key}'`);
+    	});
+
+    	function dateSelected_handler(event) {
+    		bubble($$self, event);
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("id" in $$props) $$invalidate(5, id = $$props.id);
+    		if ("visibleMonth" in $$props) $$invalidate(0, visibleMonth = $$props.visibleMonth);
+    		if ("selected" in $$props) $$invalidate(1, selected = $$props.selected);
+    		if ("highlighted" in $$props) $$invalidate(2, highlighted = $$props.highlighted);
+    		if ("shouldShakeDate" in $$props) $$invalidate(3, shouldShakeDate = $$props.shouldShakeDate);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		Week,
+    		id,
+    		visibleMonth,
+    		selected,
+    		highlighted,
+    		shouldShakeDate,
+    		lastId,
+    		direction
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("id" in $$props) $$invalidate(5, id = $$props.id);
+    		if ("visibleMonth" in $$props) $$invalidate(0, visibleMonth = $$props.visibleMonth);
+    		if ("selected" in $$props) $$invalidate(1, selected = $$props.selected);
+    		if ("highlighted" in $$props) $$invalidate(2, highlighted = $$props.highlighted);
+    		if ("shouldShakeDate" in $$props) $$invalidate(3, shouldShakeDate = $$props.shouldShakeDate);
+    		if ("lastId" in $$props) $$invalidate(6, lastId = $$props.lastId);
+    		if ("direction" in $$props) $$invalidate(4, direction = $$props.direction);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*lastId, id*/ 96) {
+    			{
+    				$$invalidate(4, direction = lastId < id ? 1 : -1);
+    				$$invalidate(6, lastId = id);
+    			}
+    		}
+    	};
+
+    	return [
+    		visibleMonth,
+    		selected,
+    		highlighted,
+    		shouldShakeDate,
+    		direction,
+    		id,
+    		lastId,
+    		dateSelected_handler
+    	];
+    }
+
+    class Month extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {
+    			id: 5,
+    			visibleMonth: 0,
+    			selected: 1,
+    			highlighted: 2,
+    			shouldShakeDate: 3
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Month",
+    			options,
+    			id: create_fragment$5.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*id*/ ctx[5] === undefined && !("id" in props)) {
+    			console.warn("<Month> was created without expected prop 'id'");
+    		}
+
+    		if (/*visibleMonth*/ ctx[0] === undefined && !("visibleMonth" in props)) {
+    			console.warn("<Month> was created without expected prop 'visibleMonth'");
+    		}
+
+    		if (/*selected*/ ctx[1] === undefined && !("selected" in props)) {
+    			console.warn("<Month> was created without expected prop 'selected'");
+    		}
+
+    		if (/*highlighted*/ ctx[2] === undefined && !("highlighted" in props)) {
+    			console.warn("<Month> was created without expected prop 'highlighted'");
+    		}
+
+    		if (/*shouldShakeDate*/ ctx[3] === undefined && !("shouldShakeDate" in props)) {
+    			console.warn("<Month> was created without expected prop 'shouldShakeDate'");
+    		}
+    	}
+
+    	get id() {
+    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set id(value) {
+    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get visibleMonth() {
+    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set visibleMonth(value) {
+    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get selected() {
+    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set selected(value) {
+    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get highlighted() {
+    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set highlighted(value) {
+    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get shouldShakeDate() {
+    		throw new Error("<Month>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set shouldShakeDate(value) {
+    		throw new Error("<Month>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* node_modules/svelte-calendar/src/Components/NavBar.svelte generated by Svelte v3.38.2 */
+
+    const { Object: Object_1 } = globals;
+    const file$3 = "node_modules/svelte-calendar/src/Components/NavBar.svelte";
+
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
+    	return child_ctx;
+    }
+
+    // (64:4) {#each availableMonths as monthDefinition, index}
+    function create_each_block$1(ctx) {
+    	let div;
+    	let span;
+    	let t0_value = /*monthDefinition*/ ctx[15].abbrev + "";
+    	let t0;
+    	let t1;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler_2(...args) {
+    		return /*click_handler_2*/ ctx[14](/*monthDefinition*/ ctx[15], /*index*/ ctx[17], ...args);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			span = element("span");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr_dev(span, "class", "svelte-1dqf106");
+    			add_location(span, file$3, 70, 8, 1952);
+    			attr_dev(div, "class", "month-selector--month svelte-1dqf106");
+    			toggle_class(div, "selected", /*index*/ ctx[17] === /*month*/ ctx[0]);
+    			toggle_class(div, "selectable", /*monthDefinition*/ ctx[15].selectable);
+    			add_location(div, file$3, 64, 6, 1721);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, span);
+    			append_dev(span, t0);
+    			append_dev(div, t1);
+
+    			if (!mounted) {
+    				dispose = listen_dev(div, "click", click_handler_2, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*availableMonths*/ 64 && t0_value !== (t0_value = /*monthDefinition*/ ctx[15].abbrev + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*month*/ 1) {
+    				toggle_class(div, "selected", /*index*/ ctx[17] === /*month*/ ctx[0]);
+    			}
+
+    			if (dirty & /*availableMonths*/ 64) {
+    				toggle_class(div, "selectable", /*monthDefinition*/ ctx[15].selectable);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(64:4) {#each availableMonths as monthDefinition, index}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$4(ctx) {
+    	let div5;
+    	let div3;
+    	let div0;
+    	let i0;
+    	let t0;
+    	let div1;
+    	let t1_value = /*monthsOfYear*/ ctx[4][/*month*/ ctx[0]][0] + "";
+    	let t1;
+    	let t2;
+    	let t3;
+    	let t4;
+    	let div2;
+    	let i1;
+    	let t5;
+    	let div4;
+    	let mounted;
+    	let dispose;
+    	let each_value = /*availableMonths*/ ctx[6];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div5 = element("div");
+    			div3 = element("div");
+    			div0 = element("div");
+    			i0 = element("i");
+    			t0 = space();
+    			div1 = element("div");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			t3 = text(/*year*/ ctx[1]);
+    			t4 = space();
+    			div2 = element("div");
+    			i1 = element("i");
+    			t5 = space();
+    			div4 = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(i0, "class", "arrow left svelte-1dqf106");
+    			add_location(i0, file$3, 51, 6, 1279);
+    			attr_dev(div0, "class", "control svelte-1dqf106");
+    			toggle_class(div0, "enabled", /*canDecrementMonth*/ ctx[3]);
+    			add_location(div0, file$3, 48, 4, 1156);
+    			attr_dev(div1, "class", "label svelte-1dqf106");
+    			add_location(div1, file$3, 53, 4, 1321);
+    			attr_dev(i1, "class", "arrow right svelte-1dqf106");
+    			add_location(i1, file$3, 59, 6, 1551);
+    			attr_dev(div2, "class", "control svelte-1dqf106");
+    			toggle_class(div2, "enabled", /*canIncrementMonth*/ ctx[2]);
+    			add_location(div2, file$3, 56, 4, 1430);
+    			attr_dev(div3, "class", "heading-section svelte-1dqf106");
+    			add_location(div3, file$3, 47, 2, 1122);
+    			attr_dev(div4, "class", "month-selector svelte-1dqf106");
+    			toggle_class(div4, "open", /*monthSelectorOpen*/ ctx[5]);
+    			add_location(div4, file$3, 62, 2, 1601);
+    			attr_dev(div5, "class", "title");
+    			add_location(div5, file$3, 46, 0, 1100);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div5, anchor);
+    			append_dev(div5, div3);
+    			append_dev(div3, div0);
+    			append_dev(div0, i0);
+    			append_dev(div3, t0);
+    			append_dev(div3, div1);
+    			append_dev(div1, t1);
+    			append_dev(div1, t2);
+    			append_dev(div1, t3);
+    			append_dev(div3, t4);
+    			append_dev(div3, div2);
+    			append_dev(div2, i1);
+    			append_dev(div5, t5);
+    			append_dev(div5, div4);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div4, null);
+    			}
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(div0, "click", /*click_handler*/ ctx[12], false, false, false),
+    					listen_dev(div1, "click", /*toggleMonthSelectorOpen*/ ctx[8], false, false, false),
+    					listen_dev(div2, "click", /*click_handler_1*/ ctx[13], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*canDecrementMonth*/ 8) {
+    				toggle_class(div0, "enabled", /*canDecrementMonth*/ ctx[3]);
+    			}
+
+    			if (dirty & /*monthsOfYear, month*/ 17 && t1_value !== (t1_value = /*monthsOfYear*/ ctx[4][/*month*/ ctx[0]][0] + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*year*/ 2) set_data_dev(t3, /*year*/ ctx[1]);
+
+    			if (dirty & /*canIncrementMonth*/ 4) {
+    				toggle_class(div2, "enabled", /*canIncrementMonth*/ ctx[2]);
+    			}
+
+    			if (dirty & /*month, availableMonths, monthSelected*/ 577) {
+    				each_value = /*availableMonths*/ ctx[6];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div4, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*monthSelectorOpen*/ 32) {
+    				toggle_class(div4, "open", /*monthSelectorOpen*/ ctx[5]);
+    			}
+    		},
+    		i: noop$1,
+    		o: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div5);
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$4.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$4($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("NavBar", slots, []);
+    	const dispatch = createEventDispatcher();
+    	let { month } = $$props;
+    	let { year } = $$props;
+    	let { start } = $$props;
+    	let { end } = $$props;
+    	let { canIncrementMonth } = $$props;
+    	let { canDecrementMonth } = $$props;
+    	let { monthsOfYear } = $$props;
+    	let monthSelectorOpen = false;
+    	let availableMonths;
+
+    	function toggleMonthSelectorOpen() {
+    		$$invalidate(5, monthSelectorOpen = !monthSelectorOpen);
+    	}
+
+    	function monthSelected(event, { m, i }) {
+    		event.stopPropagation();
+    		if (!m.selectable) return;
+    		dispatch("monthSelected", i);
+    		toggleMonthSelectorOpen();
+    	}
+
+    	const writable_props = [
+    		"month",
+    		"year",
+    		"start",
+    		"end",
+    		"canIncrementMonth",
+    		"canDecrementMonth",
+    		"monthsOfYear"
+    	];
+
+    	Object_1.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<NavBar> was created with unknown prop '${key}'`);
+    	});
+
+    	const click_handler = () => dispatch("incrementMonth", -1);
+    	const click_handler_1 = () => dispatch("incrementMonth", 1);
+    	const click_handler_2 = (monthDefinition, index, e) => monthSelected(e, { m: monthDefinition, i: index });
+
+    	$$self.$$set = $$props => {
+    		if ("month" in $$props) $$invalidate(0, month = $$props.month);
+    		if ("year" in $$props) $$invalidate(1, year = $$props.year);
+    		if ("start" in $$props) $$invalidate(10, start = $$props.start);
+    		if ("end" in $$props) $$invalidate(11, end = $$props.end);
+    		if ("canIncrementMonth" in $$props) $$invalidate(2, canIncrementMonth = $$props.canIncrementMonth);
+    		if ("canDecrementMonth" in $$props) $$invalidate(3, canDecrementMonth = $$props.canDecrementMonth);
+    		if ("monthsOfYear" in $$props) $$invalidate(4, monthsOfYear = $$props.monthsOfYear);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		createEventDispatcher,
+    		dispatch,
+    		month,
+    		year,
+    		start,
+    		end,
+    		canIncrementMonth,
+    		canDecrementMonth,
+    		monthsOfYear,
+    		monthSelectorOpen,
+    		availableMonths,
+    		toggleMonthSelectorOpen,
+    		monthSelected
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("month" in $$props) $$invalidate(0, month = $$props.month);
+    		if ("year" in $$props) $$invalidate(1, year = $$props.year);
+    		if ("start" in $$props) $$invalidate(10, start = $$props.start);
+    		if ("end" in $$props) $$invalidate(11, end = $$props.end);
+    		if ("canIncrementMonth" in $$props) $$invalidate(2, canIncrementMonth = $$props.canIncrementMonth);
+    		if ("canDecrementMonth" in $$props) $$invalidate(3, canDecrementMonth = $$props.canDecrementMonth);
+    		if ("monthsOfYear" in $$props) $$invalidate(4, monthsOfYear = $$props.monthsOfYear);
+    		if ("monthSelectorOpen" in $$props) $$invalidate(5, monthSelectorOpen = $$props.monthSelectorOpen);
+    		if ("availableMonths" in $$props) $$invalidate(6, availableMonths = $$props.availableMonths);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*start, year, end, monthsOfYear*/ 3090) {
+    			{
+    				let isOnLowerBoundary = start.getFullYear() === year;
+    				let isOnUpperBoundary = end.getFullYear() === year;
+
+    				$$invalidate(6, availableMonths = monthsOfYear.map((m, i) => {
+    					return Object.assign({}, { name: m[0], abbrev: m[1] }, {
+    						selectable: !isOnLowerBoundary && !isOnUpperBoundary || (!isOnLowerBoundary || i >= start.getMonth()) && (!isOnUpperBoundary || i <= end.getMonth())
+    					});
+    				}));
+    			}
+    		}
+    	};
+
+    	return [
+    		month,
+    		year,
+    		canIncrementMonth,
+    		canDecrementMonth,
+    		monthsOfYear,
+    		monthSelectorOpen,
+    		availableMonths,
+    		dispatch,
+    		toggleMonthSelectorOpen,
+    		monthSelected,
+    		start,
+    		end,
+    		click_handler,
+    		click_handler_1,
+    		click_handler_2
+    	];
+    }
+
+    class NavBar extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {
+    			month: 0,
+    			year: 1,
+    			start: 10,
+    			end: 11,
+    			canIncrementMonth: 2,
+    			canDecrementMonth: 3,
+    			monthsOfYear: 4
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "NavBar",
+    			options,
+    			id: create_fragment$4.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*month*/ ctx[0] === undefined && !("month" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'month'");
+    		}
+
+    		if (/*year*/ ctx[1] === undefined && !("year" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'year'");
+    		}
+
+    		if (/*start*/ ctx[10] === undefined && !("start" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'start'");
+    		}
+
+    		if (/*end*/ ctx[11] === undefined && !("end" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'end'");
+    		}
+
+    		if (/*canIncrementMonth*/ ctx[2] === undefined && !("canIncrementMonth" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'canIncrementMonth'");
+    		}
+
+    		if (/*canDecrementMonth*/ ctx[3] === undefined && !("canDecrementMonth" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'canDecrementMonth'");
+    		}
+
+    		if (/*monthsOfYear*/ ctx[4] === undefined && !("monthsOfYear" in props)) {
+    			console.warn("<NavBar> was created without expected prop 'monthsOfYear'");
+    		}
+    	}
+
+    	get month() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set month(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get year() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set year(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get start() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set start(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get end() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set end(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get canIncrementMonth() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set canIncrementMonth(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get canDecrementMonth() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set canDecrementMonth(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get monthsOfYear() {
+    		throw new Error("<NavBar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set monthsOfYear(value) {
+    		throw new Error("<NavBar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* node_modules/svelte-calendar/src/Components/Popover.svelte generated by Svelte v3.38.2 */
+
+    const { window: window_1 } = globals;
+    const file$2 = "node_modules/svelte-calendar/src/Components/Popover.svelte";
+    const get_contents_slot_changes = dirty => ({});
+    const get_contents_slot_context = ctx => ({});
+    const get_trigger_slot_changes = dirty => ({});
+    const get_trigger_slot_context = ctx => ({});
+
+    function create_fragment$3(ctx) {
+    	let div4;
+    	let div0;
+    	let t;
+    	let div3;
+    	let div2;
+    	let div1;
+    	let current;
+    	let mounted;
+    	let dispose;
+    	add_render_callback(/*onwindowresize*/ ctx[14]);
+    	const trigger_slot_template = /*#slots*/ ctx[13].trigger;
+    	const trigger_slot = create_slot(trigger_slot_template, ctx, /*$$scope*/ ctx[12], get_trigger_slot_context);
+    	const contents_slot_template = /*#slots*/ ctx[13].contents;
+    	const contents_slot = create_slot(contents_slot_template, ctx, /*$$scope*/ ctx[12], get_contents_slot_context);
+
+    	const block = {
+    		c: function create() {
+    			div4 = element("div");
+    			div0 = element("div");
+    			if (trigger_slot) trigger_slot.c();
+    			t = space();
+    			div3 = element("div");
+    			div2 = element("div");
+    			div1 = element("div");
+    			if (contents_slot) contents_slot.c();
+    			attr_dev(div0, "class", "trigger");
+    			add_location(div0, file$2, 103, 2, 2358);
+    			attr_dev(div1, "class", "contents-inner svelte-mc1z8c");
+    			add_location(div1, file$2, 114, 6, 2745);
+    			attr_dev(div2, "class", "contents svelte-mc1z8c");
+    			add_location(div2, file$2, 113, 4, 2687);
+    			attr_dev(div3, "class", "contents-wrapper svelte-mc1z8c");
+    			set_style(div3, "transform", "translate(-50%,-50%) translate(" + /*translateX*/ ctx[8] + "px, " + /*translateY*/ ctx[7] + "px)");
+    			toggle_class(div3, "visible", /*open*/ ctx[0]);
+    			toggle_class(div3, "shrink", /*shrink*/ ctx[1]);
+    			add_location(div3, file$2, 107, 2, 2476);
+    			attr_dev(div4, "class", "sc-popover svelte-mc1z8c");
+    			add_location(div4, file$2, 102, 0, 2311);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div4, anchor);
+    			append_dev(div4, div0);
+
+    			if (trigger_slot) {
+    				trigger_slot.m(div0, null);
+    			}
+
+    			/*div0_binding*/ ctx[15](div0);
+    			append_dev(div4, t);
+    			append_dev(div4, div3);
+    			append_dev(div3, div2);
+    			append_dev(div2, div1);
+
+    			if (contents_slot) {
+    				contents_slot.m(div1, null);
+    			}
+
+    			/*div2_binding*/ ctx[16](div2);
+    			/*div3_binding*/ ctx[17](div3);
+    			/*div4_binding*/ ctx[18](div4);
+    			current = true;
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(window_1, "resize", /*onwindowresize*/ ctx[14]),
+    					listen_dev(div0, "click", /*doOpen*/ ctx[9], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (trigger_slot) {
+    				if (trigger_slot.p && (!current || dirty & /*$$scope*/ 4096)) {
+    					update_slot(trigger_slot, trigger_slot_template, ctx, /*$$scope*/ ctx[12], dirty, get_trigger_slot_changes, get_trigger_slot_context);
+    				}
+    			}
+
+    			if (contents_slot) {
+    				if (contents_slot.p && (!current || dirty & /*$$scope*/ 4096)) {
+    					update_slot(contents_slot, contents_slot_template, ctx, /*$$scope*/ ctx[12], dirty, get_contents_slot_changes, get_contents_slot_context);
+    				}
+    			}
+
+    			if (!current || dirty & /*translateX, translateY*/ 384) {
+    				set_style(div3, "transform", "translate(-50%,-50%) translate(" + /*translateX*/ ctx[8] + "px, " + /*translateY*/ ctx[7] + "px)");
+    			}
+
+    			if (dirty & /*open*/ 1) {
+    				toggle_class(div3, "visible", /*open*/ ctx[0]);
+    			}
+
+    			if (dirty & /*shrink*/ 2) {
+    				toggle_class(div3, "shrink", /*shrink*/ ctx[1]);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(trigger_slot, local);
+    			transition_in(contents_slot, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(trigger_slot, local);
+    			transition_out(contents_slot, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div4);
+    			if (trigger_slot) trigger_slot.d(detaching);
+    			/*div0_binding*/ ctx[15](null);
+    			if (contents_slot) contents_slot.d(detaching);
+    			/*div2_binding*/ ctx[16](null);
+    			/*div3_binding*/ ctx[17](null);
+    			/*div4_binding*/ ctx[18](null);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$3.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$3($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Popover", slots, ['trigger','contents']);
+    	const dispatch = createEventDispatcher();
+
+    	let once = (el, evt, cb) => {
+    		function handler() {
+    			cb.apply(this, arguments);
+    			el.removeEventListener(evt, handler);
+    		}
+
+    		el.addEventListener(evt, handler);
+    	};
+
+    	let popover;
+    	let w;
+    	let triggerContainer;
+    	let contentsAnimated;
+    	let contentsWrapper;
+    	let translateY = 0;
+    	let translateX = 0;
+    	let { open = false } = $$props;
+    	let { shrink } = $$props;
+    	let { trigger } = $$props;
+
+    	const close = () => {
+    		$$invalidate(1, shrink = true);
+
+    		once(contentsAnimated, "animationend", () => {
+    			$$invalidate(1, shrink = false);
+    			$$invalidate(0, open = false);
+    			dispatch("closed");
+    		});
+    	};
+
+    	function checkForFocusLoss(evt) {
+    		if (!open) return;
+    		let el = evt.target;
+
+    		// eslint-disable-next-line
+    		do {
+    			if (el === popover) return;
+    		} while (el = el.parentNode); // eslint-disable-next-line
+
+    		close();
+    	}
+
+    	onMount(() => {
+    		document.addEventListener("click", checkForFocusLoss);
+    		if (!trigger) return;
+    		triggerContainer.appendChild(trigger.parentNode.removeChild(trigger));
+
+    		// eslint-disable-next-line
+    		return () => {
+    			document.removeEventListener("click", checkForFocusLoss);
+    		};
+    	});
+
+    	const getDistanceToEdges = async () => {
+    		if (!open) {
+    			$$invalidate(0, open = true);
+    		}
+
+    		await tick();
+    		let rect = contentsWrapper.getBoundingClientRect();
+
+    		return {
+    			top: rect.top + -1 * translateY,
+    			bottom: window.innerHeight - rect.bottom + translateY,
+    			left: rect.left + -1 * translateX,
+    			right: document.body.clientWidth - rect.right + translateX
+    		};
+    	};
+
+    	const getTranslate = async () => {
+    		let dist = await getDistanceToEdges();
+    		let x;
+    		let y;
+
+    		if (w < 480) {
+    			y = dist.bottom;
+    		} else if (dist.top < 0) {
+    			y = Math.abs(dist.top);
+    		} else if (dist.bottom < 0) {
+    			y = dist.bottom;
+    		} else {
+    			y = 0;
+    		}
+
+    		if (dist.left < 0) {
+    			x = Math.abs(dist.left);
+    		} else if (dist.right < 0) {
+    			x = dist.right;
+    		} else {
+    			x = 0;
+    		}
+
+    		return { x, y };
+    	};
+
+    	const doOpen = async () => {
+    		const { x, y } = await getTranslate();
+    		$$invalidate(8, translateX = x);
+    		$$invalidate(7, translateY = y);
+    		$$invalidate(0, open = true);
+    		dispatch("opened");
+    	};
+
+    	const writable_props = ["open", "shrink", "trigger"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Popover> was created with unknown prop '${key}'`);
+    	});
+
+    	function onwindowresize() {
+    		$$invalidate(3, w = window_1.innerWidth);
+    	}
+
+    	function div0_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			triggerContainer = $$value;
+    			$$invalidate(4, triggerContainer);
+    		});
+    	}
+
+    	function div2_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			contentsAnimated = $$value;
+    			$$invalidate(5, contentsAnimated);
+    		});
+    	}
+
+    	function div3_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			contentsWrapper = $$value;
+    			$$invalidate(6, contentsWrapper);
+    		});
+    	}
+
+    	function div4_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			popover = $$value;
+    			$$invalidate(2, popover);
+    		});
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("open" in $$props) $$invalidate(0, open = $$props.open);
+    		if ("shrink" in $$props) $$invalidate(1, shrink = $$props.shrink);
+    		if ("trigger" in $$props) $$invalidate(10, trigger = $$props.trigger);
+    		if ("$$scope" in $$props) $$invalidate(12, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		createEventDispatcher,
+    		tick,
+    		dispatch,
+    		once,
+    		popover,
+    		w,
+    		triggerContainer,
+    		contentsAnimated,
+    		contentsWrapper,
+    		translateY,
+    		translateX,
+    		open,
+    		shrink,
+    		trigger,
+    		close,
+    		checkForFocusLoss,
+    		getDistanceToEdges,
+    		getTranslate,
+    		doOpen
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("once" in $$props) once = $$props.once;
+    		if ("popover" in $$props) $$invalidate(2, popover = $$props.popover);
+    		if ("w" in $$props) $$invalidate(3, w = $$props.w);
+    		if ("triggerContainer" in $$props) $$invalidate(4, triggerContainer = $$props.triggerContainer);
+    		if ("contentsAnimated" in $$props) $$invalidate(5, contentsAnimated = $$props.contentsAnimated);
+    		if ("contentsWrapper" in $$props) $$invalidate(6, contentsWrapper = $$props.contentsWrapper);
+    		if ("translateY" in $$props) $$invalidate(7, translateY = $$props.translateY);
+    		if ("translateX" in $$props) $$invalidate(8, translateX = $$props.translateX);
+    		if ("open" in $$props) $$invalidate(0, open = $$props.open);
+    		if ("shrink" in $$props) $$invalidate(1, shrink = $$props.shrink);
+    		if ("trigger" in $$props) $$invalidate(10, trigger = $$props.trigger);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [
+    		open,
+    		shrink,
+    		popover,
+    		w,
+    		triggerContainer,
+    		contentsAnimated,
+    		contentsWrapper,
+    		translateY,
+    		translateX,
+    		doOpen,
+    		trigger,
+    		close,
+    		$$scope,
+    		slots,
+    		onwindowresize,
+    		div0_binding,
+    		div2_binding,
+    		div3_binding,
+    		div4_binding
+    	];
+    }
+
+    class Popover extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
+    			open: 0,
+    			shrink: 1,
+    			trigger: 10,
+    			close: 11
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Popover",
+    			options,
+    			id: create_fragment$3.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*shrink*/ ctx[1] === undefined && !("shrink" in props)) {
+    			console.warn("<Popover> was created without expected prop 'shrink'");
+    		}
+
+    		if (/*trigger*/ ctx[10] === undefined && !("trigger" in props)) {
+    			console.warn("<Popover> was created without expected prop 'trigger'");
+    		}
+    	}
+
+    	get open() {
+    		throw new Error("<Popover>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set open(value) {
+    		throw new Error("<Popover>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get shrink() {
+    		throw new Error("<Popover>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set shrink(value) {
+    		throw new Error("<Popover>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get trigger() {
+    		throw new Error("<Popover>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set trigger(value) {
+    		throw new Error("<Popover>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get close() {
+    		return this.$$.ctx[11];
+    	}
+
+    	set close(value) {
+    		throw new Error("<Popover>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /**
+     * generic function to inject data into token-laden string
+     * @param str {String} Required
+     * @param name {String} Required
+     * @param value {String|Integer} Required
+     * @returns {String}
+     *
+     * @example
+     * injectStringData("The following is a token: #{tokenName}", "tokenName", 123); 
+     * @returns {String} "The following is a token: 123"
+     *
+     */
+    const injectStringData = (str,name,value) => str
+      .replace(new RegExp('#{'+name+'}','g'), value);
+
+    /**
+     * Generic function to enforce length of string. 
+     * 
+     * Pass a string or number to this function and specify the desired length.
+     * This function will either pad the # with leading 0's (if str.length < length)
+     * or remove data from the end (@fromBack==false) or beginning (@fromBack==true)
+     * of the string when str.length > length.
+     *
+     * When length == str.length or typeof length == 'undefined', this function
+     * returns the original @str parameter.
+     * 
+     * @param str {String} Required
+     * @param length {Integer} Required
+     * @param fromBack {Boolean} Optional
+     * @returns {String}
+     *
+     */
+    const enforceLength = function(str,length,fromBack) {
+      str = str.toString();
+      if(typeof length == 'undefined') return str;
+      if(str.length == length) return str;
+      fromBack = (typeof fromBack == 'undefined') ? false : fromBack;
+      if(str.length < length) {
+        // pad the beginning of the string w/ enough 0's to reach desired length:
+        while(length - str.length > 0) str = '0' + str;
+      } else if(str.length > length) {
+        if(fromBack) {
+          // grab the desired #/chars from end of string: ex: '2015' -> '15'
+          str = str.substring(str.length-length);
+        } else {
+          // grab the desired #/chars from beginning of string: ex: '2015' -> '20'
+          str = str.substring(0,length);
+        }
+      }
+      return str;
+    };
+
+    const daysOfWeek = [ 
+      [ 'Sunday', 'Sun' ],
+      [ 'Monday', 'Mon' ],
+      [ 'Tuesday', 'Tue' ],
+      [ 'Wednesday', 'Wed' ],
+      [ 'Thursday', 'Thu' ],
+      [ 'Friday', 'Fri' ],
+      [ 'Saturday', 'Sat' ]
+    ];
+
+    const monthsOfYear = [ 
+      [ 'January', 'Jan' ],
+      [ 'February', 'Feb' ],
+      [ 'March', 'Mar' ],
+      [ 'April', 'Apr' ],
+      [ 'May', 'May' ],
+      [ 'June', 'Jun' ],
+      [ 'July', 'Jul' ],
+      [ 'August', 'Aug' ],
+      [ 'September', 'Sep' ],
+      [ 'October', 'Oct' ],
+      [ 'November', 'Nov' ],
+      [ 'December', 'Dec' ]
+    ];
+
+    let dictionary = { 
+      daysOfWeek, 
+      monthsOfYear
+    };
+
+    const extendDictionary = (conf) => 
+      Object.keys(conf).forEach(key => {
+        if(dictionary[key] && dictionary[key].length == conf[key].length) {
+          dictionary[key] = conf[key];
+        }
+      });
+
+    var acceptedDateTokens = [
+      { 
+        // d: day of the month, 2 digits with leading zeros:
+        key: 'd', 
+        method: function(date) { return enforceLength(date.getDate(), 2); } 
+      }, { 
+        // D: textual representation of day, 3 letters: Sun thru Sat
+        key: 'D', 
+        method: function(date) { return dictionary.daysOfWeek[date.getDay()][1]; } 
+      }, { 
+        // j: day of month without leading 0's
+        key: 'j', 
+        method: function(date) { return date.getDate(); } 
+      }, { 
+        // l: full textual representation of day of week: Sunday thru Saturday
+        key: 'l', 
+        method: function(date) { return dictionary.daysOfWeek[date.getDay()][0]; } 
+      }, { 
+        // F: full text month: 'January' thru 'December'
+        key: 'F', 
+        method: function(date) { return dictionary.monthsOfYear[date.getMonth()][0]; } 
+      }, { 
+        // m: 2 digit numeric month: '01' - '12':
+        key: 'm', 
+        method: function(date) { return enforceLength(date.getMonth()+1,2); } 
+      }, { 
+        // M: a short textual representation of the month, 3 letters: 'Jan' - 'Dec'
+        key: 'M', 
+        method: function(date) { return dictionary.monthsOfYear[date.getMonth()][1]; } 
+      }, { 
+        // n: numeric represetation of month w/o leading 0's, '1' - '12':
+        key: 'n', 
+        method: function(date) { return date.getMonth() + 1; } 
+      }, { 
+        // Y: Full numeric year, 4 digits
+        key: 'Y', 
+        method: function(date) { return date.getFullYear(); } 
+      }, { 
+        // y: 2 digit numeric year:
+        key: 'y', 
+        method: function(date) { return enforceLength(date.getFullYear(),2,true); }
+       }
+    ];
+
+    var acceptedTimeTokens = [
+      { 
+        // a: lowercase ante meridiem and post meridiem 'am' or 'pm'
+        key: 'a', 
+        method: function(date) { return (date.getHours() > 11) ? 'pm' : 'am'; } 
+      }, { 
+        // A: uppercase ante merdiiem and post meridiem 'AM' or 'PM'
+        key: 'A', 
+        method: function(date) { return (date.getHours() > 11) ? 'PM' : 'AM'; } 
+      }, { 
+        // g: 12-hour format of an hour without leading zeros 1-12
+        key: 'g', 
+        method: function(date) { return date.getHours() % 12 || 12; } 
+      }, { 
+        // G: 24-hour format of an hour without leading zeros 0-23
+        key: 'G', 
+        method: function(date) { return date.getHours(); } 
+      }, { 
+        // h: 12-hour format of an hour with leading zeros 01-12
+        key: 'h', 
+        method: function(date) { return enforceLength(date.getHours()%12 || 12,2); } 
+      }, { 
+        // H: 24-hour format of an hour with leading zeros: 00-23
+        key: 'H', 
+        method: function(date) { return enforceLength(date.getHours(),2); } 
+      }, { 
+        // i: Minutes with leading zeros 00-59
+        key: 'i', 
+        method: function(date) { return enforceLength(date.getMinutes(),2); } 
+      }, { 
+        // s: Seconds with leading zeros 00-59
+        key: 's', 
+        method: function(date) { return enforceLength(date.getSeconds(),2); }
+       }
+    ];
+
+    /**
+     * Internationalization object for timeUtils.internationalize().
+     * @typedef internationalizeObj
+     * @property {Array} [daysOfWeek=[ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ]] daysOfWeek Weekday labels as strings, starting with Sunday.
+     * @property {Array} [monthsOfYear=[ 'January','February','March','April','May','June','July','August','September','October','November','December' ]] monthsOfYear Month labels as strings, starting with January.
+     */
+
+    /**
+     * This function can be used to support additional languages by passing an object with 
+     * `daysOfWeek` and `monthsOfYear` attributes.  Each attribute should be an array of
+     * strings (ex: `daysOfWeek: ['monday', 'tuesday', 'wednesday'...]`)
+     *
+     * @param {internationalizeObj} conf
+     */
+    const internationalize = (conf={}) => { 
+      extendDictionary(conf);
+    };
+
+    /**
+     * generic formatDate function which accepts dynamic templates
+     * @param date {Date} Required
+     * @param template {String} Optional
+     * @returns {String}
+     *
+     * @example
+     * formatDate(new Date(), '#{M}. #{j}, #{Y}')
+     * @returns {Number} Returns a formatted date
+     *
+     */
+    const formatDate = (date,template='#{m}/#{d}/#{Y}') => {
+      acceptedDateTokens.forEach(token => {
+        if(template.indexOf(`#{${token.key}}`) == -1) return; 
+        template = injectStringData(template,token.key,token.method(date));
+      }); 
+      acceptedTimeTokens.forEach(token => {
+        if(template.indexOf(`#{${token.key}}`) == -1) return;
+        template = injectStringData(template,token.key,token.method(date));
+      });
+      return template;
+    };
+
+    const keyCodes = {
+      left: 37,
+      up: 38,
+      right: 39,
+      down: 40,
+      pgup: 33,
+      pgdown: 34,
+      enter: 13,
+      escape: 27,
+      tab: 9
+    };
+
+    const keyCodesArray = Object.keys(keyCodes).map(k => keyCodes[k]);
+
+    /* node_modules/svelte-calendar/src/Components/Datepicker.svelte generated by Svelte v3.38.2 */
+    const file$1 = "node_modules/svelte-calendar/src/Components/Datepicker.svelte";
+
+    const get_default_slot_changes = dirty => ({
+    	selected: dirty[0] & /*selected*/ 1,
+    	formattedSelected: dirty[0] & /*formattedSelected*/ 4
+    });
+
+    const get_default_slot_context = ctx => ({
+    	selected: /*selected*/ ctx[0],
+    	formattedSelected: /*formattedSelected*/ ctx[2]
+    });
+
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[63] = list[i];
+    	return child_ctx;
+    }
+
+    // (277:8) {#if !trigger}
+    function create_if_block(ctx) {
+    	let button;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			t = text(/*formattedSelected*/ ctx[2]);
+    			attr_dev(button, "class", "calendar-button svelte-1lorc63");
+    			attr_dev(button, "type", "button");
+    			add_location(button, file$1, 277, 8, 7754);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+    			append_dev(button, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*formattedSelected*/ 4) set_data_dev(t, /*formattedSelected*/ ctx[2]);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(277:8) {#if !trigger}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (276:43)          
+    function fallback_block(ctx) {
+    	let if_block_anchor;
+    	let if_block = !/*trigger*/ ctx[1] && create_if_block(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (!/*trigger*/ ctx[1]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: fallback_block.name,
+    		type: "fallback",
+    		source: "(276:43)          ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (275:4) 
+    function create_trigger_slot(ctx) {
+    	let div;
+    	let current;
+    	const default_slot_template = /*#slots*/ ctx[40].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[47], get_default_slot_context);
+    	const default_slot_or_fallback = default_slot || fallback_block(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (default_slot_or_fallback) default_slot_or_fallback.c();
+    			attr_dev(div, "slot", "trigger");
+    			attr_dev(div, "class", "svelte-1lorc63");
+    			add_location(div, file$1, 274, 4, 7658);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			if (default_slot_or_fallback) {
+    				default_slot_or_fallback.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty[0] & /*selected, formattedSelected*/ 5 | dirty[1] & /*$$scope*/ 65536)) {
+    					update_slot(default_slot, default_slot_template, ctx, /*$$scope*/ ctx[47], dirty, get_default_slot_changes, get_default_slot_context);
+    				}
+    			} else {
+    				if (default_slot_or_fallback && default_slot_or_fallback.p && dirty[0] & /*formattedSelected, trigger*/ 6) {
+    					default_slot_or_fallback.p(ctx, dirty);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(default_slot_or_fallback, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(default_slot_or_fallback, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (default_slot_or_fallback) default_slot_or_fallback.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_trigger_slot.name,
+    		type: "slot",
+    		source: "(275:4) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (298:10) {#each sortedDaysOfWeek as day}
+    function create_each_block(ctx) {
+    	let span;
+    	let t_value = /*day*/ ctx[63][1] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t = text(t_value);
+    			attr_dev(span, "class", "svelte-1lorc63");
+    			add_location(span, file$1, 298, 10, 8321);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(298:10) {#each sortedDaysOfWeek as day}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (284:4) 
+    function create_contents_slot(ctx) {
+    	let div2;
+    	let div1;
+    	let navbar;
+    	let t0;
+    	let div0;
+    	let t1;
+    	let month_1;
+    	let current;
+
+    	navbar = new NavBar({
+    			props: {
+    				month: /*month*/ ctx[6],
+    				year: /*year*/ ctx[7],
+    				canIncrementMonth: /*canIncrementMonth*/ ctx[15],
+    				canDecrementMonth: /*canDecrementMonth*/ ctx[16],
+    				start: /*start*/ ctx[3],
+    				end: /*end*/ ctx[4],
+    				monthsOfYear: /*monthsOfYear*/ ctx[5]
+    			},
+    			$$inline: true
+    		});
+
+    	navbar.$on("monthSelected", /*monthSelected_handler*/ ctx[41]);
+    	navbar.$on("incrementMonth", /*incrementMonth_handler*/ ctx[42]);
+    	let each_value = /*sortedDaysOfWeek*/ ctx[18];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	month_1 = new Month({
+    			props: {
+    				visibleMonth: /*visibleMonth*/ ctx[8],
+    				selected: /*selected*/ ctx[0],
+    				highlighted: /*highlighted*/ ctx[10],
+    				shouldShakeDate: /*shouldShakeDate*/ ctx[11],
+    				id: /*visibleMonthId*/ ctx[14]
+    			},
+    			$$inline: true
+    		});
+
+    	month_1.$on("dateSelected", /*dateSelected_handler*/ ctx[43]);
+
+    	const block = {
+    		c: function create() {
+    			div2 = element("div");
+    			div1 = element("div");
+    			create_component(navbar.$$.fragment);
+    			t0 = space();
+    			div0 = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t1 = space();
+    			create_component(month_1.$$.fragment);
+    			attr_dev(div0, "class", "legend svelte-1lorc63");
+    			add_location(div0, file$1, 296, 8, 8248);
+    			attr_dev(div1, "class", "calendar svelte-1lorc63");
+    			add_location(div1, file$1, 284, 6, 7920);
+    			attr_dev(div2, "slot", "contents");
+    			attr_dev(div2, "class", "svelte-1lorc63");
+    			add_location(div2, file$1, 283, 4, 7892);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div1);
+    			mount_component(navbar, div1, null);
+    			append_dev(div1, t0);
+    			append_dev(div1, div0);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div0, null);
+    			}
+
+    			append_dev(div1, t1);
+    			mount_component(month_1, div1, null);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const navbar_changes = {};
+    			if (dirty[0] & /*month*/ 64) navbar_changes.month = /*month*/ ctx[6];
+    			if (dirty[0] & /*year*/ 128) navbar_changes.year = /*year*/ ctx[7];
+    			if (dirty[0] & /*canIncrementMonth*/ 32768) navbar_changes.canIncrementMonth = /*canIncrementMonth*/ ctx[15];
+    			if (dirty[0] & /*canDecrementMonth*/ 65536) navbar_changes.canDecrementMonth = /*canDecrementMonth*/ ctx[16];
+    			if (dirty[0] & /*start*/ 8) navbar_changes.start = /*start*/ ctx[3];
+    			if (dirty[0] & /*end*/ 16) navbar_changes.end = /*end*/ ctx[4];
+    			if (dirty[0] & /*monthsOfYear*/ 32) navbar_changes.monthsOfYear = /*monthsOfYear*/ ctx[5];
+    			navbar.$set(navbar_changes);
+
+    			if (dirty[0] & /*sortedDaysOfWeek*/ 262144) {
+    				each_value = /*sortedDaysOfWeek*/ ctx[18];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div0, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			const month_1_changes = {};
+    			if (dirty[0] & /*visibleMonth*/ 256) month_1_changes.visibleMonth = /*visibleMonth*/ ctx[8];
+    			if (dirty[0] & /*selected*/ 1) month_1_changes.selected = /*selected*/ ctx[0];
+    			if (dirty[0] & /*highlighted*/ 1024) month_1_changes.highlighted = /*highlighted*/ ctx[10];
+    			if (dirty[0] & /*shouldShakeDate*/ 2048) month_1_changes.shouldShakeDate = /*shouldShakeDate*/ ctx[11];
+    			if (dirty[0] & /*visibleMonthId*/ 16384) month_1_changes.id = /*visibleMonthId*/ ctx[14];
+    			month_1.$set(month_1_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(navbar.$$.fragment, local);
+    			transition_in(month_1.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(navbar.$$.fragment, local);
+    			transition_out(month_1.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div2);
+    			destroy_component(navbar);
+    			destroy_each(each_blocks, detaching);
+    			destroy_component(month_1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_contents_slot.name,
+    		type: "slot",
+    		source: "(284:4) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let div;
+    	let popover_1;
+    	let updating_open;
+    	let updating_shrink;
+    	let current;
+
+    	function popover_1_open_binding(value) {
+    		/*popover_1_open_binding*/ ctx[45](value);
+    	}
+
+    	function popover_1_shrink_binding(value) {
+    		/*popover_1_shrink_binding*/ ctx[46](value);
+    	}
+
+    	let popover_1_props = {
+    		trigger: /*trigger*/ ctx[1],
+    		$$slots: {
+    			contents: [create_contents_slot],
+    			trigger: [create_trigger_slot]
+    		},
+    		$$scope: { ctx }
+    	};
+
+    	if (/*isOpen*/ ctx[12] !== void 0) {
+    		popover_1_props.open = /*isOpen*/ ctx[12];
+    	}
+
+    	if (/*isClosing*/ ctx[13] !== void 0) {
+    		popover_1_props.shrink = /*isClosing*/ ctx[13];
+    	}
+
+    	popover_1 = new Popover({ props: popover_1_props, $$inline: true });
+    	/*popover_1_binding*/ ctx[44](popover_1);
+    	binding_callbacks.push(() => bind(popover_1, "open", popover_1_open_binding));
+    	binding_callbacks.push(() => bind(popover_1, "shrink", popover_1_shrink_binding));
+    	popover_1.$on("opened", /*registerOpen*/ ctx[23]);
+    	popover_1.$on("closed", /*registerClose*/ ctx[22]);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			create_component(popover_1.$$.fragment);
+    			attr_dev(div, "class", "datepicker svelte-1lorc63");
+    			attr_dev(div, "style", /*wrapperStyle*/ ctx[17]);
+    			toggle_class(div, "open", /*isOpen*/ ctx[12]);
+    			toggle_class(div, "closing", /*isClosing*/ ctx[13]);
+    			add_location(div, file$1, 260, 0, 7376);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			mount_component(popover_1, div, null);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			const popover_1_changes = {};
+    			if (dirty[0] & /*trigger*/ 2) popover_1_changes.trigger = /*trigger*/ ctx[1];
+
+    			if (dirty[0] & /*visibleMonth, selected, highlighted, shouldShakeDate, visibleMonthId, month, year, canIncrementMonth, canDecrementMonth, start, end, monthsOfYear, formattedSelected, trigger*/ 118271 | dirty[1] & /*$$scope*/ 65536) {
+    				popover_1_changes.$$scope = { dirty, ctx };
+    			}
+
+    			if (!updating_open && dirty[0] & /*isOpen*/ 4096) {
+    				updating_open = true;
+    				popover_1_changes.open = /*isOpen*/ ctx[12];
+    				add_flush_callback(() => updating_open = false);
+    			}
+
+    			if (!updating_shrink && dirty[0] & /*isClosing*/ 8192) {
+    				updating_shrink = true;
+    				popover_1_changes.shrink = /*isClosing*/ ctx[13];
+    				add_flush_callback(() => updating_shrink = false);
+    			}
+
+    			popover_1.$set(popover_1_changes);
+
+    			if (!current || dirty[0] & /*wrapperStyle*/ 131072) {
+    				attr_dev(div, "style", /*wrapperStyle*/ ctx[17]);
+    			}
+
+    			if (dirty[0] & /*isOpen*/ 4096) {
+    				toggle_class(div, "open", /*isOpen*/ ctx[12]);
+    			}
+
+    			if (dirty[0] & /*isClosing*/ 8192) {
+    				toggle_class(div, "closing", /*isClosing*/ ctx[13]);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(popover_1.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(popover_1.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			/*popover_1_binding*/ ctx[44](null);
+    			destroy_component(popover_1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$2.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	let months;
+    	let visibleMonth;
+    	let visibleMonthId;
+    	let lastVisibleDate;
+    	let firstVisibleDate;
+    	let canIncrementMonth;
+    	let canDecrementMonth;
+    	let wrapperStyle;
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Datepicker", slots, ['default']);
+    	const dispatch = createEventDispatcher();
+    	const today = new Date();
+    	const oneYear = 1000 * 60 * 60 * 24 * 365;
+    	let popover;
+    	let { format = "#{m}/#{d}/#{Y}" } = $$props;
+    	let { start = new Date(Date.now() - oneYear) } = $$props;
+    	let { end = new Date(Date.now() + oneYear) } = $$props;
+    	let { selected = today } = $$props;
+    	let { dateChosen = false } = $$props;
+    	let { trigger = null } = $$props;
+    	let { selectableCallback = null } = $$props;
+    	let { weekStart = 0 } = $$props;
+
+    	let { daysOfWeek = [
+    		["Sunday", "Sun"],
+    		["Monday", "Mon"],
+    		["Tuesday", "Tue"],
+    		["Wednesday", "Wed"],
+    		["Thursday", "Thu"],
+    		["Friday", "Fri"],
+    		["Saturday", "Sat"]
+    	] } = $$props;
+
+    	let { monthsOfYear = [
+    		["January", "Jan"],
+    		["February", "Feb"],
+    		["March", "Mar"],
+    		["April", "Apr"],
+    		["May", "May"],
+    		["June", "Jun"],
+    		["July", "Jul"],
+    		["August", "Aug"],
+    		["September", "Sep"],
+    		["October", "Oct"],
+    		["November", "Nov"],
+    		["December", "Dec"]
+    	] } = $$props;
+
+    	selected = selected.getTime() < start.getTime() || selected.getTime() > end.getTime()
+    	? start
+    	: selected;
+
+    	let { style = "" } = $$props;
+    	let { buttonBackgroundColor = "#fff" } = $$props;
+    	let { buttonBorderColor = "#eee" } = $$props;
+    	let { buttonTextColor = "#333" } = $$props;
+    	let { highlightColor = "#f7901e" } = $$props;
+    	let { dayBackgroundColor = "none" } = $$props;
+    	let { dayTextColor = "#4a4a4a" } = $$props;
+    	let { dayHighlightedBackgroundColor = "#efefef" } = $$props;
+    	let { dayHighlightedTextColor = "#4a4a4a" } = $$props;
+    	internationalize({ daysOfWeek, monthsOfYear });
+
+    	let sortedDaysOfWeek = weekStart === 0
+    	? daysOfWeek
+    	: (() => {
+    			let dow = daysOfWeek.slice();
+    			dow.push(dow.shift());
+    			return dow;
+    		})();
+
+    	let highlighted = today;
+    	let shouldShakeDate = false;
+    	let shakeHighlightTimeout;
+    	let month = today.getMonth();
+    	let year = today.getFullYear();
+    	let isOpen = false;
+    	let isClosing = false;
+    	today.setHours(0, 0, 0, 0);
+
+    	function assignmentHandler(formatted) {
+    		if (!trigger) return;
+    		$$invalidate(1, trigger.innerHTML = formatted, trigger);
+    	}
+
+    	let monthIndex = 0;
+    	let { formattedSelected } = $$props;
+
+    	onMount(() => {
+    		$$invalidate(6, month = selected.getMonth());
+    		$$invalidate(7, year = selected.getFullYear());
+    	});
+
+    	function changeMonth(selectedMonth) {
+    		$$invalidate(6, month = selectedMonth);
+    		$$invalidate(10, highlighted = new Date(year, month, 1));
+    	}
+
+    	function incrementMonth(direction, day = 1) {
+    		if (direction === 1 && !canIncrementMonth) return;
+    		if (direction === -1 && !canDecrementMonth) return;
+    		let current = new Date(year, month, 1);
+    		current.setMonth(current.getMonth() + direction);
+    		$$invalidate(6, month = current.getMonth());
+    		$$invalidate(7, year = current.getFullYear());
+    		$$invalidate(10, highlighted = new Date(year, month, day));
+    	}
+
+    	function getDefaultHighlighted() {
+    		return new Date(selected);
+    	}
+
+    	const getDay = (m, d, y) => {
+    		let theMonth = months.find(aMonth => aMonth.month === m && aMonth.year === y);
+    		if (!theMonth) return null;
+
+    		// eslint-disable-next-line
+    		for (let i = 0; i < theMonth.weeks.length; ++i) {
+    			// eslint-disable-next-line
+    			for (let j = 0; j < theMonth.weeks[i].days.length; ++j) {
+    				let aDay = theMonth.weeks[i].days[j];
+    				if (aDay.month === m && aDay.day === d && aDay.year === y) return aDay;
+    			}
+    		}
+
+    		return null;
+    	};
+
+    	function incrementDayHighlighted(amount) {
+    		let proposedDate = new Date(highlighted);
+    		proposedDate.setDate(highlighted.getDate() + amount);
+    		let correspondingDayObj = getDay(proposedDate.getMonth(), proposedDate.getDate(), proposedDate.getFullYear());
+    		if (!correspondingDayObj || !correspondingDayObj.isInRange) return;
+    		$$invalidate(10, highlighted = proposedDate);
+
+    		if (amount > 0 && highlighted > lastVisibleDate) {
+    			incrementMonth(1, highlighted.getDate());
+    		}
+
+    		if (amount < 0 && highlighted < firstVisibleDate) {
+    			incrementMonth(-1, highlighted.getDate());
+    		}
+    	}
+
+    	function checkIfVisibleDateIsSelectable(date) {
+    		const proposedDay = getDay(date.getMonth(), date.getDate(), date.getFullYear());
+    		return proposedDay && proposedDay.selectable;
+    	}
+
+    	function shakeDate(date) {
+    		clearTimeout(shakeHighlightTimeout);
+    		$$invalidate(11, shouldShakeDate = date);
+
+    		shakeHighlightTimeout = setTimeout(
+    			() => {
+    				$$invalidate(11, shouldShakeDate = false);
+    			},
+    			700
+    		);
+    	}
+
+    	function assignValueToTrigger(formatted) {
+    		assignmentHandler(formatted);
+    	}
+
+    	function registerSelection(chosen) {
+    		if (!checkIfVisibleDateIsSelectable(chosen)) return shakeDate(chosen);
+
+    		// eslint-disable-next-line
+    		close();
+
+    		$$invalidate(0, selected = chosen);
+    		$$invalidate(24, dateChosen = true);
+    		assignValueToTrigger(formattedSelected);
+    		return dispatch("dateSelected", { date: chosen });
+    	}
+
+    	function handleKeyPress(evt) {
+    		if (keyCodesArray.indexOf(evt.keyCode) === -1) return;
+    		evt.preventDefault();
+
+    		switch (evt.keyCode) {
+    			case keyCodes.left:
+    				incrementDayHighlighted(-1);
+    				break;
+    			case keyCodes.up:
+    				incrementDayHighlighted(-7);
+    				break;
+    			case keyCodes.right:
+    				incrementDayHighlighted(1);
+    				break;
+    			case keyCodes.down:
+    				incrementDayHighlighted(7);
+    				break;
+    			case keyCodes.pgup:
+    				incrementMonth(-1);
+    				break;
+    			case keyCodes.pgdown:
+    				incrementMonth(1);
+    				break;
+    			case keyCodes.escape:
+    				// eslint-disable-next-line
+    				close();
+    				break;
+    			case keyCodes.enter:
+    				registerSelection(highlighted);
+    				break;
+    		}
+    	}
+
+    	function registerClose() {
+    		document.removeEventListener("keydown", handleKeyPress);
+    		dispatch("close");
+    	}
+
+    	function close() {
+    		popover.close();
+    		registerClose();
+    	}
+
+    	function registerOpen() {
+    		$$invalidate(10, highlighted = getDefaultHighlighted());
+    		$$invalidate(6, month = selected.getMonth());
+    		$$invalidate(7, year = selected.getFullYear());
+    		document.addEventListener("keydown", handleKeyPress);
+    		dispatch("open");
+    	}
+
+    	const writable_props = [
+    		"format",
+    		"start",
+    		"end",
+    		"selected",
+    		"dateChosen",
+    		"trigger",
+    		"selectableCallback",
+    		"weekStart",
+    		"daysOfWeek",
+    		"monthsOfYear",
+    		"style",
+    		"buttonBackgroundColor",
+    		"buttonBorderColor",
+    		"buttonTextColor",
+    		"highlightColor",
+    		"dayBackgroundColor",
+    		"dayTextColor",
+    		"dayHighlightedBackgroundColor",
+    		"dayHighlightedTextColor",
+    		"formattedSelected"
+    	];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Datepicker> was created with unknown prop '${key}'`);
+    	});
+
+    	const monthSelected_handler = e => changeMonth(e.detail);
+    	const incrementMonth_handler = e => incrementMonth(e.detail);
+    	const dateSelected_handler = e => registerSelection(e.detail);
+
+    	function popover_1_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			popover = $$value;
+    			$$invalidate(9, popover);
+    		});
+    	}
+
+    	function popover_1_open_binding(value) {
+    		isOpen = value;
+    		$$invalidate(12, isOpen);
+    	}
+
+    	function popover_1_shrink_binding(value) {
+    		isClosing = value;
+    		$$invalidate(13, isClosing);
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("format" in $$props) $$invalidate(25, format = $$props.format);
+    		if ("start" in $$props) $$invalidate(3, start = $$props.start);
+    		if ("end" in $$props) $$invalidate(4, end = $$props.end);
+    		if ("selected" in $$props) $$invalidate(0, selected = $$props.selected);
+    		if ("dateChosen" in $$props) $$invalidate(24, dateChosen = $$props.dateChosen);
+    		if ("trigger" in $$props) $$invalidate(1, trigger = $$props.trigger);
+    		if ("selectableCallback" in $$props) $$invalidate(26, selectableCallback = $$props.selectableCallback);
+    		if ("weekStart" in $$props) $$invalidate(27, weekStart = $$props.weekStart);
+    		if ("daysOfWeek" in $$props) $$invalidate(28, daysOfWeek = $$props.daysOfWeek);
+    		if ("monthsOfYear" in $$props) $$invalidate(5, monthsOfYear = $$props.monthsOfYear);
+    		if ("style" in $$props) $$invalidate(29, style = $$props.style);
+    		if ("buttonBackgroundColor" in $$props) $$invalidate(30, buttonBackgroundColor = $$props.buttonBackgroundColor);
+    		if ("buttonBorderColor" in $$props) $$invalidate(31, buttonBorderColor = $$props.buttonBorderColor);
+    		if ("buttonTextColor" in $$props) $$invalidate(32, buttonTextColor = $$props.buttonTextColor);
+    		if ("highlightColor" in $$props) $$invalidate(33, highlightColor = $$props.highlightColor);
+    		if ("dayBackgroundColor" in $$props) $$invalidate(34, dayBackgroundColor = $$props.dayBackgroundColor);
+    		if ("dayTextColor" in $$props) $$invalidate(35, dayTextColor = $$props.dayTextColor);
+    		if ("dayHighlightedBackgroundColor" in $$props) $$invalidate(36, dayHighlightedBackgroundColor = $$props.dayHighlightedBackgroundColor);
+    		if ("dayHighlightedTextColor" in $$props) $$invalidate(37, dayHighlightedTextColor = $$props.dayHighlightedTextColor);
+    		if ("formattedSelected" in $$props) $$invalidate(2, formattedSelected = $$props.formattedSelected);
+    		if ("$$scope" in $$props) $$invalidate(47, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		Month,
+    		NavBar,
+    		Popover,
+    		getMonths,
+    		formatDate,
+    		internationalize,
+    		keyCodes,
+    		keyCodesArray,
+    		onMount,
+    		createEventDispatcher,
+    		dispatch,
+    		today,
+    		oneYear,
+    		popover,
+    		format,
+    		start,
+    		end,
+    		selected,
+    		dateChosen,
+    		trigger,
+    		selectableCallback,
+    		weekStart,
+    		daysOfWeek,
+    		monthsOfYear,
+    		style,
+    		buttonBackgroundColor,
+    		buttonBorderColor,
+    		buttonTextColor,
+    		highlightColor,
+    		dayBackgroundColor,
+    		dayTextColor,
+    		dayHighlightedBackgroundColor,
+    		dayHighlightedTextColor,
+    		sortedDaysOfWeek,
+    		highlighted,
+    		shouldShakeDate,
+    		shakeHighlightTimeout,
+    		month,
+    		year,
+    		isOpen,
+    		isClosing,
+    		assignmentHandler,
+    		monthIndex,
+    		formattedSelected,
+    		changeMonth,
+    		incrementMonth,
+    		getDefaultHighlighted,
+    		getDay,
+    		incrementDayHighlighted,
+    		checkIfVisibleDateIsSelectable,
+    		shakeDate,
+    		assignValueToTrigger,
+    		registerSelection,
+    		handleKeyPress,
+    		registerClose,
+    		close,
+    		registerOpen,
+    		months,
+    		visibleMonth,
+    		visibleMonthId,
+    		lastVisibleDate,
+    		firstVisibleDate,
+    		canIncrementMonth,
+    		canDecrementMonth,
+    		wrapperStyle
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("popover" in $$props) $$invalidate(9, popover = $$props.popover);
+    		if ("format" in $$props) $$invalidate(25, format = $$props.format);
+    		if ("start" in $$props) $$invalidate(3, start = $$props.start);
+    		if ("end" in $$props) $$invalidate(4, end = $$props.end);
+    		if ("selected" in $$props) $$invalidate(0, selected = $$props.selected);
+    		if ("dateChosen" in $$props) $$invalidate(24, dateChosen = $$props.dateChosen);
+    		if ("trigger" in $$props) $$invalidate(1, trigger = $$props.trigger);
+    		if ("selectableCallback" in $$props) $$invalidate(26, selectableCallback = $$props.selectableCallback);
+    		if ("weekStart" in $$props) $$invalidate(27, weekStart = $$props.weekStart);
+    		if ("daysOfWeek" in $$props) $$invalidate(28, daysOfWeek = $$props.daysOfWeek);
+    		if ("monthsOfYear" in $$props) $$invalidate(5, monthsOfYear = $$props.monthsOfYear);
+    		if ("style" in $$props) $$invalidate(29, style = $$props.style);
+    		if ("buttonBackgroundColor" in $$props) $$invalidate(30, buttonBackgroundColor = $$props.buttonBackgroundColor);
+    		if ("buttonBorderColor" in $$props) $$invalidate(31, buttonBorderColor = $$props.buttonBorderColor);
+    		if ("buttonTextColor" in $$props) $$invalidate(32, buttonTextColor = $$props.buttonTextColor);
+    		if ("highlightColor" in $$props) $$invalidate(33, highlightColor = $$props.highlightColor);
+    		if ("dayBackgroundColor" in $$props) $$invalidate(34, dayBackgroundColor = $$props.dayBackgroundColor);
+    		if ("dayTextColor" in $$props) $$invalidate(35, dayTextColor = $$props.dayTextColor);
+    		if ("dayHighlightedBackgroundColor" in $$props) $$invalidate(36, dayHighlightedBackgroundColor = $$props.dayHighlightedBackgroundColor);
+    		if ("dayHighlightedTextColor" in $$props) $$invalidate(37, dayHighlightedTextColor = $$props.dayHighlightedTextColor);
+    		if ("sortedDaysOfWeek" in $$props) $$invalidate(18, sortedDaysOfWeek = $$props.sortedDaysOfWeek);
+    		if ("highlighted" in $$props) $$invalidate(10, highlighted = $$props.highlighted);
+    		if ("shouldShakeDate" in $$props) $$invalidate(11, shouldShakeDate = $$props.shouldShakeDate);
+    		if ("shakeHighlightTimeout" in $$props) shakeHighlightTimeout = $$props.shakeHighlightTimeout;
+    		if ("month" in $$props) $$invalidate(6, month = $$props.month);
+    		if ("year" in $$props) $$invalidate(7, year = $$props.year);
+    		if ("isOpen" in $$props) $$invalidate(12, isOpen = $$props.isOpen);
+    		if ("isClosing" in $$props) $$invalidate(13, isClosing = $$props.isClosing);
+    		if ("monthIndex" in $$props) $$invalidate(38, monthIndex = $$props.monthIndex);
+    		if ("formattedSelected" in $$props) $$invalidate(2, formattedSelected = $$props.formattedSelected);
+    		if ("months" in $$props) $$invalidate(39, months = $$props.months);
+    		if ("visibleMonth" in $$props) $$invalidate(8, visibleMonth = $$props.visibleMonth);
+    		if ("visibleMonthId" in $$props) $$invalidate(14, visibleMonthId = $$props.visibleMonthId);
+    		if ("lastVisibleDate" in $$props) lastVisibleDate = $$props.lastVisibleDate;
+    		if ("firstVisibleDate" in $$props) firstVisibleDate = $$props.firstVisibleDate;
+    		if ("canIncrementMonth" in $$props) $$invalidate(15, canIncrementMonth = $$props.canIncrementMonth);
+    		if ("canDecrementMonth" in $$props) $$invalidate(16, canDecrementMonth = $$props.canDecrementMonth);
+    		if ("wrapperStyle" in $$props) $$invalidate(17, wrapperStyle = $$props.wrapperStyle);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty[0] & /*start, end, selectableCallback, weekStart*/ 201326616) {
+    			$$invalidate(39, months = getMonths(start, end, selectableCallback, weekStart));
+    		}
+
+    		if ($$self.$$.dirty[0] & /*month, year*/ 192 | $$self.$$.dirty[1] & /*months*/ 256) {
+    			{
+    				$$invalidate(38, monthIndex = 0);
+
+    				for (let i = 0; i < months.length; i += 1) {
+    					if (months[i].month === month && months[i].year === year) {
+    						$$invalidate(38, monthIndex = i);
+    					}
+    				}
+    			}
+    		}
+
+    		if ($$self.$$.dirty[1] & /*months, monthIndex*/ 384) {
+    			$$invalidate(8, visibleMonth = months[monthIndex]);
+    		}
+
+    		if ($$self.$$.dirty[0] & /*year, month*/ 192) {
+    			$$invalidate(14, visibleMonthId = year + month / 100);
+    		}
+
+    		if ($$self.$$.dirty[0] & /*visibleMonth*/ 256) {
+    			lastVisibleDate = visibleMonth.weeks[visibleMonth.weeks.length - 1].days[6].date;
+    		}
+
+    		if ($$self.$$.dirty[0] & /*visibleMonth*/ 256) {
+    			firstVisibleDate = visibleMonth.weeks[0].days[0].date;
+    		}
+
+    		if ($$self.$$.dirty[1] & /*monthIndex, months*/ 384) {
+    			$$invalidate(15, canIncrementMonth = monthIndex < months.length - 1);
+    		}
+
+    		if ($$self.$$.dirty[1] & /*monthIndex*/ 128) {
+    			$$invalidate(16, canDecrementMonth = monthIndex > 0);
+    		}
+
+    		if ($$self.$$.dirty[0] & /*buttonBackgroundColor, style*/ 1610612736 | $$self.$$.dirty[1] & /*buttonBorderColor, buttonTextColor, highlightColor, dayBackgroundColor, dayTextColor, dayHighlightedBackgroundColor, dayHighlightedTextColor*/ 127) {
+    			$$invalidate(17, wrapperStyle = `
+    --button-background-color: ${buttonBackgroundColor};
+    --button-border-color: ${buttonBorderColor};
+    --button-text-color: ${buttonTextColor};
+    --highlight-color: ${highlightColor};
+    --day-background-color: ${dayBackgroundColor};
+    --day-text-color: ${dayTextColor};
+    --day-highlighted-background-color: ${dayHighlightedBackgroundColor};
+    --day-highlighted-text-color: ${dayHighlightedTextColor};
+    ${style}
+  `);
+    		}
+
+    		if ($$self.$$.dirty[0] & /*format, selected*/ 33554433) {
+    			{
+    				$$invalidate(2, formattedSelected = typeof format === "function"
+    				? format(selected)
+    				: formatDate(selected, format));
+    			}
+    		}
+    	};
+
+    	return [
+    		selected,
+    		trigger,
+    		formattedSelected,
+    		start,
+    		end,
+    		monthsOfYear,
+    		month,
+    		year,
+    		visibleMonth,
+    		popover,
+    		highlighted,
+    		shouldShakeDate,
+    		isOpen,
+    		isClosing,
+    		visibleMonthId,
+    		canIncrementMonth,
+    		canDecrementMonth,
+    		wrapperStyle,
+    		sortedDaysOfWeek,
+    		changeMonth,
+    		incrementMonth,
+    		registerSelection,
+    		registerClose,
+    		registerOpen,
+    		dateChosen,
+    		format,
+    		selectableCallback,
+    		weekStart,
+    		daysOfWeek,
+    		style,
+    		buttonBackgroundColor,
+    		buttonBorderColor,
+    		buttonTextColor,
+    		highlightColor,
+    		dayBackgroundColor,
+    		dayTextColor,
+    		dayHighlightedBackgroundColor,
+    		dayHighlightedTextColor,
+    		monthIndex,
+    		months,
+    		slots,
+    		monthSelected_handler,
+    		incrementMonth_handler,
+    		dateSelected_handler,
+    		popover_1_binding,
+    		popover_1_open_binding,
+    		popover_1_shrink_binding,
+    		$$scope
+    	];
+    }
+
+    class Datepicker extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(
+    			this,
+    			options,
+    			instance$2,
+    			create_fragment$2,
+    			safe_not_equal,
+    			{
+    				format: 25,
+    				start: 3,
+    				end: 4,
+    				selected: 0,
+    				dateChosen: 24,
+    				trigger: 1,
+    				selectableCallback: 26,
+    				weekStart: 27,
+    				daysOfWeek: 28,
+    				monthsOfYear: 5,
+    				style: 29,
+    				buttonBackgroundColor: 30,
+    				buttonBorderColor: 31,
+    				buttonTextColor: 32,
+    				highlightColor: 33,
+    				dayBackgroundColor: 34,
+    				dayTextColor: 35,
+    				dayHighlightedBackgroundColor: 36,
+    				dayHighlightedTextColor: 37,
+    				formattedSelected: 2
+    			},
+    			[-1, -1, -1]
+    		);
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Datepicker",
+    			options,
     			id: create_fragment$2.name
     		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*formattedSelected*/ ctx[2] === undefined && !("formattedSelected" in props)) {
+    			console.warn("<Datepicker> was created without expected prop 'formattedSelected'");
+    		}
+    	}
+
+    	get format() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set format(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get start() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set start(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get end() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set end(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get selected() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set selected(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get dateChosen() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set dateChosen(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get trigger() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set trigger(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get selectableCallback() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set selectableCallback(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get weekStart() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set weekStart(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get daysOfWeek() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set daysOfWeek(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get monthsOfYear() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set monthsOfYear(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get style() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set style(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get buttonBackgroundColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set buttonBackgroundColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get buttonBorderColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set buttonBorderColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get buttonTextColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set buttonTextColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get highlightColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set highlightColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get dayBackgroundColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set dayBackgroundColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get dayTextColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set dayTextColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get dayHighlightedBackgroundColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set dayHighlightedBackgroundColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get dayHighlightedTextColor() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set dayHighlightedTextColor(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get formattedSelected() {
+    		throw new Error("<Datepicker>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set formattedSelected(value) {
+    		throw new Error("<Datepicker>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
@@ -44585,24 +48102,71 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file = "src/AddConference.svelte";
 
+    // (9:4) <Datepicker>
+    function create_default_slot(ctx) {
+    	let button;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "date";
+    			attr_dev(button, "class", "date-picker svelte-ckeoo8");
+    			add_location(button, file, 9, 8, 519);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_default_slot.name,
+    		type: "slot",
+    		source: "(9:4) <Datepicker>",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$1(ctx) {
     	let link0;
     	let t0;
     	let link1;
     	let t1;
-    	let input0;
-    	let t2;
-    	let input1;
+    	let div;
+    	let h2;
     	let t3;
-    	let input2;
-    	let t4;
-    	let input3;
+    	let h3;
     	let t5;
-    	let input4;
+    	let input0;
     	let t6;
+    	let input1;
+    	let t7;
+    	let input2;
+    	let t8;
+    	let datepicker;
+    	let t9;
+    	let select;
+    	let option0;
+    	let option1;
+    	let option2;
+    	let t13;
     	let button;
+    	let current;
     	let mounted;
     	let dispose;
+
+    	datepicker = new Datepicker({
+    			props: {
+    				$$slots: { default: [create_default_slot] },
+    				$$scope: { ctx }
+    			},
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
@@ -44610,16 +48174,29 @@ var app = (function () {
     			t0 = space();
     			link1 = element("link");
     			t1 = space();
-    			input0 = element("input");
-    			t2 = space();
-    			input1 = element("input");
+    			div = element("div");
+    			h2 = element("h2");
+    			h2.textContent = "Create a new conference";
     			t3 = space();
-    			input2 = element("input");
-    			t4 = space();
-    			input3 = element("input");
+    			h3 = element("h3");
+    			h3.textContent = "Enter conference information to share with attendees";
     			t5 = space();
-    			input4 = element("input");
+    			input0 = element("input");
     			t6 = space();
+    			input1 = element("input");
+    			t7 = space();
+    			input2 = element("input");
+    			t8 = space();
+    			create_component(datepicker.$$.fragment);
+    			t9 = space();
+    			select = element("select");
+    			option0 = element("option");
+    			option0.textContent = "access ";
+    			option1 = element("option");
+    			option1.textContent = "public ";
+    			option2 = element("option");
+    			option2.textContent = "private";
+    			t13 = space();
     			button = element("button");
     			button.textContent = "Add Conference";
     			attr_dev(link0, "rel", "preconnect");
@@ -44628,28 +48205,43 @@ var app = (function () {
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file, 1, 0, 57);
+    			attr_dev(h2, "class", "svelte-ckeoo8");
+    			add_location(h2, file, 3, 4, 203);
+    			attr_dev(h3, "class", "svelte-ckeoo8");
+    			add_location(h3, file, 4, 4, 241);
     			attr_dev(input0, "id", "name");
     			attr_dev(input0, "placeholder", "name");
-    			attr_dev(input0, "class", "svelte-sb53kr");
-    			add_location(input0, file, 3, 0, 171);
-    			attr_dev(input1, "id", "date");
-    			attr_dev(input1, "placeholder", "date");
-    			attr_dev(input1, "class", "svelte-sb53kr");
-    			add_location(input1, file, 4, 0, 226);
-    			attr_dev(input2, "id", "location");
-    			attr_dev(input2, "placeholder", "location");
-    			attr_dev(input2, "class", "svelte-sb53kr");
-    			add_location(input2, file, 5, 0, 281);
-    			attr_dev(input3, "id", "time");
-    			attr_dev(input3, "placeholder", "time");
-    			attr_dev(input3, "class", "svelte-sb53kr");
-    			add_location(input3, file, 6, 0, 348);
-    			attr_dev(input4, "id", "access");
-    			attr_dev(input4, "placeholder", "access");
-    			attr_dev(input4, "class", "svelte-sb53kr");
-    			add_location(input4, file, 7, 0, 403);
-    			attr_dev(button, "class", "svelte-sb53kr");
-    			add_location(button, file, 9, 0, 465);
+    			attr_dev(input0, "class", "svelte-ckeoo8");
+    			add_location(input0, file, 5, 4, 308);
+    			attr_dev(input1, "id", "location");
+    			attr_dev(input1, "placeholder", "location");
+    			attr_dev(input1, "class", "svelte-ckeoo8");
+    			add_location(input1, file, 6, 4, 367);
+    			attr_dev(input2, "id", "time");
+    			attr_dev(input2, "placeholder", "time");
+    			attr_dev(input2, "class", "svelte-ckeoo8");
+    			add_location(input2, file, 7, 4, 438);
+    			option0.__value = "";
+    			option0.value = option0.__value;
+    			attr_dev(option0, "class", "svelte-ckeoo8");
+    			add_location(option0, file, 12, 8, 655);
+    			option1.__value = "Public";
+    			option1.value = option1.__value;
+    			attr_dev(option1, "class", "svelte-ckeoo8");
+    			add_location(option1, file, 13, 8, 698);
+    			option2.__value = "Private";
+    			option2.value = option2.__value;
+    			attr_dev(option2, "class", "svelte-ckeoo8");
+    			add_location(option2, file, 14, 8, 747);
+    			attr_dev(select, "id", "access");
+    			attr_dev(select, "placeholder", "access");
+    			attr_dev(select, "class", "svelte-ckeoo8");
+    			if (/*access*/ ctx[3] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[9].call(select));
+    			add_location(select, file, 11, 4, 585);
+    			attr_dev(button, "class", "svelte-ckeoo8");
+    			add_location(button, file, 16, 4, 808);
+    			attr_dev(div, "class", "load-animation svelte-ckeoo8");
+    			add_location(div, file, 2, 0, 170);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -44659,31 +48251,38 @@ var app = (function () {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, link1, anchor);
     			insert_dev(target, t1, anchor);
-    			insert_dev(target, input0, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, h2);
+    			append_dev(div, t3);
+    			append_dev(div, h3);
+    			append_dev(div, t5);
+    			append_dev(div, input0);
     			set_input_value(input0, /*name*/ ctx[0]);
-    			insert_dev(target, t2, anchor);
-    			insert_dev(target, input1, anchor);
-    			set_input_value(input1, /*date*/ ctx[1]);
-    			insert_dev(target, t3, anchor);
-    			insert_dev(target, input2, anchor);
-    			set_input_value(input2, /*location*/ ctx[2]);
-    			insert_dev(target, t4, anchor);
-    			insert_dev(target, input3, anchor);
-    			set_input_value(input3, /*time*/ ctx[3]);
-    			insert_dev(target, t5, anchor);
-    			insert_dev(target, input4, anchor);
-    			set_input_value(input4, /*access*/ ctx[4]);
-    			insert_dev(target, t6, anchor);
-    			insert_dev(target, button, anchor);
+    			append_dev(div, t6);
+    			append_dev(div, input1);
+    			set_input_value(input1, /*location*/ ctx[1]);
+    			append_dev(div, t7);
+    			append_dev(div, input2);
+    			set_input_value(input2, /*time*/ ctx[2]);
+    			append_dev(div, t8);
+    			mount_component(datepicker, div, null);
+    			append_dev(div, t9);
+    			append_dev(div, select);
+    			append_dev(select, option0);
+    			append_dev(select, option1);
+    			append_dev(select, option2);
+    			select_option(select, /*access*/ ctx[3]);
+    			append_dev(div, t13);
+    			append_dev(div, button);
+    			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[7]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[8]),
-    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[9]),
-    					listen_dev(input3, "input", /*input3_input_handler*/ ctx[10]),
-    					listen_dev(input4, "input", /*input4_input_handler*/ ctx[11]),
-    					listen_dev(button, "click", /*click_handler*/ ctx[12], false, false, false)
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[6]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[7]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[8]),
+    					listen_dev(select, "change", /*select_change_handler*/ ctx[9]),
+    					listen_dev(button, "click", /*click_handler*/ ctx[10], false, false, false)
     				];
 
     				mounted = true;
@@ -44694,40 +48293,42 @@ var app = (function () {
     				set_input_value(input0, /*name*/ ctx[0]);
     			}
 
-    			if (dirty & /*date*/ 2 && input1.value !== /*date*/ ctx[1]) {
-    				set_input_value(input1, /*date*/ ctx[1]);
+    			if (dirty & /*location*/ 2 && input1.value !== /*location*/ ctx[1]) {
+    				set_input_value(input1, /*location*/ ctx[1]);
     			}
 
-    			if (dirty & /*location*/ 4 && input2.value !== /*location*/ ctx[2]) {
-    				set_input_value(input2, /*location*/ ctx[2]);
+    			if (dirty & /*time*/ 4 && input2.value !== /*time*/ ctx[2]) {
+    				set_input_value(input2, /*time*/ ctx[2]);
     			}
 
-    			if (dirty & /*time*/ 8 && input3.value !== /*time*/ ctx[3]) {
-    				set_input_value(input3, /*time*/ ctx[3]);
+    			const datepicker_changes = {};
+
+    			if (dirty & /*$$scope*/ 16384) {
+    				datepicker_changes.$$scope = { dirty, ctx };
     			}
 
-    			if (dirty & /*access*/ 16 && input4.value !== /*access*/ ctx[4]) {
-    				set_input_value(input4, /*access*/ ctx[4]);
+    			datepicker.$set(datepicker_changes);
+
+    			if (dirty & /*access*/ 8) {
+    				select_option(select, /*access*/ ctx[3]);
     			}
     		},
-    		i: noop$1,
-    		o: noop$1,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(datepicker.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(datepicker.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(link0);
     			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(link1);
     			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(input0);
-    			if (detaching) detach_dev(t2);
-    			if (detaching) detach_dev(input1);
-    			if (detaching) detach_dev(t3);
-    			if (detaching) detach_dev(input2);
-    			if (detaching) detach_dev(t4);
-    			if (detaching) detach_dev(input3);
-    			if (detaching) detach_dev(t5);
-    			if (detaching) detach_dev(input4);
-    			if (detaching) detach_dev(t6);
-    			if (detaching) detach_dev(button);
+    			if (detaching) detach_dev(div);
+    			destroy_component(datepicker);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -44753,6 +48354,8 @@ var app = (function () {
     	let location = "";
     	let time = "";
     	let access = "";
+    	let minDate = new Date();
+    	let maxDate = new Date();
 
     	function addConf(newConferenceData) {
     		var user = firebase$1.auth().currentUser;
@@ -44788,46 +48391,46 @@ var app = (function () {
     	}
 
     	function input1_input_handler() {
-    		date = this.value;
-    		$$invalidate(1, date);
+    		location = this.value;
+    		$$invalidate(1, location);
     	}
 
     	function input2_input_handler() {
-    		location = this.value;
-    		$$invalidate(2, location);
-    	}
-
-    	function input3_input_handler() {
     		time = this.value;
-    		$$invalidate(3, time);
+    		$$invalidate(2, time);
     	}
 
-    	function input4_input_handler() {
-    		access = this.value;
-    		$$invalidate(4, access);
+    	function select_change_handler() {
+    		access = select_value(this);
+    		$$invalidate(3, access);
     	}
 
     	const click_handler = () => addConf(conferenceData);
 
     	$$self.$capture_state = () => ({
     		Router: page,
+    		Datepicker,
     		firebase: firebase$1,
     		name,
     		date,
     		location,
     		time,
     		access,
+    		minDate,
+    		maxDate,
     		addConf,
     		conferenceData
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("name" in $$props) $$invalidate(0, name = $$props.name);
-    		if ("date" in $$props) $$invalidate(1, date = $$props.date);
-    		if ("location" in $$props) $$invalidate(2, location = $$props.location);
-    		if ("time" in $$props) $$invalidate(3, time = $$props.time);
-    		if ("access" in $$props) $$invalidate(4, access = $$props.access);
-    		if ("conferenceData" in $$props) $$invalidate(5, conferenceData = $$props.conferenceData);
+    		if ("date" in $$props) $$invalidate(11, date = $$props.date);
+    		if ("location" in $$props) $$invalidate(1, location = $$props.location);
+    		if ("time" in $$props) $$invalidate(2, time = $$props.time);
+    		if ("access" in $$props) $$invalidate(3, access = $$props.access);
+    		if ("minDate" in $$props) minDate = $$props.minDate;
+    		if ("maxDate" in $$props) maxDate = $$props.maxDate;
+    		if ("conferenceData" in $$props) $$invalidate(4, conferenceData = $$props.conferenceData);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -44835,14 +48438,13 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*name, date, location, time, access*/ 31) {
-    			$$invalidate(5, conferenceData = { name, date, location, time, access });
+    		if ($$self.$$.dirty & /*name, location, time, access*/ 15) {
+    			$$invalidate(4, conferenceData = { name, date, location, time, access });
     		}
     	};
 
     	return [
     		name,
-    		date,
     		location,
     		time,
     		access,
@@ -44851,8 +48453,7 @@ var app = (function () {
     		input0_input_handler,
     		input1_input_handler,
     		input2_input_handler,
-    		input3_input_handler,
-    		input4_input_handler,
+    		select_change_handler,
     		click_handler
     	];
     }
