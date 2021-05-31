@@ -63,7 +63,11 @@
                 <p class='conf-info public'> {conf.access} </p>
             {/if}
 
-            <button class='more'> ••• </button>
+            <select> 
+                <option value=''> ••• </option>
+                <option value='delete'> delete </option>
+            </select>
+
         </div>
     {/each}
     <!-- <button class='add-event'>+ Add an event</button> -->
@@ -92,6 +96,41 @@
         margin-left: 0;
         padding-top: 0;
     } 
+
+    select {
+        width: 10%;
+        height: 7vh;
+        padding-left: 3vh;
+        margin-left: 2vw;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+
+        font-weight: 700;
+        font-size: x-large;
+        border: none;
+        background-color: white;
+        color: #7d7975;
+    }
+    
+    option {
+        display: block;
+        width: 10%;
+        height: 7vh;
+        padding-left: 3vh;
+        margin-left: 2vw;
+
+        font-weight: 700;
+        font-size: small;
+        border-radius: 2vh;
+        border-color: #BFBFBF;
+        border-width: 2px;
+        background-color: white;
+        color: #7d7975;
+    }
+
+    select::-ms-expand {
+        display: none;
+    }
 
     .info-title-container {
         display: flex;
@@ -311,7 +350,6 @@
         }  
     });
 
-    
     function logout() {
         firebase.auth().signOut().then(function() {
         console.log('Signed Out');

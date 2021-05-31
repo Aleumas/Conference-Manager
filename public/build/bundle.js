@@ -43000,12 +43000,12 @@ var app = (function () {
     const file$9 = "src/Login.svelte";
 
     // (12:12) {#if visible}
-    function create_if_block$3(ctx) {
+    function create_if_block$4(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
     		if (/*errorOccured*/ ctx[3]) return create_if_block_1$1;
-    		return create_else_block$2;
+    		return create_else_block$3;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -43039,7 +43039,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$3.name,
+    		id: create_if_block$4.name,
     		type: "if",
     		source: "(12:12) {#if visible}",
     		ctx
@@ -43049,7 +43049,7 @@ var app = (function () {
     }
 
     // (15:16) {:else}
-    function create_else_block$2(ctx) {
+    function create_else_block$3(ctx) {
     	let p;
 
     	const block = {
@@ -43069,7 +43069,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$2.name,
+    		id: create_else_block$3.name,
     		type: "else",
     		source: "(15:16) {:else}",
     		ctx
@@ -43133,7 +43133,7 @@ var app = (function () {
     	let a;
     	let mounted;
     	let dispose;
-    	let if_block = /*visible*/ ctx[2] && create_if_block$3(ctx);
+    	let if_block = /*visible*/ ctx[2] && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -43250,7 +43250,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$3(ctx);
+    					if_block = create_if_block$4(ctx);
     					if_block.c();
     					if_block.m(div0, t8);
     				}
@@ -43395,12 +43395,12 @@ var app = (function () {
     const file$8 = "src/Signup.svelte";
 
     // (12:12) {#if visible}
-    function create_if_block$2(ctx) {
+    function create_if_block$3(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
     		if (/*errorOccured*/ ctx[4]) return create_if_block_1;
-    		return create_else_block$1;
+    		return create_else_block$2;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -43436,7 +43436,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$2.name,
+    		id: create_if_block$3.name,
     		type: "if",
     		source: "(12:12) {#if visible}",
     		ctx
@@ -43446,7 +43446,7 @@ var app = (function () {
     }
 
     // (15:16) {:else}
-    function create_else_block$1(ctx) {
+    function create_else_block$2(ctx) {
     	let p;
 
     	const block = {
@@ -43467,7 +43467,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$1.name,
+    		id: create_else_block$2.name,
     		type: "else",
     		source: "(15:16) {:else}",
     		ctx
@@ -43536,7 +43536,7 @@ var app = (function () {
     	let a;
     	let mounted;
     	let dispose;
-    	let if_block = /*visible*/ ctx[3] && create_if_block$2(ctx);
+    	let if_block = /*visible*/ ctx[3] && create_if_block$3(ctx);
 
     	const block = {
     		c: function create() {
@@ -43652,7 +43652,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$2(ctx);
+    					if_block = create_if_block$3(ctx);
     					if_block.c();
     					if_block.m(div0, t8);
     				}
@@ -44490,7 +44490,7 @@ var app = (function () {
     }
 
     // (62:12) {:else}
-    function create_else_block(ctx) {
+    function create_else_block$1(ctx) {
     	let p;
     	let t_value = /*conf*/ ctx[13].access + "";
     	let t;
@@ -44499,7 +44499,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			t = text(t_value);
-    			attr_dev(p, "class", "conf-info public svelte-1okwg4u");
+    			attr_dev(p, "class", "conf-info public svelte-1pvgkhs");
     			add_location(p, file$6, 62, 16, 2166);
     		},
     		m: function mount(target, anchor) {
@@ -44516,7 +44516,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block.name,
+    		id: create_else_block$1.name,
     		type: "else",
     		source: "(62:12) {:else}",
     		ctx
@@ -44526,7 +44526,7 @@ var app = (function () {
     }
 
     // (60:12) {#if conf.access == 'Private'}
-    function create_if_block$1(ctx) {
+    function create_if_block$2(ctx) {
     	let p;
     	let t_value = /*conf*/ ctx[13].access + "";
     	let t;
@@ -44535,7 +44535,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			t = text(t_value);
-    			attr_dev(p, "class", "conf-info private svelte-1okwg4u");
+    			attr_dev(p, "class", "conf-info private svelte-1pvgkhs");
     			add_location(p, file$6, 60, 16, 2081);
     		},
     		m: function mount(target, anchor) {
@@ -44552,7 +44552,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$1.name,
+    		id: create_if_block$2.name,
     		type: "if",
     		source: "(60:12) {#if conf.access == 'Private'}",
     		ctx
@@ -44581,12 +44581,14 @@ var app = (function () {
     	let t6;
     	let t7;
     	let t8;
-    	let button;
-    	let t10;
+    	let select;
+    	let option0;
+    	let option1;
+    	let t11;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[13].access == "Private") return create_if_block$1;
-    		return create_else_block;
+    		if (/*conf*/ ctx[13].access == "Private") return create_if_block$2;
+    		return create_else_block$1;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -44609,20 +44611,31 @@ var app = (function () {
     			t7 = space();
     			if_block.c();
     			t8 = space();
-    			button = element("button");
-    			button.textContent = "•••";
-    			t10 = space();
-    			attr_dev(p0, "class", "conf-info svelte-1okwg4u");
+    			select = element("select");
+    			option0 = element("option");
+    			option0.textContent = "••• ";
+    			option1 = element("option");
+    			option1.textContent = "delete";
+    			t11 = space();
+    			attr_dev(p0, "class", "conf-info svelte-1pvgkhs");
     			add_location(p0, file$6, 54, 12, 1824);
-    			attr_dev(p1, "class", "conf-info svelte-1okwg4u");
+    			attr_dev(p1, "class", "conf-info svelte-1pvgkhs");
     			add_location(p1, file$6, 55, 12, 1875);
-    			attr_dev(p2, "class", "conf-info svelte-1okwg4u");
+    			attr_dev(p2, "class", "conf-info svelte-1pvgkhs");
     			add_location(p2, file$6, 56, 12, 1930);
-    			attr_dev(p3, "class", "conf-info svelte-1okwg4u");
+    			attr_dev(p3, "class", "conf-info svelte-1pvgkhs");
     			add_location(p3, file$6, 57, 12, 1981);
-    			attr_dev(button, "class", "more svelte-1okwg4u");
-    			add_location(button, file$6, 65, 12, 2245);
-    			attr_dev(div, "class", "cell-container load-animation svelte-1okwg4u");
+    			option0.__value = "";
+    			option0.value = option0.__value;
+    			attr_dev(option0, "class", "svelte-1pvgkhs");
+    			add_location(option0, file$6, 66, 16, 2271);
+    			option1.__value = "delete";
+    			option1.value = option1.__value;
+    			attr_dev(option1, "class", "svelte-1pvgkhs");
+    			add_location(option1, file$6, 67, 16, 2319);
+    			attr_dev(select, "class", "svelte-1pvgkhs");
+    			add_location(select, file$6, 65, 12, 2245);
+    			attr_dev(div, "class", "cell-container load-animation svelte-1pvgkhs");
     			add_location(div, file$6, 53, 8, 1767);
     		},
     		m: function mount(target, anchor) {
@@ -44641,8 +44654,10 @@ var app = (function () {
     			append_dev(div, t7);
     			if_block.m(div, null);
     			append_dev(div, t8);
-    			append_dev(div, button);
-    			append_dev(div, t10);
+    			append_dev(div, select);
+    			append_dev(select, option0);
+    			append_dev(select, option1);
+    			append_dev(div, t11);
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[13].name + "")) set_data_dev(t0, t0_value);
@@ -44778,36 +44793,36 @@ var app = (function () {
     			add_location(link1, file$6, 1, 0, 57);
     			attr_dev(div0, "class", "left-panel");
     			add_location(div0, file$6, 36, 4, 1167);
-    			attr_dev(h1, "class", "svelte-1okwg4u");
+    			attr_dev(h1, "class", "svelte-1pvgkhs");
     			add_location(h1, file$6, 37, 4, 1202);
-    			attr_dev(button0, "class", "add-event svelte-1okwg4u");
+    			attr_dev(button0, "class", "add-event svelte-1pvgkhs");
     			add_location(button0, file$6, 39, 12, 1246);
-    			attr_dev(li0, "class", "svelte-1okwg4u");
+    			attr_dev(li0, "class", "svelte-1pvgkhs");
     			add_location(li0, file$6, 39, 8, 1242);
-    			attr_dev(button1, "class", "logout svelte-1okwg4u");
+    			attr_dev(button1, "class", "logout svelte-1pvgkhs");
     			add_location(button1, file$6, 40, 12, 1321);
-    			attr_dev(li1, "class", "svelte-1okwg4u");
+    			attr_dev(li1, "class", "svelte-1pvgkhs");
     			add_location(li1, file$6, 40, 8, 1317);
-    			attr_dev(ul, "class", "svelte-1okwg4u");
+    			attr_dev(ul, "class", "svelte-1pvgkhs");
     			add_location(ul, file$6, 38, 4, 1229);
-    			attr_dev(h2, "class", "svelte-1okwg4u");
+    			attr_dev(h2, "class", "svelte-1pvgkhs");
     			add_location(h2, file$6, 42, 4, 1405);
-    			attr_dev(p0, "class", "info-category svelte-1okwg4u");
+    			attr_dev(p0, "class", "info-category svelte-1pvgkhs");
     			add_location(p0, file$6, 44, 8, 1477);
-    			attr_dev(p1, "class", "info-category svelte-1okwg4u");
+    			attr_dev(p1, "class", "info-category svelte-1pvgkhs");
     			add_location(p1, file$6, 45, 8, 1521);
-    			attr_dev(p2, "class", "info-category svelte-1okwg4u");
+    			attr_dev(p2, "class", "info-category svelte-1pvgkhs");
     			add_location(p2, file$6, 46, 8, 1569);
-    			attr_dev(p3, "class", "info-category svelte-1okwg4u");
+    			attr_dev(p3, "class", "info-category svelte-1pvgkhs");
     			add_location(p3, file$6, 47, 8, 1613);
-    			attr_dev(p4, "class", "info-category svelte-1okwg4u");
+    			attr_dev(p4, "class", "info-category svelte-1pvgkhs");
     			add_location(p4, file$6, 48, 8, 1657);
     			add_location(p5, file$6, 49, 8, 1703);
-    			attr_dev(div1, "class", "info-title-container svelte-1okwg4u");
+    			attr_dev(div1, "class", "info-title-container svelte-1pvgkhs");
     			add_location(div1, file$6, 43, 4, 1434);
-    			attr_dev(div2, "class", "load-animation svelte-1okwg4u");
+    			attr_dev(div2, "class", "load-animation svelte-1pvgkhs");
     			add_location(div2, file$6, 4, 4, 200);
-    			attr_dev(div3, "class", "background svelte-1okwg4u");
+    			attr_dev(div3, "class", "background svelte-1pvgkhs");
     			add_location(div3, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
@@ -46905,7 +46920,7 @@ var app = (function () {
     }
 
     // (277:8) {#if !trigger}
-    function create_if_block(ctx) {
+    function create_if_block$1(ctx) {
     	let button;
     	let t;
 
@@ -46931,7 +46946,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block.name,
+    		id: create_if_block$1.name,
     		type: "if",
     		source: "(277:8) {#if !trigger}",
     		ctx
@@ -46943,7 +46958,7 @@ var app = (function () {
     // (276:43)          
     function fallback_block(ctx) {
     	let if_block_anchor;
-    	let if_block = !/*trigger*/ ctx[1] && create_if_block(ctx);
+    	let if_block = !/*trigger*/ ctx[1] && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -46959,7 +46974,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block(ctx);
+    					if_block = create_if_block$1(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -48102,22 +48117,103 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file = "src/AddConference.svelte";
 
-    // (9:4) <Datepicker>
+    // (11:49) {:else}
+    function create_else_block(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("Pick a date");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(11:49) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (11:12) {#if dateChosen}
+    function create_if_block(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text(/*formattedSelected*/ ctx[4]);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*formattedSelected*/ 16) set_data_dev(t, /*formattedSelected*/ ctx[4]);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(11:12) {#if dateChosen}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (9:4) <Datepicker bind:formattedSelected bind:dateChosen>
     function create_default_slot(ctx) {
     	let button;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*dateChosen*/ ctx[5]) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
 
     	const block = {
     		c: function create() {
     			button = element("button");
-    			button.textContent = "date";
+    			if_block.c();
     			attr_dev(button, "class", "date-picker svelte-ckeoo8");
-    			add_location(button, file, 9, 8, 519);
+    			add_location(button, file, 9, 8, 558);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
+    			if_block.m(button, null);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(button, null);
+    				}
+    			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(button);
+    			if_block.d();
     		}
     	};
 
@@ -48125,7 +48221,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(9:4) <Datepicker>",
+    		source: "(9:4) <Datepicker bind:formattedSelected bind:dateChosen>",
     		ctx
     	});
 
@@ -48149,6 +48245,8 @@ var app = (function () {
     	let input2;
     	let t8;
     	let datepicker;
+    	let updating_formattedSelected;
+    	let updating_dateChosen;
     	let t9;
     	let select;
     	let option0;
@@ -48160,13 +48258,30 @@ var app = (function () {
     	let mounted;
     	let dispose;
 
-    	datepicker = new Datepicker({
-    			props: {
-    				$$slots: { default: [create_default_slot] },
-    				$$scope: { ctx }
-    			},
-    			$$inline: true
-    		});
+    	function datepicker_formattedSelected_binding(value) {
+    		/*datepicker_formattedSelected_binding*/ ctx[12](value);
+    	}
+
+    	function datepicker_dateChosen_binding(value) {
+    		/*datepicker_dateChosen_binding*/ ctx[13](value);
+    	}
+
+    	let datepicker_props = {
+    		$$slots: { default: [create_default_slot] },
+    		$$scope: { ctx }
+    	};
+
+    	if (/*formattedSelected*/ ctx[4] !== void 0) {
+    		datepicker_props.formattedSelected = /*formattedSelected*/ ctx[4];
+    	}
+
+    	if (/*dateChosen*/ ctx[5] !== void 0) {
+    		datepicker_props.dateChosen = /*dateChosen*/ ctx[5];
+    	}
+
+    	datepicker = new Datepicker({ props: datepicker_props, $$inline: true });
+    	binding_callbacks.push(() => bind(datepicker, "formattedSelected", datepicker_formattedSelected_binding));
+    	binding_callbacks.push(() => bind(datepicker, "dateChosen", datepicker_dateChosen_binding));
 
     	const block = {
     		c: function create() {
@@ -48224,22 +48339,22 @@ var app = (function () {
     			option0.__value = "";
     			option0.value = option0.__value;
     			attr_dev(option0, "class", "svelte-ckeoo8");
-    			add_location(option0, file, 12, 8, 655);
+    			add_location(option0, file, 14, 8, 773);
     			option1.__value = "Public";
     			option1.value = option1.__value;
     			attr_dev(option1, "class", "svelte-ckeoo8");
-    			add_location(option1, file, 13, 8, 698);
+    			add_location(option1, file, 15, 8, 816);
     			option2.__value = "Private";
     			option2.value = option2.__value;
     			attr_dev(option2, "class", "svelte-ckeoo8");
-    			add_location(option2, file, 14, 8, 747);
+    			add_location(option2, file, 16, 8, 865);
     			attr_dev(select, "id", "access");
     			attr_dev(select, "placeholder", "access");
     			attr_dev(select, "class", "svelte-ckeoo8");
-    			if (/*access*/ ctx[3] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[9].call(select));
-    			add_location(select, file, 11, 4, 585);
+    			if (/*access*/ ctx[3] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[14].call(select));
+    			add_location(select, file, 13, 4, 703);
     			attr_dev(button, "class", "svelte-ckeoo8");
-    			add_location(button, file, 16, 4, 808);
+    			add_location(button, file, 18, 4, 926);
     			attr_dev(div, "class", "load-animation svelte-ckeoo8");
     			add_location(div, file, 2, 0, 170);
     		},
@@ -48278,11 +48393,11 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[6]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[7]),
-    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[8]),
-    					listen_dev(select, "change", /*select_change_handler*/ ctx[9]),
-    					listen_dev(button, "click", /*click_handler*/ ctx[10], false, false, false)
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[9]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[10]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[11]),
+    					listen_dev(select, "change", /*select_change_handler*/ ctx[14]),
+    					listen_dev(button, "click", /*click_handler*/ ctx[15], false, false, false)
     				];
 
     				mounted = true;
@@ -48303,8 +48418,20 @@ var app = (function () {
 
     			const datepicker_changes = {};
 
-    			if (dirty & /*$$scope*/ 16384) {
+    			if (dirty & /*$$scope, formattedSelected, dateChosen*/ 65584) {
     				datepicker_changes.$$scope = { dirty, ctx };
+    			}
+
+    			if (!updating_formattedSelected && dirty & /*formattedSelected*/ 16) {
+    				updating_formattedSelected = true;
+    				datepicker_changes.formattedSelected = /*formattedSelected*/ ctx[4];
+    				add_flush_callback(() => updating_formattedSelected = false);
+    			}
+
+    			if (!updating_dateChosen && dirty & /*dateChosen*/ 32) {
+    				updating_dateChosen = true;
+    				datepicker_changes.dateChosen = /*dateChosen*/ ctx[5];
+    				add_flush_callback(() => updating_dateChosen = false);
     			}
 
     			datepicker.$set(datepicker_changes);
@@ -48346,16 +48473,16 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
+    	let date;
     	let conferenceData;
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("AddConference", slots, []);
     	let name = "";
-    	let date = "";
     	let location = "";
     	let time = "";
     	let access = "";
-    	let minDate = new Date();
-    	let maxDate = new Date();
+    	let formattedSelected;
+    	let dateChosen;
 
     	function addConf(newConferenceData) {
     		var user = firebase$1.auth().currentUser;
@@ -48400,6 +48527,16 @@ var app = (function () {
     		$$invalidate(2, time);
     	}
 
+    	function datepicker_formattedSelected_binding(value) {
+    		formattedSelected = value;
+    		$$invalidate(4, formattedSelected);
+    	}
+
+    	function datepicker_dateChosen_binding(value) {
+    		dateChosen = value;
+    		$$invalidate(5, dateChosen);
+    	}
+
     	function select_change_handler() {
     		access = select_value(this);
     		$$invalidate(3, access);
@@ -48412,25 +48549,25 @@ var app = (function () {
     		Datepicker,
     		firebase: firebase$1,
     		name,
-    		date,
     		location,
     		time,
     		access,
-    		minDate,
-    		maxDate,
+    		formattedSelected,
+    		dateChosen,
     		addConf,
+    		date,
     		conferenceData
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("name" in $$props) $$invalidate(0, name = $$props.name);
-    		if ("date" in $$props) $$invalidate(11, date = $$props.date);
     		if ("location" in $$props) $$invalidate(1, location = $$props.location);
     		if ("time" in $$props) $$invalidate(2, time = $$props.time);
     		if ("access" in $$props) $$invalidate(3, access = $$props.access);
-    		if ("minDate" in $$props) minDate = $$props.minDate;
-    		if ("maxDate" in $$props) maxDate = $$props.maxDate;
-    		if ("conferenceData" in $$props) $$invalidate(4, conferenceData = $$props.conferenceData);
+    		if ("formattedSelected" in $$props) $$invalidate(4, formattedSelected = $$props.formattedSelected);
+    		if ("dateChosen" in $$props) $$invalidate(5, dateChosen = $$props.dateChosen);
+    		if ("date" in $$props) $$invalidate(8, date = $$props.date);
+    		if ("conferenceData" in $$props) $$invalidate(6, conferenceData = $$props.conferenceData);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -48438,8 +48575,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*name, location, time, access*/ 15) {
-    			$$invalidate(4, conferenceData = { name, date, location, time, access });
+    		if ($$self.$$.dirty & /*formattedSelected*/ 16) {
+    			$$invalidate(8, date = formattedSelected);
+    		}
+
+    		if ($$self.$$.dirty & /*name, date, location, time, access*/ 271) {
+    			$$invalidate(6, conferenceData = { name, date, location, time, access });
     		}
     	};
 
@@ -48448,11 +48589,16 @@ var app = (function () {
     		location,
     		time,
     		access,
+    		formattedSelected,
+    		dateChosen,
     		conferenceData,
     		addConf,
+    		date,
     		input0_input_handler,
     		input1_input_handler,
     		input2_input_handler,
+    		datepicker_formattedSelected_binding,
+    		datepicker_dateChosen_binding,
     		select_change_handler,
     		click_handler
     	];

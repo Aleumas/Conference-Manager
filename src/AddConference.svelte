@@ -6,8 +6,10 @@
     <input id='name' bind:value={name} placeholder="name">
     <input id='location' bind:value={location} placeholder="location">
     <input id='time' bind:value={time} placeholder="time">
-    <Datepicker> 
-        <button class='date-picker'> date </button>
+    <Datepicker bind:formattedSelected bind:dateChosen> 
+        <button class='date-picker'> 
+            {#if dateChosen} {formattedSelected} {:else} Pick a date {/if}
+        </button>
     </Datepicker>
     <select id='access' bind:value={access} placeholder="access">
         <option value=''> access </option>
@@ -126,12 +128,12 @@
     import firebase from 'firebase/app';
 
     let name = '';
-    let date = '';
     let location = '';
     let time = '';
     let access = '';
-    let minDate = new Date();
-    let maxDate = new Date();
+    let formattedSelected;
+    let dateChosen;
+    $: date = formattedSelected;
 
     $: conferenceData = {name: name, date: date, location: location, time: time, access: access};
 
