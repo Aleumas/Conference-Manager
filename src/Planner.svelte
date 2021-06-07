@@ -13,28 +13,9 @@
     <!-- <div class='right-panel'>
         <Calendar class='frame' {today} year={2020}/>
     </div> -->
-<!-- 
-    <div class='right-panel'>
-        <div class='profile-container'>
-            <img src={imageLink} alt='profile picture'/>
-            <h1> {name} </h1>
-            <h3> {position} </h3>
-        </div>
-        <hr>
-        <div class='info-container'>
-            <div class='info-titles'>
-                <p> Company </p>
-                <p> Joining Date </p>
-                <p> Conferences </p>
-            </div>
-            <div class='info'>
-                <p> {company} </p>
-                <p> {joiningDate} </p>
-                <p> {activeConferences} </p>
-            </div>
-        </div>
-    </div> -->
-    <div class='left-panel'></div>
+    <div class='panel-container'>
+    
+    <div class='left-panel'>
     <h1> Conferences </h1>
     <ul>
         <li><button class='add-event' on:click={addConf}> + </button></li>
@@ -72,6 +53,28 @@
     {/each}
     <!-- <button class='add-event'>+ Add an event</button> -->
     </div>
+    <div class='right-panel'>
+        <div class='profile-container'>
+            <img src={imageLink} alt='profile picture'/>
+            <h1> {name} </h1>
+            <h3> {position} </h3>
+        </div>
+        <hr>
+        <div class='info-container'>
+            <div class='info-titles'>
+                <p> Company </p>
+                <p> Joining Date </p>
+                <p> Conferences </p>
+            </div>
+            <div class='info'>
+                <p> {company} </p>
+                <p> {joiningDate} </p>
+                <p> {activeConferences} </p>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
 </div>
 
 <style>
@@ -265,15 +268,23 @@
         font-weight: 500;
     }
 
+    .panel-container {
+        display: flex;
+    }
+
     .right-panel {
-        display: block;
-        position: relative;
+        flex: 1;
         background-color: white;
-        width: 30vmax;
+        width:28vmax;
         height: 25vmax;
         border-radius: 3vh;
-        margin-left: 70%;
-        margin-top: 1%;
+    }
+
+    .left-panel {
+        flex: 1;
+        width: 65vmax;
+        height: 100vmax;
+        margin-right: 1vw;
     }
 
     .background {
