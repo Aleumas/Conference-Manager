@@ -341,24 +341,36 @@
     import Router from 'page';
     import firebase from 'firebase/app';
 
-    const today = new Date;
     let imageLink = '/defaultProfilePicture.jpg'
-    let name = 'Leumas'
-    let position = 'CEO'
-    let company = 'Google';
-    let joiningDate = '01/08/2018';
-    let activeConferences = '34 Active';
+    let name = 'none'
+    let position = 'none'
+    let company = 'none';
+    let joiningDate = 'none';
     let userConferences = [];
+    $: activeConferences = userConferences.length; 
 
     var user = firebase.auth().currentUser;
 
-    let confRef = firebase.database().ref('users/' + user.uid + '/conferences');
-    confRef.on('value', (snapshot) => {
-        const conferences = snapshot.val();
-
+    (firebase.database().ref('users/' + user.uid + '/conferences')).on('value', (snapshot) => {
         if (conferences != null) {
-            userConferences = conferences.conference;
+            userConferences = snapshot.val().conference;
         }  
+    });
+
+    (firebase.database().ref('users/' + user.uid + '/firstName')).on('value', (snapshot) => {
+        name = snapshot.val();
+    });
+
+    (firebase.database().ref('users/' + user.uid + '/position')).on('value', (snapshot) => {
+        position = snapshot.val();
+    });
+
+    (firebase.database().ref('users/' + user.uid + '/company')).on('value', (snapshot) => {
+        company = snapshot.val();
+    });
+
+    (firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
+        joiningDate = snapshot.val();
     });
 
     function logout() {

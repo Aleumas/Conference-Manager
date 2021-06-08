@@ -5,8 +5,12 @@
     <div class='sign-in__container'>
         <div class='sign-in__content load-animation'>
             <h1> Conference Manager  </h1>
-            <input id='email' bind:value={email} placeholder="Email">
-            <input type='password' id='password' bind:value={password} placeholder="Password">
+            <input bind:value={firstName} placeholder="First name">
+            <input bind:value={lastName} placeholder="Last name">
+            <input bind:value={company} placeholder="Company name">
+            <input bind:value={position} placeholder="Company position name">
+            <input bind:value={email} placeholder="Email">
+            <input type='password' bind:value={password} placeholder="Password">
             <button on:click="{handleSignup}"> Sign up</button>
 
             {#if visible}
@@ -166,11 +170,23 @@
     import firebase from "firebase/app";
 
     // Login variables
+    let firstName = '';
+    let lastName = '';
+    let company = '';
+    let position = '';
     let email = ''; 
     let password = '';
     var errorMessage = '';
     var visible = false;
     var errorOccured = false;
+
+
+    // Date
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = mm + '/' + dd + '/' + yyyy;
     
 
     // Signup with firebase
@@ -198,7 +214,18 @@
             .catch((error) => {
                 // Handle Errors here.
                 var errorMessage = error.message;
-                console.log('failed to persist');
+                console.log(errorMessage);
+            });
+
+            // Add user information to firebase 
+            var user = firebase.auth().currentUser;
+            firebase.database().ref('users/' + user.uid).set({
+                    firstName: firstName,
+                    lastName: lastName,
+                    company: company,
+                    position: position,
+                    joiningDate: today
+
             });
 
         })

@@ -244,25 +244,14 @@
     function writeUserChoice(choice) {
         var user = firebase.auth().currentUser;
 
+        // Redirect user to the appropriate page
         if (choice == 'planner') {
             Router.redirect('/Planner');
         }
 
-        let choiceRef = firebase.database().ref('users/' + user.uid + '/choice');
-        choiceRef.on('value', (snapshot) => {
-            const roleChoice = snapshot.val();
-
-            if (roleChoice == null)  {
-            firebase.database().ref('users/' + user.uid).set({
-                choice: choice
-            });
-            console.log('set');
-            } else { 
-                firebase.database().ref('users/' + user.uid).update({
-                    choice: choice
-                });
-            console.log('update');
-            }
+        // Add the choice to firebase for later reference
+        firebase.database().ref('users/' + user.uid).update({
+            choice: choice
         });
 
     }
