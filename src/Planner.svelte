@@ -16,7 +16,7 @@
     <div class='panel-container'>
     
     <div class='left-panel'>
-    <h1> Conferences </h1>
+    <h1 class='pageTitle'> Conferences </h1>
     <ul>
         <li><button class='add-event' on:click={addConf}> + </button></li>
         <li><button class='logout' on:click={() => logout()}>Logout</button></li>
@@ -54,6 +54,8 @@
     <!-- <button class='add-event'>+ Add an event</button> -->
     </div>
     <div class='right-panel'>
+
+        <div id="color-calendar"></div>
         <div class='profile-container'>
             <img src={imageLink} alt='profile picture'/>
             <h1> {name} </h1>
@@ -66,7 +68,7 @@
                 <p> Joining Date </p>
                 <p> Conferences </p>
             </div>
-            <div class='info'>
+            <div  id='o' class='info'>
                 <p> {company} </p>
                 <p> {joiningDate} </p>
                 <p> {activeConferences} </p>
@@ -317,8 +319,11 @@
         margin-bottom: 0;
         margin-top: 0;
         padding-top: 2vh;
-        padding-left: 1vw;
+    }
+
+    .pageTitle {
         text-align: left;
+        padding-left: 1vw;
     }
 
     img {
@@ -338,8 +343,11 @@
 </style>
 
 <script>
+    // General imports
     import Router from 'page';
-    import firebase from 'firebase/app';
+
+import firebase from 'firebase/app';
+
 
     let imageLink = '/defaultProfilePicture.jpg'
     let name = 'none'
@@ -349,29 +357,32 @@
     let userConferences = [];
     $: activeConferences = userConferences.length; 
 
-    var user = firebase.auth().currentUser;
+    firebase.auth().onAuthStateChanged(user => {
+        (firebase.database().ref('users/' + user.uid + '/conferences')).on('value', (snapshot) => {
+            if (snapshot.val() != null) {
+                userConferences = snapshot.val().conference;
+            }  
+        });
 
-    (firebase.database().ref('users/' + user.uid + '/conferences')).on('value', (snapshot) => {
-        if (conferences != null) {
-            userConferences = snapshot.val().conference;
-        }  
-    });
+        (firebase.database().ref('users/' + user.uid + '/firstName')).on('value', (snapshot) => {
+            name = snapshot.val();
+        });
 
-    (firebase.database().ref('users/' + user.uid + '/firstName')).on('value', (snapshot) => {
-        name = snapshot.val();
-    });
+        (firebase.database().ref('users/' + user.uid + '/position')).on('value', (snapshot) => {
+            position = snapshot.val();
+        });
 
-    (firebase.database().ref('users/' + user.uid + '/position')).on('value', (snapshot) => {
-        position = snapshot.val();
-    });
+        (firebase.database().ref('users/' + user.uid + '/company')).on('value', (snapshot) => {
+            company = snapshot.val();
+        });
 
-    (firebase.database().ref('users/' + user.uid + '/company')).on('value', (snapshot) => {
-        company = snapshot.val();
-    });
-
-    (firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
-        joiningDate = snapshot.val();
-    });
+        (firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
+            joiningDate = snapshot.val();
+        });
+    })
+    
+    
+    // Initialize calendar 
 
     function logout() {
         firebase.auth().signOut().then(function() {

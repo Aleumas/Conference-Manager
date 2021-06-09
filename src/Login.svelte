@@ -187,18 +187,31 @@
     // General imports 
     import { store } from './store.js';
     import Router from 'page';
-    
+        
     
     // Firebase import
     import firebase from "firebase/app";
-
 
     // Login variables
     let email = ''; 
     let password = '';
     var visible = false;
     var errorOccured = false;
-    
+
+    // Listen for auth status changes
+    firebase.auth().onAuthStateChanged(user => {
+
+        // Check if user is logged in
+        if (user) {
+            (firebase.database().ref('users/' + user.uid + '/choice')).on('value', (snapshot) => {
+                if (snapshot.val() != null) {
+                    let role = snapshot.val().toLowerCase();
+                    Router.redirect(`/${role[0].toUpperCase() + role.slice(1)}`);
+                }  
+            });
+        }
+
+    }) 
 
     // Login with firebase
     function handleLogin() {
@@ -207,16 +220,6 @@
             visible = true;
             errorOccured = false;
             store.set(true);
-
-            // Change login state
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    // Logged in
-                    Router.redirect('/Role');
-                } else {
-                    // Logged out
-                }
-            });
 
             // Make login persistant 
             firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
