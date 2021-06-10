@@ -57,7 +57,7 @@
 
         <div id="color-calendar"></div>
         <div class='profile-container'>
-            <img src={imageLink} alt='profile picture'/>
+                <img on:click={changeProfilePicture} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={imageLink} alt='profile picture'/>
             <h1> {name} </h1>
             <h3> {position} </h3>
         </div>
@@ -349,7 +349,7 @@
 import firebase from 'firebase/app';
 
 
-    let imageLink = '/defaultProfilePicture.jpg'
+    let imageLink = '/defaultProfilePicture.jpg';
     let name = 'none'
     let position = 'none'
     let company = 'none';
@@ -376,13 +376,23 @@ import firebase from 'firebase/app';
             company = snapshot.val();
         });
 
-        (firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
+        m(firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
             joiningDate = snapshot.val();
         });
     })
     
     
-    // Initialize calendar 
+    function profilePictureOnHover() {
+        imageLink = '/defaultProfilePictureHover.jpg';
+    }
+
+    function profilePictureOffHover() {
+        imageLink = '/defaultProfilePicture.jpg';
+    }
+
+    function changeProfilePicture() {
+        
+    }
 
     function logout() {
         firebase.auth().signOut().then(function() {

@@ -44603,14 +44603,14 @@ var app = (function () {
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
+    	child_ctx[12] = list[i];
     	return child_ctx;
     }
 
     // (43:12) {:else}
     function create_else_block$1(ctx) {
     	let p;
-    	let t_value = /*conf*/ ctx[10].access + "";
+    	let t_value = /*conf*/ ctx[12].access + "";
     	let t;
 
     	const block = {
@@ -44625,7 +44625,7 @@ var app = (function () {
     			append_dev(p, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[10].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[12].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(p);
@@ -44646,7 +44646,7 @@ var app = (function () {
     // (41:12) {#if conf.access == 'Private'}
     function create_if_block$2(ctx) {
     	let p;
-    	let t_value = /*conf*/ ctx[10].access + "";
+    	let t_value = /*conf*/ ctx[12].access + "";
     	let t;
 
     	const block = {
@@ -44661,7 +44661,7 @@ var app = (function () {
     			append_dev(p, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[10].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[12].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(p);
@@ -44683,19 +44683,19 @@ var app = (function () {
     function create_each_block$4(ctx) {
     	let div;
     	let p0;
-    	let t0_value = /*conf*/ ctx[10].name + "";
+    	let t0_value = /*conf*/ ctx[12].name + "";
     	let t0;
     	let t1;
     	let p1;
-    	let t2_value = /*conf*/ ctx[10].location + "";
+    	let t2_value = /*conf*/ ctx[12].location + "";
     	let t2;
     	let t3;
     	let p2;
-    	let t4_value = /*conf*/ ctx[10].date + "";
+    	let t4_value = /*conf*/ ctx[12].date + "";
     	let t4;
     	let t5;
     	let p3;
-    	let t6_value = /*conf*/ ctx[10].time + "";
+    	let t6_value = /*conf*/ ctx[12].time + "";
     	let t6;
     	let t7;
     	let t8;
@@ -44705,7 +44705,7 @@ var app = (function () {
     	let t11;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[10].access == "Private") return create_if_block$2;
+    		if (/*conf*/ ctx[12].access == "Private") return create_if_block$2;
     		return create_else_block$1;
     	}
 
@@ -44778,10 +44778,10 @@ var app = (function () {
     			append_dev(div, t11);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[10].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[10].location + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[10].date + "")) set_data_dev(t4, t4_value);
-    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[10].time + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[12].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[12].location + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[12].date + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[12].time + "")) set_data_dev(t6, t6_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -44944,10 +44944,10 @@ var app = (function () {
     			img = element("img");
     			t23 = space();
     			h11 = element("h1");
-    			t24 = text(/*name*/ ctx[1]);
+    			t24 = text(/*name*/ ctx[2]);
     			t25 = space();
     			h3 = element("h3");
-    			t26 = text(/*position*/ ctx[2]);
+    			t26 = text(/*position*/ ctx[3]);
     			t27 = space();
     			hr = element("hr");
     			t28 = space();
@@ -44964,13 +44964,13 @@ var app = (function () {
     			t34 = space();
     			div5 = element("div");
     			p9 = element("p");
-    			t35 = text(/*company*/ ctx[3]);
+    			t35 = text(/*company*/ ctx[4]);
     			t36 = space();
     			p10 = element("p");
-    			t37 = text(/*joiningDate*/ ctx[4]);
+    			t37 = text(/*joiningDate*/ ctx[5]);
     			t38 = space();
     			p11 = element("p");
-    			t39 = text(/*activeConferences*/ ctx[5]);
+    			t39 = text(/*activeConferences*/ ctx[6]);
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			add_location(link0, file$6, 0, 0, 0);
@@ -45008,31 +45008,31 @@ var app = (function () {
     			add_location(div1, file$6, 17, 4, 580);
     			attr_dev(div2, "id", "color-calendar");
     			add_location(div2, file$6, 57, 8, 1948);
-    			if (img.src !== (img_src_value = /*imageLink*/ ctx[6])) attr_dev(img, "src", img_src_value);
+    			if (img.src !== (img_src_value = /*imageLink*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
     			attr_dev(img, "class", "svelte-pz6cen");
-    			add_location(img, file$6, 59, 12, 2032);
+    			add_location(img, file$6, 59, 16, 2036);
     			attr_dev(h11, "class", "svelte-pz6cen");
-    			add_location(h11, file$6, 60, 12, 2089);
+    			add_location(h11, file$6, 60, 12, 2201);
     			attr_dev(h3, "class", "svelte-pz6cen");
-    			add_location(h3, file$6, 61, 12, 2119);
+    			add_location(h3, file$6, 61, 12, 2231);
     			attr_dev(div3, "class", "profile-container svelte-pz6cen");
     			add_location(div3, file$6, 58, 8, 1988);
     			attr_dev(hr, "class", "svelte-pz6cen");
-    			add_location(hr, file$6, 63, 8, 2164);
-    			add_location(p6, file$6, 66, 16, 2260);
-    			add_location(p7, file$6, 67, 16, 2293);
-    			add_location(p8, file$6, 68, 16, 2331);
+    			add_location(hr, file$6, 63, 8, 2276);
+    			add_location(p6, file$6, 66, 16, 2372);
+    			add_location(p7, file$6, 67, 16, 2405);
+    			add_location(p8, file$6, 68, 16, 2443);
     			attr_dev(div4, "class", "info-titles svelte-pz6cen");
-    			add_location(div4, file$6, 65, 12, 2218);
-    			add_location(p9, file$6, 71, 16, 2426);
-    			add_location(p10, file$6, 72, 16, 2461);
-    			add_location(p11, file$6, 73, 16, 2500);
+    			add_location(div4, file$6, 65, 12, 2330);
+    			add_location(p9, file$6, 71, 16, 2538);
+    			add_location(p10, file$6, 72, 16, 2573);
+    			add_location(p11, file$6, 73, 16, 2612);
     			attr_dev(div5, "id", "o");
     			attr_dev(div5, "class", "info svelte-pz6cen");
-    			add_location(div5, file$6, 70, 12, 2383);
+    			add_location(div5, file$6, 70, 12, 2495);
     			attr_dev(div6, "class", "info-container svelte-pz6cen");
-    			add_location(div6, file$6, 64, 8, 2177);
+    			add_location(div6, file$6, 64, 8, 2289);
     			attr_dev(div7, "class", "right-panel svelte-pz6cen");
     			add_location(div7, file$6, 55, 4, 1913);
     			attr_dev(div8, "class", "panel-container svelte-pz6cen");
@@ -45118,8 +45118,11 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*addConf*/ ctx[8], false, false, false),
-    					listen_dev(button1, "click", /*click_handler*/ ctx[9], false, false, false)
+    					listen_dev(button0, "click", /*addConf*/ ctx[10], false, false, false),
+    					listen_dev(button1, "click", /*click_handler*/ ctx[11], false, false, false),
+    					listen_dev(img, "click", changeProfilePicture, false, false, false),
+    					listen_dev(img, "mouseover", /*profilePictureOnHover*/ ctx[7], false, false, false),
+    					listen_dev(img, "mouseleave", /*profilePictureOffHover*/ ctx[8], false, false, false)
     				];
 
     				mounted = true;
@@ -45150,11 +45153,15 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*name*/ 2) set_data_dev(t24, /*name*/ ctx[1]);
-    			if (dirty & /*position*/ 4) set_data_dev(t26, /*position*/ ctx[2]);
-    			if (dirty & /*company*/ 8) set_data_dev(t35, /*company*/ ctx[3]);
-    			if (dirty & /*joiningDate*/ 16) set_data_dev(t37, /*joiningDate*/ ctx[4]);
-    			if (dirty & /*activeConferences*/ 32) set_data_dev(t39, /*activeConferences*/ ctx[5]);
+    			if (dirty & /*imageLink*/ 2 && img.src !== (img_src_value = /*imageLink*/ ctx[1])) {
+    				attr_dev(img, "src", img_src_value);
+    			}
+
+    			if (dirty & /*name*/ 4) set_data_dev(t24, /*name*/ ctx[2]);
+    			if (dirty & /*position*/ 8) set_data_dev(t26, /*position*/ ctx[3]);
+    			if (dirty & /*company*/ 16) set_data_dev(t35, /*company*/ ctx[4]);
+    			if (dirty & /*joiningDate*/ 32) set_data_dev(t37, /*joiningDate*/ ctx[5]);
+    			if (dirty & /*activeConferences*/ 64) set_data_dev(t39, /*activeConferences*/ ctx[6]);
     		},
     		i: noop$1,
     		o: noop$1,
@@ -45181,6 +45188,10 @@ var app = (function () {
     	return block;
     }
 
+    function changeProfilePicture() {
+    	
+    }
+
     function instance$7($$self, $$props, $$invalidate) {
     	let activeConferences;
     	let { $$slots: slots = {}, $$scope } = $$props;
@@ -45200,23 +45211,30 @@ var app = (function () {
     		});
 
     		firebase$1.database().ref("users/" + user.uid + "/firstName").on("value", snapshot => {
-    			$$invalidate(1, name = snapshot.val());
+    			$$invalidate(2, name = snapshot.val());
     		});
 
     		firebase$1.database().ref("users/" + user.uid + "/position").on("value", snapshot => {
-    			$$invalidate(2, position = snapshot.val());
+    			$$invalidate(3, position = snapshot.val());
     		});
 
     		firebase$1.database().ref("users/" + user.uid + "/company").on("value", snapshot => {
-    			$$invalidate(3, company = snapshot.val());
+    			$$invalidate(4, company = snapshot.val());
     		});
 
-    		firebase$1.database().ref("users/" + user.uid + "/joiningDate").on("value", snapshot => {
-    			$$invalidate(4, joiningDate = snapshot.val());
+    		m(firebase$1.database().ref("users/" + user.uid + "/joiningDate")).on("value", snapshot => {
+    			$$invalidate(5, joiningDate = snapshot.val());
     		});
     	});
 
-    	// Initialize calendar 
+    	function profilePictureOnHover() {
+    		$$invalidate(1, imageLink = "/defaultProfilePictureHover.jpg");
+    	}
+
+    	function profilePictureOffHover() {
+    		$$invalidate(1, imageLink = "/defaultProfilePicture.jpg");
+    	}
+
     	function logout() {
     		firebase$1.auth().signOut().then(
     			function () {
@@ -45251,19 +45269,22 @@ var app = (function () {
     		company,
     		joiningDate,
     		userConferences,
+    		profilePictureOnHover,
+    		profilePictureOffHover,
+    		changeProfilePicture,
     		logout,
     		addConf,
     		activeConferences
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("imageLink" in $$props) $$invalidate(6, imageLink = $$props.imageLink);
-    		if ("name" in $$props) $$invalidate(1, name = $$props.name);
-    		if ("position" in $$props) $$invalidate(2, position = $$props.position);
-    		if ("company" in $$props) $$invalidate(3, company = $$props.company);
-    		if ("joiningDate" in $$props) $$invalidate(4, joiningDate = $$props.joiningDate);
+    		if ("imageLink" in $$props) $$invalidate(1, imageLink = $$props.imageLink);
+    		if ("name" in $$props) $$invalidate(2, name = $$props.name);
+    		if ("position" in $$props) $$invalidate(3, position = $$props.position);
+    		if ("company" in $$props) $$invalidate(4, company = $$props.company);
+    		if ("joiningDate" in $$props) $$invalidate(5, joiningDate = $$props.joiningDate);
     		if ("userConferences" in $$props) $$invalidate(0, userConferences = $$props.userConferences);
-    		if ("activeConferences" in $$props) $$invalidate(5, activeConferences = $$props.activeConferences);
+    		if ("activeConferences" in $$props) $$invalidate(6, activeConferences = $$props.activeConferences);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -45272,18 +45293,20 @@ var app = (function () {
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*userConferences*/ 1) {
-    			$$invalidate(5, activeConferences = userConferences.length);
+    			$$invalidate(6, activeConferences = userConferences.length);
     		}
     	};
 
     	return [
     		userConferences,
+    		imageLink,
     		name,
     		position,
     		company,
     		joiningDate,
     		activeConferences,
-    		imageLink,
+    		profilePictureOnHover,
+    		profilePictureOffHover,
     		logout,
     		addConf,
     		click_handler
