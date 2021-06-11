@@ -43004,7 +43004,7 @@ var app = (function () {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*errorOccured*/ ctx[3]) return create_if_block_1$1;
+    		if (/*errorOccured*/ ctx[3]) return create_if_block_1$2;
     		return create_else_block$3;
     	}
 
@@ -43079,7 +43079,7 @@ var app = (function () {
     }
 
     // (13:16) {#if errorOccured}
-    function create_if_block_1$1(ctx) {
+    function create_if_block_1$2(ctx) {
     	let p;
 
     	const block = {
@@ -43100,7 +43100,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$1.name,
+    		id: create_if_block_1$2.name,
     		type: "if",
     		source: "(13:16) {#if errorOccured}",
     		ctx
@@ -43404,7 +43404,7 @@ var app = (function () {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*errorOccured*/ ctx[8]) return create_if_block_1;
+    		if (/*errorOccured*/ ctx[8]) return create_if_block_1$1;
     		return create_else_block$2;
     	}
 
@@ -43482,7 +43482,7 @@ var app = (function () {
     }
 
     // (17:16) {#if errorOccured}
-    function create_if_block_1(ctx) {
+    function create_if_block_1$1(ctx) {
     	let p;
     	let t;
 
@@ -43508,7 +43508,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1.name,
+    		id: create_if_block_1$1.name,
     		type: "if",
     		source: "(17:16) {#if errorOccured}",
     		ctx
@@ -44603,29 +44603,29 @@ var app = (function () {
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[12] = list[i];
+    	child_ctx[19] = list[i];
     	return child_ctx;
     }
 
     // (43:12) {:else}
-    function create_else_block$1(ctx) {
+    function create_else_block_1(ctx) {
     	let p;
-    	let t_value = /*conf*/ ctx[12].access + "";
+    	let t_value = /*conf*/ ctx[19].access + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			p = element("p");
     			t = text(t_value);
-    			attr_dev(p, "class", "conf-info public svelte-pz6cen");
-    			add_location(p, file$6, 43, 16, 1591);
+    			attr_dev(p, "class", "conf-info public svelte-1qbx15y");
+    			add_location(p, file$6, 43, 16, 1601);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
     			append_dev(p, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[12].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[19].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(p);
@@ -44634,7 +44634,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$1.name,
+    		id: create_else_block_1.name,
     		type: "else",
     		source: "(43:12) {:else}",
     		ctx
@@ -44644,24 +44644,24 @@ var app = (function () {
     }
 
     // (41:12) {#if conf.access == 'Private'}
-    function create_if_block$2(ctx) {
+    function create_if_block_1(ctx) {
     	let p;
-    	let t_value = /*conf*/ ctx[12].access + "";
+    	let t_value = /*conf*/ ctx[19].access + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			p = element("p");
     			t = text(t_value);
-    			attr_dev(p, "class", "conf-info private svelte-pz6cen");
-    			add_location(p, file$6, 41, 16, 1506);
+    			attr_dev(p, "class", "conf-info private svelte-1qbx15y");
+    			add_location(p, file$6, 41, 16, 1516);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
     			append_dev(p, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[12].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[19].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(p);
@@ -44670,7 +44670,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$2.name,
+    		id: create_if_block_1.name,
     		type: "if",
     		source: "(41:12) {#if conf.access == 'Private'}",
     		ctx
@@ -44683,19 +44683,19 @@ var app = (function () {
     function create_each_block$4(ctx) {
     	let div;
     	let p0;
-    	let t0_value = /*conf*/ ctx[12].name + "";
+    	let t0_value = /*conf*/ ctx[19].name + "";
     	let t0;
     	let t1;
     	let p1;
-    	let t2_value = /*conf*/ ctx[12].location + "";
+    	let t2_value = /*conf*/ ctx[19].location + "";
     	let t2;
     	let t3;
     	let p2;
-    	let t4_value = /*conf*/ ctx[12].date + "";
+    	let t4_value = /*conf*/ ctx[19].date + "";
     	let t4;
     	let t5;
     	let p3;
-    	let t6_value = /*conf*/ ctx[12].time + "";
+    	let t6_value = /*conf*/ ctx[19].time + "";
     	let t6;
     	let t7;
     	let t8;
@@ -44705,8 +44705,8 @@ var app = (function () {
     	let t11;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[12].access == "Private") return create_if_block$2;
-    		return create_else_block$1;
+    		if (/*conf*/ ctx[19].access == "Private") return create_if_block_1;
+    		return create_else_block_1;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -44735,26 +44735,26 @@ var app = (function () {
     			option1 = element("option");
     			option1.textContent = "delete";
     			t11 = space();
-    			attr_dev(p0, "class", "conf-info svelte-pz6cen");
-    			add_location(p0, file$6, 35, 12, 1249);
-    			attr_dev(p1, "class", "conf-info svelte-pz6cen");
-    			add_location(p1, file$6, 36, 12, 1300);
-    			attr_dev(p2, "class", "conf-info svelte-pz6cen");
-    			add_location(p2, file$6, 37, 12, 1355);
-    			attr_dev(p3, "class", "conf-info svelte-pz6cen");
-    			add_location(p3, file$6, 38, 12, 1406);
+    			attr_dev(p0, "class", "conf-info svelte-1qbx15y");
+    			add_location(p0, file$6, 35, 12, 1259);
+    			attr_dev(p1, "class", "conf-info svelte-1qbx15y");
+    			add_location(p1, file$6, 36, 12, 1310);
+    			attr_dev(p2, "class", "conf-info svelte-1qbx15y");
+    			add_location(p2, file$6, 37, 12, 1365);
+    			attr_dev(p3, "class", "conf-info svelte-1qbx15y");
+    			add_location(p3, file$6, 38, 12, 1416);
     			option0.__value = "";
     			option0.value = option0.__value;
-    			attr_dev(option0, "class", "svelte-pz6cen");
-    			add_location(option0, file$6, 47, 16, 1696);
+    			attr_dev(option0, "class", "svelte-1qbx15y");
+    			add_location(option0, file$6, 47, 16, 1706);
     			option1.__value = "delete";
     			option1.value = option1.__value;
-    			attr_dev(option1, "class", "svelte-pz6cen");
-    			add_location(option1, file$6, 48, 16, 1744);
-    			attr_dev(select, "class", "svelte-pz6cen");
-    			add_location(select, file$6, 46, 12, 1670);
-    			attr_dev(div, "class", "cell-container load-animation svelte-pz6cen");
-    			add_location(div, file$6, 34, 8, 1192);
+    			attr_dev(option1, "class", "svelte-1qbx15y");
+    			add_location(option1, file$6, 48, 16, 1754);
+    			attr_dev(select, "class", "svelte-1qbx15y");
+    			add_location(select, file$6, 46, 12, 1680);
+    			attr_dev(div, "class", "cell-container load-animation svelte-1qbx15y");
+    			add_location(div, file$6, 34, 8, 1202);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -44778,10 +44778,10 @@ var app = (function () {
     			append_dev(div, t11);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[12].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[12].location + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[12].date + "")) set_data_dev(t4, t4_value);
-    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[12].time + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[19].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[19].location + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[19].date + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[19].time + "")) set_data_dev(t6, t6_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -44806,6 +44806,104 @@ var app = (function () {
     		id: create_each_block$4.name,
     		type: "each",
     		source: "(34:4) {#each userConferences as conf}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (62:2) {:else}
+    function create_else_block$1(ctx) {
+    	let img;
+    	let img_src_value;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			img = element("img");
+    			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "profile picture");
+    			attr_dev(img, "class", "svelte-1qbx15y");
+    			add_location(img, file$6, 62, 9, 2251);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(img, "click", /*click_handler_2*/ ctx[14], false, false, false),
+    					listen_dev(img, "mouseover", profilePictureOnHover, false, false, false),
+    					listen_dev(img, "mouseleave", profilePictureOffHover, false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$1.name,
+    		type: "else",
+    		source: "(62:2) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (60:2) {#if userProfilePicture}
+    function create_if_block$2(ctx) {
+    	let img;
+    	let img_src_value;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			img = element("img");
+    			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "profile picture");
+    			attr_dev(img, "class", "svelte-1qbx15y");
+    			add_location(img, file$6, 60, 9, 2066);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(img, "click", /*click_handler_1*/ ctx[13], false, false, false),
+    					listen_dev(img, "mouseover", profilePictureOnHover, false, false, false),
+    					listen_dev(img, "mouseleave", profilePictureOffHover, false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*userProfilePicture*/ 2 && img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) {
+    				attr_dev(img, "src", img_src_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$2.name,
+    		type: "if",
+    		source: "(60:2) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -44850,34 +44948,35 @@ var app = (function () {
     	let div2;
     	let t22;
     	let div3;
-    	let img;
-    	let img_src_value;
     	let t23;
-    	let h11;
+    	let input;
+    	let input_accept_value;
     	let t24;
+    	let h11;
     	let t25;
-    	let h3;
     	let t26;
+    	let h3;
     	let t27;
-    	let hr;
     	let t28;
+    	let hr;
+    	let t29;
     	let div6;
     	let div4;
     	let p6;
-    	let t30;
+    	let t31;
     	let p7;
-    	let t32;
+    	let t33;
     	let p8;
-    	let t34;
+    	let t35;
     	let div5;
     	let p9;
-    	let t35;
     	let t36;
-    	let p10;
     	let t37;
+    	let p10;
     	let t38;
-    	let p11;
     	let t39;
+    	let p11;
+    	let t40;
     	let mounted;
     	let dispose;
     	let each_value = /*userConferences*/ ctx[0];
@@ -44887,6 +44986,14 @@ var app = (function () {
     	for (let i = 0; i < each_value.length; i += 1) {
     		each_blocks[i] = create_each_block$4(get_each_context$4(ctx, each_value, i));
     	}
+
+    	function select_block_type_1(ctx, dirty) {
+    		if (/*userProfilePicture*/ ctx[1]) return create_if_block$2;
+    		return create_else_block$1;
+    	}
+
+    	let current_block_type = select_block_type_1(ctx);
+    	let if_block = current_block_type(ctx);
 
     	const block = {
     		c: function create() {
@@ -44904,7 +45011,7 @@ var app = (function () {
     			ul = element("ul");
     			li0 = element("li");
     			button0 = element("button");
-    			button0.textContent = "+";
+    			button0.textContent = "+ New Event";
     			t5 = space();
     			li1 = element("li");
     			button1 = element("button");
@@ -44941,105 +45048,107 @@ var app = (function () {
     			div2 = element("div");
     			t22 = space();
     			div3 = element("div");
-    			img = element("img");
+    			if_block.c();
     			t23 = space();
+    			input = element("input");
+    			t24 = space();
     			h11 = element("h1");
-    			t24 = text(/*name*/ ctx[2]);
-    			t25 = space();
+    			t25 = text(/*name*/ ctx[2]);
+    			t26 = space();
     			h3 = element("h3");
-    			t26 = text(/*position*/ ctx[3]);
-    			t27 = space();
-    			hr = element("hr");
+    			t27 = text(/*position*/ ctx[3]);
     			t28 = space();
+    			hr = element("hr");
+    			t29 = space();
     			div6 = element("div");
     			div4 = element("div");
     			p6 = element("p");
     			p6.textContent = "Company";
-    			t30 = space();
+    			t31 = space();
     			p7 = element("p");
     			p7.textContent = "Joining Date";
-    			t32 = space();
+    			t33 = space();
     			p8 = element("p");
     			p8.textContent = "Conferences";
-    			t34 = space();
+    			t35 = space();
     			div5 = element("div");
     			p9 = element("p");
-    			t35 = text(/*company*/ ctx[4]);
-    			t36 = space();
+    			t36 = text(/*company*/ ctx[4]);
+    			t37 = space();
     			p10 = element("p");
-    			t37 = text(/*joiningDate*/ ctx[5]);
-    			t38 = space();
+    			t38 = text(/*joiningDate*/ ctx[5]);
+    			t39 = space();
     			p11 = element("p");
-    			t39 = text(/*activeConferences*/ ctx[6]);
+    			t40 = text(/*activeConferences*/ ctx[7]);
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			add_location(link0, file$6, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-pz6cen");
+    			attr_dev(h10, "class", "pageTitle svelte-1qbx15y");
     			add_location(h10, file$6, 18, 4, 609);
-    			attr_dev(button0, "class", "add-event svelte-pz6cen");
+    			attr_dev(button0, "class", "add-event svelte-1qbx15y");
     			add_location(button0, file$6, 20, 12, 671);
-    			attr_dev(li0, "class", "svelte-pz6cen");
+    			attr_dev(li0, "class", "svelte-1qbx15y");
     			add_location(li0, file$6, 20, 8, 667);
-    			attr_dev(button1, "class", "logout svelte-pz6cen");
-    			add_location(button1, file$6, 21, 12, 746);
-    			attr_dev(li1, "class", "svelte-pz6cen");
-    			add_location(li1, file$6, 21, 8, 742);
-    			attr_dev(ul, "class", "svelte-pz6cen");
+    			attr_dev(button1, "class", "logout svelte-1qbx15y");
+    			add_location(button1, file$6, 21, 12, 756);
+    			attr_dev(li1, "class", "svelte-1qbx15y");
+    			add_location(li1, file$6, 21, 8, 752);
+    			attr_dev(ul, "class", "svelte-1qbx15y");
     			add_location(ul, file$6, 19, 4, 654);
-    			attr_dev(h2, "class", "svelte-pz6cen");
-    			add_location(h2, file$6, 23, 4, 830);
-    			attr_dev(p0, "class", "info-category svelte-pz6cen");
-    			add_location(p0, file$6, 25, 8, 902);
-    			attr_dev(p1, "class", "info-category svelte-pz6cen");
-    			add_location(p1, file$6, 26, 8, 946);
-    			attr_dev(p2, "class", "info-category svelte-pz6cen");
-    			add_location(p2, file$6, 27, 8, 994);
-    			attr_dev(p3, "class", "info-category svelte-pz6cen");
-    			add_location(p3, file$6, 28, 8, 1038);
-    			attr_dev(p4, "class", "info-category svelte-pz6cen");
-    			add_location(p4, file$6, 29, 8, 1082);
-    			add_location(p5, file$6, 30, 8, 1128);
-    			attr_dev(div0, "class", "info-title-container svelte-pz6cen");
-    			add_location(div0, file$6, 24, 4, 859);
-    			attr_dev(div1, "class", "left-panel svelte-pz6cen");
+    			attr_dev(h2, "class", "svelte-1qbx15y");
+    			add_location(h2, file$6, 23, 4, 840);
+    			attr_dev(p0, "class", "info-category svelte-1qbx15y");
+    			add_location(p0, file$6, 25, 8, 912);
+    			attr_dev(p1, "class", "info-category svelte-1qbx15y");
+    			add_location(p1, file$6, 26, 8, 956);
+    			attr_dev(p2, "class", "info-category svelte-1qbx15y");
+    			add_location(p2, file$6, 27, 8, 1004);
+    			attr_dev(p3, "class", "info-category svelte-1qbx15y");
+    			add_location(p3, file$6, 28, 8, 1048);
+    			attr_dev(p4, "class", "info-category svelte-1qbx15y");
+    			add_location(p4, file$6, 29, 8, 1092);
+    			add_location(p5, file$6, 30, 8, 1138);
+    			attr_dev(div0, "class", "info-title-container svelte-1qbx15y");
+    			add_location(div0, file$6, 24, 4, 869);
+    			attr_dev(div1, "class", "left-panel svelte-1qbx15y");
     			add_location(div1, file$6, 17, 4, 580);
     			attr_dev(div2, "id", "color-calendar");
-    			add_location(div2, file$6, 57, 8, 1948);
-    			if (img.src !== (img_src_value = /*imageLink*/ ctx[1])) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-pz6cen");
-    			add_location(img, file$6, 59, 16, 2036);
-    			attr_dev(h11, "class", "svelte-pz6cen");
-    			add_location(h11, file$6, 60, 12, 2201);
-    			attr_dev(h3, "class", "svelte-pz6cen");
-    			add_location(h3, file$6, 61, 12, 2231);
-    			attr_dev(div3, "class", "profile-container svelte-pz6cen");
-    			add_location(div3, file$6, 58, 8, 1988);
-    			attr_dev(hr, "class", "svelte-pz6cen");
-    			add_location(hr, file$6, 63, 8, 2276);
-    			add_location(p6, file$6, 66, 16, 2372);
-    			add_location(p7, file$6, 67, 16, 2405);
-    			add_location(p8, file$6, 68, 16, 2443);
-    			attr_dev(div4, "class", "info-titles svelte-pz6cen");
-    			add_location(div4, file$6, 65, 12, 2330);
-    			add_location(p9, file$6, 71, 16, 2538);
-    			add_location(p10, file$6, 72, 16, 2573);
-    			add_location(p11, file$6, 73, 16, 2612);
+    			add_location(div2, file$6, 57, 8, 1958);
+    			set_style(input, "display", "none");
+    			attr_dev(input, "type", "file");
+    			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[15] + "pg, .jpeg, .png");
+    			add_location(input, file$6, 64, 2, 2430);
+    			attr_dev(h11, "class", "svelte-1qbx15y");
+    			add_location(h11, file$6, 65, 12, 2603);
+    			attr_dev(h3, "class", "svelte-1qbx15y");
+    			add_location(h3, file$6, 66, 12, 2633);
+    			attr_dev(div3, "class", "profile-container svelte-1qbx15y");
+    			add_location(div3, file$6, 58, 8, 1998);
+    			attr_dev(hr, "class", "svelte-1qbx15y");
+    			add_location(hr, file$6, 68, 8, 2678);
+    			add_location(p6, file$6, 71, 16, 2774);
+    			add_location(p7, file$6, 72, 16, 2807);
+    			add_location(p8, file$6, 73, 16, 2845);
+    			attr_dev(div4, "class", "info-titles svelte-1qbx15y");
+    			add_location(div4, file$6, 70, 12, 2732);
+    			add_location(p9, file$6, 76, 16, 2940);
+    			add_location(p10, file$6, 77, 16, 2975);
+    			add_location(p11, file$6, 78, 16, 3014);
     			attr_dev(div5, "id", "o");
-    			attr_dev(div5, "class", "info svelte-pz6cen");
-    			add_location(div5, file$6, 70, 12, 2495);
-    			attr_dev(div6, "class", "info-container svelte-pz6cen");
-    			add_location(div6, file$6, 64, 8, 2289);
-    			attr_dev(div7, "class", "right-panel svelte-pz6cen");
-    			add_location(div7, file$6, 55, 4, 1913);
-    			attr_dev(div8, "class", "panel-container svelte-pz6cen");
+    			attr_dev(div5, "class", "info svelte-1qbx15y");
+    			add_location(div5, file$6, 75, 12, 2897);
+    			attr_dev(div6, "class", "info-container svelte-1qbx15y");
+    			add_location(div6, file$6, 69, 8, 2691);
+    			attr_dev(div7, "class", "right-panel svelte-1qbx15y");
+    			add_location(div7, file$6, 55, 4, 1923);
+    			attr_dev(div8, "class", "panel-container svelte-1qbx15y");
     			add_location(div8, file$6, 15, 4, 541);
-    			attr_dev(div9, "class", "load-animation svelte-pz6cen");
+    			attr_dev(div9, "class", "load-animation svelte-1qbx15y");
     			add_location(div9, file$6, 4, 4, 200);
-    			attr_dev(div10, "class", "background svelte-pz6cen");
+    			attr_dev(div10, "class", "background svelte-1qbx15y");
     			add_location(div10, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
@@ -45088,41 +45197,42 @@ var app = (function () {
     			append_dev(div7, div2);
     			append_dev(div7, t22);
     			append_dev(div7, div3);
-    			append_dev(div3, img);
+    			if_block.m(div3, null);
     			append_dev(div3, t23);
+    			append_dev(div3, input);
+    			/*input_binding*/ ctx[17](input);
+    			append_dev(div3, t24);
     			append_dev(div3, h11);
-    			append_dev(h11, t24);
-    			append_dev(div3, t25);
+    			append_dev(h11, t25);
+    			append_dev(div3, t26);
     			append_dev(div3, h3);
-    			append_dev(h3, t26);
-    			append_dev(div7, t27);
-    			append_dev(div7, hr);
+    			append_dev(h3, t27);
     			append_dev(div7, t28);
+    			append_dev(div7, hr);
+    			append_dev(div7, t29);
     			append_dev(div7, div6);
     			append_dev(div6, div4);
     			append_dev(div4, p6);
-    			append_dev(div4, t30);
+    			append_dev(div4, t31);
     			append_dev(div4, p7);
-    			append_dev(div4, t32);
+    			append_dev(div4, t33);
     			append_dev(div4, p8);
-    			append_dev(div6, t34);
+    			append_dev(div6, t35);
     			append_dev(div6, div5);
     			append_dev(div5, p9);
-    			append_dev(p9, t35);
-    			append_dev(div5, t36);
+    			append_dev(p9, t36);
+    			append_dev(div5, t37);
     			append_dev(div5, p10);
-    			append_dev(p10, t37);
-    			append_dev(div5, t38);
+    			append_dev(p10, t38);
+    			append_dev(div5, t39);
     			append_dev(div5, p11);
-    			append_dev(p11, t39);
+    			append_dev(p11, t40);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*addConf*/ ctx[10], false, false, false),
-    					listen_dev(button1, "click", /*click_handler*/ ctx[11], false, false, false),
-    					listen_dev(img, "click", changeProfilePicture, false, false, false),
-    					listen_dev(img, "mouseover", /*profilePictureOnHover*/ ctx[7], false, false, false),
-    					listen_dev(img, "mouseleave", /*profilePictureOffHover*/ ctx[8], false, false, false)
+    					listen_dev(button0, "click", /*addConf*/ ctx[11], false, false, false),
+    					listen_dev(button1, "click", /*click_handler*/ ctx[12], false, false, false),
+    					listen_dev(input, "change", /*change_handler*/ ctx[16], false, false, false)
     				];
 
     				mounted = true;
@@ -45153,15 +45263,27 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*imageLink*/ 2 && img.src !== (img_src_value = /*imageLink*/ ctx[1])) {
-    				attr_dev(img, "src", img_src_value);
+    			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(div3, t23);
+    				}
     			}
 
-    			if (dirty & /*name*/ 4) set_data_dev(t24, /*name*/ ctx[2]);
-    			if (dirty & /*position*/ 8) set_data_dev(t26, /*position*/ ctx[3]);
-    			if (dirty & /*company*/ 16) set_data_dev(t35, /*company*/ ctx[4]);
-    			if (dirty & /*joiningDate*/ 32) set_data_dev(t37, /*joiningDate*/ ctx[5]);
-    			if (dirty & /*activeConferences*/ 64) set_data_dev(t39, /*activeConferences*/ ctx[6]);
+    			if (dirty & /*fileinput*/ 64 && input_accept_value !== (input_accept_value = ".jon:click=" + /*func*/ ctx[15] + "pg, .jpeg, .png")) {
+    				attr_dev(input, "accept", input_accept_value);
+    			}
+
+    			if (dirty & /*name*/ 4) set_data_dev(t25, /*name*/ ctx[2]);
+    			if (dirty & /*position*/ 8) set_data_dev(t27, /*position*/ ctx[3]);
+    			if (dirty & /*company*/ 16) set_data_dev(t36, /*company*/ ctx[4]);
+    			if (dirty & /*joiningDate*/ 32) set_data_dev(t38, /*joiningDate*/ ctx[5]);
+    			if (dirty & /*activeConferences*/ 128) set_data_dev(t40, /*activeConferences*/ ctx[7]);
     		},
     		i: noop$1,
     		o: noop$1,
@@ -45172,6 +45294,8 @@ var app = (function () {
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(div10);
     			destroy_each(each_blocks, detaching);
+    			if_block.d();
+    			/*input_binding*/ ctx[17](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -45188,6 +45312,14 @@ var app = (function () {
     	return block;
     }
 
+    function profilePictureOnHover() {
+    	imageLink = "/defaultProfilePictureHover.jpg";
+    }
+
+    function profilePictureOffHover() {
+    	imageLink = "/defaultProfilePicture.jpg";
+    }
+
     function changeProfilePicture() {
     	
     }
@@ -45196,7 +45328,8 @@ var app = (function () {
     	let activeConferences;
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Planner", slots, []);
-    	let imageLink = "/defaultProfilePicture.jpg";
+    	let defaultProfilePicture = "/defaultProfilePicture.jpg";
+    	let userProfilePicture;
     	let name = "none";
     	let position = "none";
     	let company = "none";
@@ -45222,18 +45355,27 @@ var app = (function () {
     			$$invalidate(4, company = snapshot.val());
     		});
 
-    		m(firebase$1.database().ref("users/" + user.uid + "/joiningDate")).on("value", snapshot => {
+    		firebase$1.database().ref("users/" + user.uid + "/joiningDate").on("value", snapshot => {
     			$$invalidate(5, joiningDate = snapshot.val());
+    		});
+
+    		firebase$1.database().ref("users/" + user.uid + "/profilePicture").on("value", snapshot => {
+    			$$invalidate(1, userProfilePicture = snapshot.val());
     		});
     	});
 
-    	function profilePictureOnHover() {
-    		$$invalidate(1, imageLink = "/defaultProfilePictureHover.jpg");
-    	}
+    	let avatar, fileinput;
 
-    	function profilePictureOffHover() {
-    		$$invalidate(1, imageLink = "/defaultProfilePicture.jpg");
-    	}
+    	const onFileSelected = e => {
+    		let image = e.target.files[0];
+    		let reader = new FileReader();
+    		reader.readAsDataURL(image);
+
+    		//avatar = e.target.result
+    		reader.onload = e => {
+    			firebase$1.database().ref("users/" + firebase$1.auth().currentUser.uid).update({ profilePicture: e.target.result });
+    		};
+    	};
 
     	function logout() {
     		firebase$1.auth().signOut().then(
@@ -45260,10 +45402,32 @@ var app = (function () {
 
     	const click_handler = () => logout();
 
+    	const click_handler_1 = () => {
+    		fileinput.click();
+    	};
+
+    	const click_handler_2 = () => {
+    		fileinput.click();
+    	};
+
+    	const func = () => {
+    		fileinput.click();
+    	};
+
+    	const change_handler = e => onFileSelected(e);
+
+    	function input_binding($$value) {
+    		binding_callbacks[$$value ? "unshift" : "push"](() => {
+    			fileinput = $$value;
+    			$$invalidate(6, fileinput);
+    		});
+    	}
+
     	$$self.$capture_state = () => ({
     		Router: page,
     		firebase: firebase$1,
-    		imageLink,
+    		defaultProfilePicture,
+    		userProfilePicture,
     		name,
     		position,
     		company,
@@ -45272,19 +45436,25 @@ var app = (function () {
     		profilePictureOnHover,
     		profilePictureOffHover,
     		changeProfilePicture,
+    		avatar,
+    		fileinput,
+    		onFileSelected,
     		logout,
     		addConf,
     		activeConferences
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("imageLink" in $$props) $$invalidate(1, imageLink = $$props.imageLink);
+    		if ("defaultProfilePicture" in $$props) $$invalidate(8, defaultProfilePicture = $$props.defaultProfilePicture);
+    		if ("userProfilePicture" in $$props) $$invalidate(1, userProfilePicture = $$props.userProfilePicture);
     		if ("name" in $$props) $$invalidate(2, name = $$props.name);
     		if ("position" in $$props) $$invalidate(3, position = $$props.position);
     		if ("company" in $$props) $$invalidate(4, company = $$props.company);
     		if ("joiningDate" in $$props) $$invalidate(5, joiningDate = $$props.joiningDate);
     		if ("userConferences" in $$props) $$invalidate(0, userConferences = $$props.userConferences);
-    		if ("activeConferences" in $$props) $$invalidate(6, activeConferences = $$props.activeConferences);
+    		if ("avatar" in $$props) avatar = $$props.avatar;
+    		if ("fileinput" in $$props) $$invalidate(6, fileinput = $$props.fileinput);
+    		if ("activeConferences" in $$props) $$invalidate(7, activeConferences = $$props.activeConferences);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -45293,23 +45463,29 @@ var app = (function () {
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*userConferences*/ 1) {
-    			$$invalidate(6, activeConferences = userConferences.length);
+    			$$invalidate(7, activeConferences = userConferences.length);
     		}
     	};
 
     	return [
     		userConferences,
-    		imageLink,
+    		userProfilePicture,
     		name,
     		position,
     		company,
     		joiningDate,
+    		fileinput,
     		activeConferences,
-    		profilePictureOnHover,
-    		profilePictureOffHover,
+    		defaultProfilePicture,
+    		onFileSelected,
     		logout,
     		addConf,
-    		click_handler
+    		click_handler,
+    		click_handler_1,
+    		click_handler_2,
+    		func,
+    		change_handler,
+    		input_binding
     	];
     }
 

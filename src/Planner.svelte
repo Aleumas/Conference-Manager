@@ -18,7 +18,7 @@
     <div class='left-panel'>
     <h1 class='pageTitle'> Conferences </h1>
     <ul>
-        <li><button class='add-event' on:click={addConf}> + </button></li>
+        <li><button class='add-event' on:click={addConf}> + New Event </button></li>
         <li><button class='logout' on:click={() => logout()}>Logout</button></li>
     </ul>
     <h2> My conferences</h2>
@@ -57,7 +57,12 @@
 
         <div id="color-calendar"></div>
         <div class='profile-container'>
-                <img on:click={changeProfilePicture} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={imageLink} alt='profile picture'/>
+		{#if userProfilePicture}
+        	<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture'/>
+		{:else}
+        	<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture'/>
+		{/if}
+		<input style="display:none" type="file" accept=".jon:click={()=>{fileinput.click();}}pg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
             <h1> {name} </h1>
             <h3> {position} </h3>
         </div>
@@ -166,11 +171,9 @@
 
     button {
         display: inline-block;
-        width: 3vw;
-        height: 3vw;
         margin-right: 0;
         margin-bottom: 5vh;
-        padding: 1vh;
+        padding: 2vh 2vh;
         color: white;
         font-weight: 700;
         background-color: #4C82F8;
@@ -181,9 +184,7 @@
 
     .logout {
         background-color: #F88A4C;
-        width: 10vw;
         margin: 0;
-        padding: 0;
         margin-right: 5vw;
         margin-top: 0;
     }
@@ -349,7 +350,8 @@
 import firebase from 'firebase/app';
 
 
-    let imageLink = '/defaultProfilePicture.jpg';
+    let defaultProfilePicture = '/defaultProfilePicture.jpg';
+    let userProfilePicture;
     let name = 'none'
     let position = 'none'
     let company = 'none';
@@ -376,8 +378,12 @@ import firebase from 'firebase/app';
             company = snapshot.val();
         });
 
-        m(firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
+        (firebase.database().ref('users/' + user.uid + '/joiningDate')).on('value', (snapshot) => {
             joiningDate = snapshot.val();
+        });
+
+        (firebase.database().ref('users/' + user.uid + '/profilePicture')).on('value', (snapshot) => {
+            userProfilePicture = snapshot.val();
         });
     })
     
@@ -392,6 +398,20 @@ import firebase from 'firebase/app';
 
     function changeProfilePicture() {
         
+    }
+
+    let  avatar, fileinput;
+	
+    const onFileSelected =(e)=>{
+    	let image = e.target.files[0];
+	let reader = new FileReader();
+	reader.readAsDataURL(image);
+	//avatar = e.target.result
+	reader.onload = e => {
+	firebase.database().ref('users/' + firebase.auth().currentUser.uid).update({
+		profilePicture: e.target.result 
+	})
+	}
     }
 
     function logout() {
