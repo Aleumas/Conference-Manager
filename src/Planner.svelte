@@ -22,6 +22,39 @@
         <li><button class='logout' on:click={() => logout()}>Logout</button></li>
     </ul>
     <h2> My conferences</h2>
+    <table>
+    	<tr>
+		<th> name </th>
+		<th> location </th>
+		<th> date </th>
+		<th> time </th>
+		<th> access </th>
+		<th></th>
+    	</tr>
+
+	{#each userConferences as conf, i}
+	<tr>
+            <td > {conf.name} </td>
+            <td > {conf.location} </td>
+            <td > {conf.date} </td>
+            <td > {conf.time} </td>
+
+            {#if conf.access == 'Private'} 
+                <td class='conf-info private'> {conf.access} </td>
+            {:else}
+                <td class='conf-info public'> {conf.access} </td>
+            {/if}
+	<td>
+            <select> 
+                <option value="none"> ••• </option>
+                <option value='delete'> delete </option>
+            </select>
+	</td>
+	</tr>
+    {/each}
+
+    </table>
+<!-- 
     <div class='info-title-container'>
         <p class='info-category'> name </p>
         <p class='info-category'> location </p>
@@ -45,22 +78,22 @@
             {/if}
 
             <select> 
-                <option value=''> ••• </option>
+                <option value="none"> ••• </option>
                 <option value='delete'> delete </option>
             </select>
 
         </div>
     {/each}
+    -->
     <!-- <button class='add-event'>+ Add an event</button> -->
     </div>
     <div class='right-panel'>
 
-        <div id="color-calendar"></div>
         <div class='profile-container'>
 		{#if userProfilePicture}
-        	<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture'/>
+        		<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture'/>
 		{:else}
-        	<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture'/>
+        		<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture'/>
 		{/if}
 		<input style="display:none" type="file" accept=".jon:click={()=>{fileinput.click();}}pg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
             <h1> {name} </h1>
@@ -87,11 +120,11 @@
 <style>
     
     h2 {
+        font-size: 1.8vmax;
         margin-top: 0;
         margin-bottom: 0;
         margin-left: 2vh;
         padding-top: 2vh;
-        
     }
     
     ul {
@@ -138,6 +171,10 @@
         color: #7d7975;
     }
 
+    select option[value=none] {
+    	display: none;
+    }
+
     select::-ms-expand {
         display: none;
     }
@@ -153,7 +190,13 @@
         padding-right: 1vw;
         margin-left: 1vw;
         margin-top: 0;
-        margin-bottom: -2vh;
+        margin-bottom: -1vmax;
+    }
+
+    th, td {
+  	margin: 1vmax 2vmax 1vmax 2vmax;
+  	text-align: center;
+        font-size: 1.2vmax;
     }
 
     .info-category {
@@ -177,7 +220,7 @@
         color: white;
         font-weight: 700;
         background-color: #4C82F8;
-        font-size: medium;
+        font-size: 1.2vmax;
         border-radius: 2vh;
         border: none;
     }
@@ -319,7 +362,7 @@
         text-align: center;
         margin-bottom: 0;
         margin-top: 0;
-        padding-top: 2vh;
+        padding-top: 2vmax;
     }
 
     .pageTitle {
@@ -329,7 +372,7 @@
 
     img {
         width: 5vmax;
-        margin-top: 4vh;
+        margin-top: 4vmax;
         height: 10%;
         display: block;
         margin-left: auto;
@@ -357,7 +400,9 @@ import firebase from 'firebase/app';
     let company = 'none';
     let joiningDate = 'none';
     let userConferences = [];
-    $: activeConferences = userConferences.length; 
+    let option;
+    $: activeConferences = userConferences.length;
+    
 
     firebase.auth().onAuthStateChanged(user => {
         (firebase.database().ref('users/' + user.uid + '/conferences')).on('value', (snapshot) => {
@@ -400,6 +445,10 @@ import firebase from 'firebase/app';
         
     }
 
+    document.getElementsByTagName('select').onchange = function() {
+    	console.log("changed");
+    }
+
     let  avatar, fileinput;
 	
     const onFileSelected =(e)=>{
@@ -414,6 +463,10 @@ import firebase from 'firebase/app';
 	}
     }
 
+    function deleteConference(index) {
+    	console.log("click");
+    	console.log(index);
+    }
     function logout() {
         firebase.auth().signOut().then(function() {
         console.log('Signed Out');

@@ -44603,32 +44603,33 @@ var app = (function () {
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[19] = list[i];
+    	child_ctx[20] = list[i];
+    	child_ctx[22] = i;
     	return child_ctx;
     }
 
-    // (43:12) {:else}
+    // (44:12) {:else}
     function create_else_block_1(ctx) {
-    	let p;
-    	let t_value = /*conf*/ ctx[19].access + "";
+    	let td;
+    	let t_value = /*conf*/ ctx[20].access + "";
     	let t;
 
     	const block = {
     		c: function create() {
-    			p = element("p");
+    			td = element("td");
     			t = text(t_value);
-    			attr_dev(p, "class", "conf-info public svelte-1qbx15y");
-    			add_location(p, file$6, 43, 16, 1601);
+    			attr_dev(td, "class", "conf-info public svelte-sc22eq");
+    			add_location(td, file$6, 44, 16, 1345);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, p, anchor);
-    			append_dev(p, t);
+    			insert_dev(target, td, anchor);
+    			append_dev(td, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[19].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[20].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(p);
+    			if (detaching) detach_dev(td);
     		}
     	};
 
@@ -44636,35 +44637,35 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(43:12) {:else}",
+    		source: "(44:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (41:12) {#if conf.access == 'Private'}
+    // (42:12) {#if conf.access == 'Private'}
     function create_if_block_1(ctx) {
-    	let p;
-    	let t_value = /*conf*/ ctx[19].access + "";
+    	let td;
+    	let t_value = /*conf*/ ctx[20].access + "";
     	let t;
 
     	const block = {
     		c: function create() {
-    			p = element("p");
+    			td = element("td");
     			t = text(t_value);
-    			attr_dev(p, "class", "conf-info private svelte-1qbx15y");
-    			add_location(p, file$6, 41, 16, 1516);
+    			attr_dev(td, "class", "conf-info private svelte-sc22eq");
+    			add_location(td, file$6, 42, 16, 1258);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, p, anchor);
-    			append_dev(p, t);
+    			insert_dev(target, td, anchor);
+    			append_dev(td, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[19].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[20].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(p);
+    			if (detaching) detach_dev(td);
     		}
     	};
 
@@ -44672,40 +44673,41 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(41:12) {#if conf.access == 'Private'}",
+    		source: "(42:12) {#if conf.access == 'Private'}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (34:4) {#each userConferences as conf}
+    // (35:1) {#each userConferences as conf, i}
     function create_each_block$4(ctx) {
-    	let div;
-    	let p0;
-    	let t0_value = /*conf*/ ctx[19].name + "";
+    	let tr;
+    	let td0;
+    	let t0_value = /*conf*/ ctx[20].name + "";
     	let t0;
     	let t1;
-    	let p1;
-    	let t2_value = /*conf*/ ctx[19].location + "";
+    	let td1;
+    	let t2_value = /*conf*/ ctx[20].location + "";
     	let t2;
     	let t3;
-    	let p2;
-    	let t4_value = /*conf*/ ctx[19].date + "";
+    	let td2;
+    	let t4_value = /*conf*/ ctx[20].date + "";
     	let t4;
     	let t5;
-    	let p3;
-    	let t6_value = /*conf*/ ctx[19].time + "";
+    	let td3;
+    	let t6_value = /*conf*/ ctx[20].time + "";
     	let t6;
     	let t7;
     	let t8;
+    	let td4;
     	let select;
     	let option0;
     	let option1;
     	let t11;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[19].access == "Private") return create_if_block_1;
+    		if (/*conf*/ ctx[20].access == "Private") return create_if_block_1;
     		return create_else_block_1;
     	}
 
@@ -44714,74 +44716,77 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			p0 = element("p");
+    			tr = element("tr");
+    			td0 = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			p1 = element("p");
+    			td1 = element("td");
     			t2 = text(t2_value);
     			t3 = space();
-    			p2 = element("p");
+    			td2 = element("td");
     			t4 = text(t4_value);
     			t5 = space();
-    			p3 = element("p");
+    			td3 = element("td");
     			t6 = text(t6_value);
     			t7 = space();
     			if_block.c();
     			t8 = space();
+    			td4 = element("td");
     			select = element("select");
     			option0 = element("option");
     			option0.textContent = "••• ";
     			option1 = element("option");
     			option1.textContent = "delete";
     			t11 = space();
-    			attr_dev(p0, "class", "conf-info svelte-1qbx15y");
-    			add_location(p0, file$6, 35, 12, 1259);
-    			attr_dev(p1, "class", "conf-info svelte-1qbx15y");
-    			add_location(p1, file$6, 36, 12, 1310);
-    			attr_dev(p2, "class", "conf-info svelte-1qbx15y");
-    			add_location(p2, file$6, 37, 12, 1365);
-    			attr_dev(p3, "class", "conf-info svelte-1qbx15y");
-    			add_location(p3, file$6, 38, 12, 1416);
-    			option0.__value = "";
+    			attr_dev(td0, "class", "svelte-sc22eq");
+    			add_location(td0, file$6, 36, 12, 1061);
+    			attr_dev(td1, "class", "svelte-sc22eq");
+    			add_location(td1, file$6, 37, 12, 1097);
+    			attr_dev(td2, "class", "svelte-sc22eq");
+    			add_location(td2, file$6, 38, 12, 1137);
+    			attr_dev(td3, "class", "svelte-sc22eq");
+    			add_location(td3, file$6, 39, 12, 1173);
+    			option0.__value = "none";
     			option0.value = option0.__value;
-    			attr_dev(option0, "class", "svelte-1qbx15y");
-    			add_location(option0, file$6, 47, 16, 1706);
+    			attr_dev(option0, "class", "svelte-sc22eq");
+    			add_location(option0, file$6, 48, 16, 1457);
     			option1.__value = "delete";
     			option1.value = option1.__value;
-    			attr_dev(option1, "class", "svelte-1qbx15y");
-    			add_location(option1, file$6, 48, 16, 1754);
-    			attr_dev(select, "class", "svelte-1qbx15y");
-    			add_location(select, file$6, 46, 12, 1680);
-    			attr_dev(div, "class", "cell-container load-animation svelte-1qbx15y");
-    			add_location(div, file$6, 34, 8, 1202);
+    			attr_dev(option1, "class", "svelte-sc22eq");
+    			add_location(option1, file$6, 49, 16, 1509);
+    			attr_dev(select, "class", "svelte-sc22eq");
+    			add_location(select, file$6, 47, 12, 1431);
+    			attr_dev(td4, "class", "svelte-sc22eq");
+    			add_location(td4, file$6, 46, 1, 1414);
+    			add_location(tr, file$6, 35, 1, 1044);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, p0);
-    			append_dev(p0, t0);
-    			append_dev(div, t1);
-    			append_dev(div, p1);
-    			append_dev(p1, t2);
-    			append_dev(div, t3);
-    			append_dev(div, p2);
-    			append_dev(p2, t4);
-    			append_dev(div, t5);
-    			append_dev(div, p3);
-    			append_dev(p3, t6);
-    			append_dev(div, t7);
-    			if_block.m(div, null);
-    			append_dev(div, t8);
-    			append_dev(div, select);
+    			insert_dev(target, tr, anchor);
+    			append_dev(tr, td0);
+    			append_dev(td0, t0);
+    			append_dev(tr, t1);
+    			append_dev(tr, td1);
+    			append_dev(td1, t2);
+    			append_dev(tr, t3);
+    			append_dev(tr, td2);
+    			append_dev(td2, t4);
+    			append_dev(tr, t5);
+    			append_dev(tr, td3);
+    			append_dev(td3, t6);
+    			append_dev(tr, t7);
+    			if_block.m(tr, null);
+    			append_dev(tr, t8);
+    			append_dev(tr, td4);
+    			append_dev(td4, select);
     			append_dev(select, option0);
     			append_dev(select, option1);
-    			append_dev(div, t11);
+    			append_dev(tr, t11);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[19].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[19].location + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[19].date + "")) set_data_dev(t4, t4_value);
-    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[19].time + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[20].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[20].location + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[20].date + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[20].time + "")) set_data_dev(t6, t6_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -44791,12 +44796,12 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(div, t8);
+    					if_block.m(tr, t8);
     				}
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(tr);
     			if_block.d();
     		}
     	};
@@ -44805,14 +44810,14 @@ var app = (function () {
     		block,
     		id: create_each_block$4.name,
     		type: "each",
-    		source: "(34:4) {#each userConferences as conf}",
+    		source: "(35:1) {#each userConferences as conf, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (62:2) {:else}
+    // (95:2) {:else}
     function create_else_block$1(ctx) {
     	let img;
     	let img_src_value;
@@ -44824,8 +44829,8 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-1qbx15y");
-    			add_location(img, file$6, 62, 9, 2251);
+    			attr_dev(img, "class", "svelte-sc22eq");
+    			add_location(img, file$6, 95, 10, 2978);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -44852,14 +44857,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(62:2) {:else}",
+    		source: "(95:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (60:2) {#if userProfilePicture}
+    // (93:2) {#if userProfilePicture}
     function create_if_block$2(ctx) {
     	let img;
     	let img_src_value;
@@ -44871,8 +44876,8 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-1qbx15y");
-    			add_location(img, file$6, 60, 9, 2066);
+    			attr_dev(img, "class", "svelte-sc22eq");
+    			add_location(img, file$6, 93, 10, 2792);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -44903,7 +44908,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(60:2) {#if userProfilePicture}",
+    		source: "(93:2) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -44915,10 +44920,10 @@ var app = (function () {
     	let t0;
     	let link1;
     	let t1;
-    	let div10;
-    	let div9;
     	let div8;
-    	let div1;
+    	let div7;
+    	let div6;
+    	let div0;
     	let h10;
     	let t3;
     	let ul;
@@ -44930,53 +44935,52 @@ var app = (function () {
     	let t7;
     	let h2;
     	let t9;
-    	let div0;
-    	let p0;
+    	let table;
+    	let tr;
+    	let th0;
     	let t11;
-    	let p1;
+    	let th1;
     	let t13;
-    	let p2;
+    	let th2;
     	let t15;
-    	let p3;
+    	let th3;
     	let t17;
-    	let p4;
+    	let th4;
     	let t19;
-    	let p5;
+    	let th5;
     	let t20;
     	let t21;
-    	let div7;
-    	let div2;
+    	let div5;
+    	let div1;
     	let t22;
-    	let div3;
-    	let t23;
     	let input;
     	let input_accept_value;
-    	let t24;
+    	let t23;
     	let h11;
+    	let t24;
     	let t25;
-    	let t26;
     	let h3;
+    	let t26;
     	let t27;
-    	let t28;
     	let hr;
-    	let t29;
-    	let div6;
+    	let t28;
     	let div4;
-    	let p6;
-    	let t31;
-    	let p7;
-    	let t33;
-    	let p8;
+    	let div2;
+    	let p0;
+    	let t30;
+    	let p1;
+    	let t32;
+    	let p2;
+    	let t34;
+    	let div3;
+    	let p3;
     	let t35;
-    	let div5;
-    	let p9;
     	let t36;
+    	let p4;
     	let t37;
-    	let p10;
     	let t38;
+    	let p5;
     	let t39;
-    	let p11;
-    	let t40;
     	let mounted;
     	let dispose;
     	let each_value = /*userConferences*/ ctx[0];
@@ -45001,10 +45005,10 @@ var app = (function () {
     			t0 = space();
     			link1 = element("link");
     			t1 = space();
-    			div10 = element("div");
-    			div9 = element("div");
     			div8 = element("div");
-    			div1 = element("div");
+    			div7 = element("div");
+    			div6 = element("div");
+    			div0 = element("div");
     			h10 = element("h1");
     			h10.textContent = "Conferences";
     			t3 = space();
@@ -45020,23 +45024,24 @@ var app = (function () {
     			h2 = element("h2");
     			h2.textContent = "My conferences";
     			t9 = space();
-    			div0 = element("div");
-    			p0 = element("p");
-    			p0.textContent = "name";
+    			table = element("table");
+    			tr = element("tr");
+    			th0 = element("th");
+    			th0.textContent = "name";
     			t11 = space();
-    			p1 = element("p");
-    			p1.textContent = "location";
+    			th1 = element("th");
+    			th1.textContent = "location";
     			t13 = space();
-    			p2 = element("p");
-    			p2.textContent = "date";
+    			th2 = element("th");
+    			th2.textContent = "date";
     			t15 = space();
-    			p3 = element("p");
-    			p3.textContent = "time";
+    			th3 = element("th");
+    			th3.textContent = "time";
     			t17 = space();
-    			p4 = element("p");
-    			p4.textContent = "access";
+    			th4 = element("th");
+    			th4.textContent = "access";
     			t19 = space();
-    			p5 = element("p");
+    			th5 = element("th");
     			t20 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -45044,112 +45049,109 @@ var app = (function () {
     			}
 
     			t21 = space();
-    			div7 = element("div");
-    			div2 = element("div");
-    			t22 = space();
-    			div3 = element("div");
-    			if_block.c();
-    			t23 = space();
-    			input = element("input");
-    			t24 = space();
-    			h11 = element("h1");
-    			t25 = text(/*name*/ ctx[2]);
-    			t26 = space();
-    			h3 = element("h3");
-    			t27 = text(/*position*/ ctx[3]);
-    			t28 = space();
-    			hr = element("hr");
-    			t29 = space();
-    			div6 = element("div");
-    			div4 = element("div");
-    			p6 = element("p");
-    			p6.textContent = "Company";
-    			t31 = space();
-    			p7 = element("p");
-    			p7.textContent = "Joining Date";
-    			t33 = space();
-    			p8 = element("p");
-    			p8.textContent = "Conferences";
-    			t35 = space();
     			div5 = element("div");
-    			p9 = element("p");
-    			t36 = text(/*company*/ ctx[4]);
-    			t37 = space();
-    			p10 = element("p");
-    			t38 = text(/*joiningDate*/ ctx[5]);
-    			t39 = space();
-    			p11 = element("p");
-    			t40 = text(/*activeConferences*/ ctx[7]);
+    			div1 = element("div");
+    			if_block.c();
+    			t22 = space();
+    			input = element("input");
+    			t23 = space();
+    			h11 = element("h1");
+    			t24 = text(/*name*/ ctx[2]);
+    			t25 = space();
+    			h3 = element("h3");
+    			t26 = text(/*position*/ ctx[3]);
+    			t27 = space();
+    			hr = element("hr");
+    			t28 = space();
+    			div4 = element("div");
+    			div2 = element("div");
+    			p0 = element("p");
+    			p0.textContent = "Company";
+    			t30 = space();
+    			p1 = element("p");
+    			p1.textContent = "Joining Date";
+    			t32 = space();
+    			p2 = element("p");
+    			p2.textContent = "Conferences";
+    			t34 = space();
+    			div3 = element("div");
+    			p3 = element("p");
+    			t35 = text(/*company*/ ctx[4]);
+    			t36 = space();
+    			p4 = element("p");
+    			t37 = text(/*joiningDate*/ ctx[5]);
+    			t38 = space();
+    			p5 = element("p");
+    			t39 = text(/*activeConferences*/ ctx[7]);
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			add_location(link0, file$6, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-1qbx15y");
+    			attr_dev(h10, "class", "pageTitle svelte-sc22eq");
     			add_location(h10, file$6, 18, 4, 609);
-    			attr_dev(button0, "class", "add-event svelte-1qbx15y");
+    			attr_dev(button0, "class", "add-event svelte-sc22eq");
     			add_location(button0, file$6, 20, 12, 671);
-    			attr_dev(li0, "class", "svelte-1qbx15y");
+    			attr_dev(li0, "class", "svelte-sc22eq");
     			add_location(li0, file$6, 20, 8, 667);
-    			attr_dev(button1, "class", "logout svelte-1qbx15y");
+    			attr_dev(button1, "class", "logout svelte-sc22eq");
     			add_location(button1, file$6, 21, 12, 756);
-    			attr_dev(li1, "class", "svelte-1qbx15y");
+    			attr_dev(li1, "class", "svelte-sc22eq");
     			add_location(li1, file$6, 21, 8, 752);
-    			attr_dev(ul, "class", "svelte-1qbx15y");
+    			attr_dev(ul, "class", "svelte-sc22eq");
     			add_location(ul, file$6, 19, 4, 654);
-    			attr_dev(h2, "class", "svelte-1qbx15y");
+    			attr_dev(h2, "class", "svelte-sc22eq");
     			add_location(h2, file$6, 23, 4, 840);
-    			attr_dev(p0, "class", "info-category svelte-1qbx15y");
-    			add_location(p0, file$6, 25, 8, 912);
-    			attr_dev(p1, "class", "info-category svelte-1qbx15y");
-    			add_location(p1, file$6, 26, 8, 956);
-    			attr_dev(p2, "class", "info-category svelte-1qbx15y");
-    			add_location(p2, file$6, 27, 8, 1004);
-    			attr_dev(p3, "class", "info-category svelte-1qbx15y");
-    			add_location(p3, file$6, 28, 8, 1048);
-    			attr_dev(p4, "class", "info-category svelte-1qbx15y");
-    			add_location(p4, file$6, 29, 8, 1092);
-    			add_location(p5, file$6, 30, 8, 1138);
-    			attr_dev(div0, "class", "info-title-container svelte-1qbx15y");
-    			add_location(div0, file$6, 24, 4, 869);
-    			attr_dev(div1, "class", "left-panel svelte-1qbx15y");
-    			add_location(div1, file$6, 17, 4, 580);
-    			attr_dev(div2, "id", "color-calendar");
-    			add_location(div2, file$6, 57, 8, 1958);
+    			attr_dev(th0, "class", "svelte-sc22eq");
+    			add_location(th0, file$6, 26, 2, 889);
+    			attr_dev(th1, "class", "svelte-sc22eq");
+    			add_location(th1, file$6, 27, 2, 907);
+    			attr_dev(th2, "class", "svelte-sc22eq");
+    			add_location(th2, file$6, 28, 2, 929);
+    			attr_dev(th3, "class", "svelte-sc22eq");
+    			add_location(th3, file$6, 29, 2, 947);
+    			attr_dev(th4, "class", "svelte-sc22eq");
+    			add_location(th4, file$6, 30, 2, 965);
+    			attr_dev(th5, "class", "svelte-sc22eq");
+    			add_location(th5, file$6, 31, 2, 985);
+    			add_location(tr, file$6, 25, 5, 882);
+    			add_location(table, file$6, 24, 4, 869);
+    			attr_dev(div0, "class", "left-panel svelte-sc22eq");
+    			add_location(div0, file$6, 17, 4, 580);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[15] + "pg, .jpeg, .png");
-    			add_location(input, file$6, 64, 2, 2430);
-    			attr_dev(h11, "class", "svelte-1qbx15y");
-    			add_location(h11, file$6, 65, 12, 2603);
-    			attr_dev(h3, "class", "svelte-1qbx15y");
-    			add_location(h3, file$6, 66, 12, 2633);
-    			attr_dev(div3, "class", "profile-container svelte-1qbx15y");
-    			add_location(div3, file$6, 58, 8, 1998);
-    			attr_dev(hr, "class", "svelte-1qbx15y");
-    			add_location(hr, file$6, 68, 8, 2678);
-    			add_location(p6, file$6, 71, 16, 2774);
-    			add_location(p7, file$6, 72, 16, 2807);
-    			add_location(p8, file$6, 73, 16, 2845);
-    			attr_dev(div4, "class", "info-titles svelte-1qbx15y");
-    			add_location(div4, file$6, 70, 12, 2732);
-    			add_location(p9, file$6, 76, 16, 2940);
-    			add_location(p10, file$6, 77, 16, 2975);
-    			add_location(p11, file$6, 78, 16, 3014);
-    			attr_dev(div5, "id", "o");
-    			attr_dev(div5, "class", "info svelte-1qbx15y");
-    			add_location(div5, file$6, 75, 12, 2897);
-    			attr_dev(div6, "class", "info-container svelte-1qbx15y");
-    			add_location(div6, file$6, 69, 8, 2691);
-    			attr_dev(div7, "class", "right-panel svelte-1qbx15y");
-    			add_location(div7, file$6, 55, 4, 1923);
-    			attr_dev(div8, "class", "panel-container svelte-1qbx15y");
-    			add_location(div8, file$6, 15, 4, 541);
-    			attr_dev(div9, "class", "load-animation svelte-1qbx15y");
-    			add_location(div9, file$6, 4, 4, 200);
-    			attr_dev(div10, "class", "background svelte-1qbx15y");
-    			add_location(div10, file$6, 3, 0, 171);
+    			add_location(input, file$6, 97, 2, 3157);
+    			attr_dev(h11, "class", "svelte-sc22eq");
+    			add_location(h11, file$6, 98, 12, 3330);
+    			attr_dev(h3, "class", "svelte-sc22eq");
+    			add_location(h3, file$6, 99, 12, 3360);
+    			attr_dev(div1, "class", "profile-container svelte-sc22eq");
+    			add_location(div1, file$6, 91, 8, 2723);
+    			attr_dev(hr, "class", "svelte-sc22eq");
+    			add_location(hr, file$6, 101, 8, 3405);
+    			add_location(p0, file$6, 104, 16, 3501);
+    			add_location(p1, file$6, 105, 16, 3534);
+    			add_location(p2, file$6, 106, 16, 3572);
+    			attr_dev(div2, "class", "info-titles svelte-sc22eq");
+    			add_location(div2, file$6, 103, 12, 3459);
+    			add_location(p3, file$6, 109, 16, 3667);
+    			add_location(p4, file$6, 110, 16, 3702);
+    			add_location(p5, file$6, 111, 16, 3741);
+    			attr_dev(div3, "id", "o");
+    			attr_dev(div3, "class", "info svelte-sc22eq");
+    			add_location(div3, file$6, 108, 12, 3624);
+    			attr_dev(div4, "class", "info-container svelte-sc22eq");
+    			add_location(div4, file$6, 102, 8, 3418);
+    			attr_dev(div5, "class", "right-panel svelte-sc22eq");
+    			add_location(div5, file$6, 89, 4, 2688);
+    			attr_dev(div6, "class", "panel-container svelte-sc22eq");
+    			add_location(div6, file$6, 15, 4, 541);
+    			attr_dev(div7, "class", "load-animation svelte-sc22eq");
+    			add_location(div7, file$6, 4, 4, 200);
+    			attr_dev(div8, "class", "background svelte-sc22eq");
+    			add_location(div8, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -45159,74 +45161,73 @@ var app = (function () {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, link1, anchor);
     			insert_dev(target, t1, anchor);
-    			insert_dev(target, div10, anchor);
-    			append_dev(div10, div9);
-    			append_dev(div9, div8);
-    			append_dev(div8, div1);
-    			append_dev(div1, h10);
-    			append_dev(div1, t3);
-    			append_dev(div1, ul);
+    			insert_dev(target, div8, anchor);
+    			append_dev(div8, div7);
+    			append_dev(div7, div6);
+    			append_dev(div6, div0);
+    			append_dev(div0, h10);
+    			append_dev(div0, t3);
+    			append_dev(div0, ul);
     			append_dev(ul, li0);
     			append_dev(li0, button0);
     			append_dev(ul, t5);
     			append_dev(ul, li1);
     			append_dev(li1, button1);
-    			append_dev(div1, t7);
-    			append_dev(div1, h2);
-    			append_dev(div1, t9);
-    			append_dev(div1, div0);
-    			append_dev(div0, p0);
-    			append_dev(div0, t11);
-    			append_dev(div0, p1);
-    			append_dev(div0, t13);
-    			append_dev(div0, p2);
-    			append_dev(div0, t15);
-    			append_dev(div0, p3);
-    			append_dev(div0, t17);
-    			append_dev(div0, p4);
-    			append_dev(div0, t19);
-    			append_dev(div0, p5);
-    			append_dev(div1, t20);
+    			append_dev(div0, t7);
+    			append_dev(div0, h2);
+    			append_dev(div0, t9);
+    			append_dev(div0, table);
+    			append_dev(table, tr);
+    			append_dev(tr, th0);
+    			append_dev(tr, t11);
+    			append_dev(tr, th1);
+    			append_dev(tr, t13);
+    			append_dev(tr, th2);
+    			append_dev(tr, t15);
+    			append_dev(tr, th3);
+    			append_dev(tr, t17);
+    			append_dev(tr, th4);
+    			append_dev(tr, t19);
+    			append_dev(tr, th5);
+    			append_dev(table, t20);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div1, null);
+    				each_blocks[i].m(table, null);
     			}
 
-    			append_dev(div8, t21);
-    			append_dev(div8, div7);
-    			append_dev(div7, div2);
-    			append_dev(div7, t22);
-    			append_dev(div7, div3);
-    			if_block.m(div3, null);
-    			append_dev(div3, t23);
-    			append_dev(div3, input);
-    			/*input_binding*/ ctx[17](input);
-    			append_dev(div3, t24);
-    			append_dev(div3, h11);
-    			append_dev(h11, t25);
-    			append_dev(div3, t26);
-    			append_dev(div3, h3);
-    			append_dev(h3, t27);
-    			append_dev(div7, t28);
-    			append_dev(div7, hr);
-    			append_dev(div7, t29);
-    			append_dev(div7, div6);
-    			append_dev(div6, div4);
-    			append_dev(div4, p6);
-    			append_dev(div4, t31);
-    			append_dev(div4, p7);
-    			append_dev(div4, t33);
-    			append_dev(div4, p8);
-    			append_dev(div6, t35);
+    			append_dev(div6, t21);
     			append_dev(div6, div5);
-    			append_dev(div5, p9);
-    			append_dev(p9, t36);
-    			append_dev(div5, t37);
-    			append_dev(div5, p10);
-    			append_dev(p10, t38);
-    			append_dev(div5, t39);
-    			append_dev(div5, p11);
-    			append_dev(p11, t40);
+    			append_dev(div5, div1);
+    			if_block.m(div1, null);
+    			append_dev(div1, t22);
+    			append_dev(div1, input);
+    			/*input_binding*/ ctx[17](input);
+    			append_dev(div1, t23);
+    			append_dev(div1, h11);
+    			append_dev(h11, t24);
+    			append_dev(div1, t25);
+    			append_dev(div1, h3);
+    			append_dev(h3, t26);
+    			append_dev(div5, t27);
+    			append_dev(div5, hr);
+    			append_dev(div5, t28);
+    			append_dev(div5, div4);
+    			append_dev(div4, div2);
+    			append_dev(div2, p0);
+    			append_dev(div2, t30);
+    			append_dev(div2, p1);
+    			append_dev(div2, t32);
+    			append_dev(div2, p2);
+    			append_dev(div4, t34);
+    			append_dev(div4, div3);
+    			append_dev(div3, p3);
+    			append_dev(p3, t35);
+    			append_dev(div3, t36);
+    			append_dev(div3, p4);
+    			append_dev(p4, t37);
+    			append_dev(div3, t38);
+    			append_dev(div3, p5);
+    			append_dev(p5, t39);
 
     			if (!mounted) {
     				dispose = [
@@ -45252,7 +45253,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block$4(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div1, null);
+    						each_blocks[i].m(table, null);
     					}
     				}
 
@@ -45271,7 +45272,7 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(div3, t23);
+    					if_block.m(div1, t22);
     				}
     			}
 
@@ -45279,11 +45280,11 @@ var app = (function () {
     				attr_dev(input, "accept", input_accept_value);
     			}
 
-    			if (dirty & /*name*/ 4) set_data_dev(t25, /*name*/ ctx[2]);
-    			if (dirty & /*position*/ 8) set_data_dev(t27, /*position*/ ctx[3]);
-    			if (dirty & /*company*/ 16) set_data_dev(t36, /*company*/ ctx[4]);
-    			if (dirty & /*joiningDate*/ 32) set_data_dev(t38, /*joiningDate*/ ctx[5]);
-    			if (dirty & /*activeConferences*/ 128) set_data_dev(t40, /*activeConferences*/ ctx[7]);
+    			if (dirty & /*name*/ 4) set_data_dev(t24, /*name*/ ctx[2]);
+    			if (dirty & /*position*/ 8) set_data_dev(t26, /*position*/ ctx[3]);
+    			if (dirty & /*company*/ 16) set_data_dev(t35, /*company*/ ctx[4]);
+    			if (dirty & /*joiningDate*/ 32) set_data_dev(t37, /*joiningDate*/ ctx[5]);
+    			if (dirty & /*activeConferences*/ 128) set_data_dev(t39, /*activeConferences*/ ctx[7]);
     		},
     		i: noop$1,
     		o: noop$1,
@@ -45292,7 +45293,7 @@ var app = (function () {
     			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(link1);
     			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(div10);
+    			if (detaching) detach_dev(div8);
     			destroy_each(each_blocks, detaching);
     			if_block.d();
     			/*input_binding*/ ctx[17](null);
@@ -45324,6 +45325,11 @@ var app = (function () {
     	
     }
 
+    function deleteConference(index) {
+    	console.log("click");
+    	console.log(index);
+    }
+
     function instance$7($$self, $$props, $$invalidate) {
     	let activeConferences;
     	let { $$slots: slots = {}, $$scope } = $$props;
@@ -45335,6 +45341,7 @@ var app = (function () {
     	let company = "none";
     	let joiningDate = "none";
     	let userConferences = [];
+    	let option;
 
     	firebase$1.auth().onAuthStateChanged(user => {
     		firebase$1.database().ref("users/" + user.uid + "/conferences").on("value", snapshot => {
@@ -45363,6 +45370,10 @@ var app = (function () {
     			$$invalidate(1, userProfilePicture = snapshot.val());
     		});
     	});
+
+    	document.getElementsByTagName("select").onchange = function () {
+    		console.log("changed");
+    	};
 
     	let avatar, fileinput;
 
@@ -45433,12 +45444,14 @@ var app = (function () {
     		company,
     		joiningDate,
     		userConferences,
+    		option,
     		profilePictureOnHover,
     		profilePictureOffHover,
     		changeProfilePicture,
     		avatar,
     		fileinput,
     		onFileSelected,
+    		deleteConference,
     		logout,
     		addConf,
     		activeConferences
@@ -45452,6 +45465,7 @@ var app = (function () {
     		if ("company" in $$props) $$invalidate(4, company = $$props.company);
     		if ("joiningDate" in $$props) $$invalidate(5, joiningDate = $$props.joiningDate);
     		if ("userConferences" in $$props) $$invalidate(0, userConferences = $$props.userConferences);
+    		if ("option" in $$props) option = $$props.option;
     		if ("avatar" in $$props) avatar = $$props.avatar;
     		if ("fileinput" in $$props) $$invalidate(6, fileinput = $$props.fileinput);
     		if ("activeConferences" in $$props) $$invalidate(7, activeConferences = $$props.activeConferences);
