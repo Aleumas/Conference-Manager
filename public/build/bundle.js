@@ -44608,22 +44608,27 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (44:12) {:else}
+    // (48:12) {:else}
     function create_else_block_1(ctx) {
     	let td;
+    	let div;
     	let t_value = /*conf*/ ctx[20].access + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			td = element("td");
+    			div = element("div");
     			t = text(t_value);
-    			attr_dev(td, "class", "conf-info public svelte-sc22eq");
-    			add_location(td, file$6, 44, 16, 1345);
+    			attr_dev(div, "class", "public svelte-6pvm56");
+    			add_location(div, file$6, 49, 6, 1390);
+    			attr_dev(td, "class", "svelte-6pvm56");
+    			add_location(td, file$6, 48, 2, 1379);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
-    			append_dev(td, t);
+    			append_dev(td, div);
+    			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[20].access + "")) set_data_dev(t, t_value);
@@ -44637,7 +44642,7 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(44:12) {:else}",
+    		source: "(48:12) {:else}",
     		ctx
     	});
 
@@ -44647,19 +44652,24 @@ var app = (function () {
     // (42:12) {#if conf.access == 'Private'}
     function create_if_block_1(ctx) {
     	let td;
+    	let div;
     	let t_value = /*conf*/ ctx[20].access + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			td = element("td");
+    			div = element("div");
     			t = text(t_value);
-    			attr_dev(td, "class", "conf-info private svelte-sc22eq");
-    			add_location(td, file$6, 42, 16, 1258);
+    			attr_dev(div, "class", "private svelte-6pvm56");
+    			add_location(div, file$6, 43, 6, 1284);
+    			attr_dev(td, "class", "svelte-6pvm56");
+    			add_location(td, file$6, 42, 6, 1273);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
-    			append_dev(td, t);
+    			append_dev(td, div);
+    			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[20].access + "")) set_data_dev(t, t_value);
@@ -44738,26 +44748,27 @@ var app = (function () {
     			option1 = element("option");
     			option1.textContent = "delete";
     			t11 = space();
-    			attr_dev(td0, "class", "svelte-sc22eq");
+    			attr_dev(td0, "class", "left-rounded-corners svelte-6pvm56");
     			add_location(td0, file$6, 36, 12, 1061);
-    			attr_dev(td1, "class", "svelte-sc22eq");
-    			add_location(td1, file$6, 37, 12, 1097);
-    			attr_dev(td2, "class", "svelte-sc22eq");
-    			add_location(td2, file$6, 38, 12, 1137);
-    			attr_dev(td3, "class", "svelte-sc22eq");
-    			add_location(td3, file$6, 39, 12, 1173);
+    			attr_dev(td1, "class", "svelte-6pvm56");
+    			add_location(td1, file$6, 37, 12, 1125);
+    			attr_dev(td2, "class", "svelte-6pvm56");
+    			add_location(td2, file$6, 38, 12, 1164);
+    			attr_dev(td3, "class", "svelte-6pvm56");
+    			add_location(td3, file$6, 39, 12, 1199);
     			option0.__value = "none";
     			option0.value = option0.__value;
-    			attr_dev(option0, "class", "svelte-sc22eq");
-    			add_location(option0, file$6, 48, 16, 1457);
+    			attr_dev(option0, "class", "svelte-6pvm56");
+    			add_location(option0, file$6, 56, 16, 1554);
     			option1.__value = "delete";
     			option1.value = option1.__value;
-    			attr_dev(option1, "class", "svelte-sc22eq");
-    			add_location(option1, file$6, 49, 16, 1509);
-    			attr_dev(select, "class", "svelte-sc22eq");
-    			add_location(select, file$6, 47, 12, 1431);
-    			attr_dev(td4, "class", "svelte-sc22eq");
-    			add_location(td4, file$6, 46, 1, 1414);
+    			attr_dev(option1, "class", "svelte-6pvm56");
+    			add_location(option1, file$6, 57, 16, 1606);
+    			attr_dev(select, "class", "svelte-6pvm56");
+    			add_location(select, file$6, 55, 12, 1528);
+    			attr_dev(td4, "class", "right-rounded-corners svelte-6pvm56");
+    			add_location(td4, file$6, 54, 1, 1481);
+    			attr_dev(tr, "class", "svelte-6pvm56");
     			add_location(tr, file$6, 35, 1, 1044);
     		},
     		m: function mount(target, anchor) {
@@ -44817,7 +44828,7 @@ var app = (function () {
     	return block;
     }
 
-    // (95:2) {:else}
+    // (71:2) {:else}
     function create_else_block$1(ctx) {
     	let img;
     	let img_src_value;
@@ -44829,8 +44840,8 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-sc22eq");
-    			add_location(img, file$6, 95, 10, 2978);
+    			attr_dev(img, "class", "svelte-6pvm56");
+    			add_location(img, file$6, 71, 10, 2014);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -44857,14 +44868,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(95:2) {:else}",
+    		source: "(71:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (93:2) {#if userProfilePicture}
+    // (69:2) {#if userProfilePicture}
     function create_if_block$2(ctx) {
     	let img;
     	let img_src_value;
@@ -44876,8 +44887,8 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-sc22eq");
-    			add_location(img, file$6, 93, 10, 2792);
+    			attr_dev(img, "class", "svelte-6pvm56");
+    			add_location(img, file$6, 69, 10, 1828);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -44908,7 +44919,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(93:2) {#if userProfilePicture}",
+    		source: "(69:2) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -45089,68 +45100,70 @@ var app = (function () {
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-sc22eq");
+    			attr_dev(h10, "class", "pageTitle svelte-6pvm56");
     			add_location(h10, file$6, 18, 4, 609);
-    			attr_dev(button0, "class", "add-event svelte-sc22eq");
+    			attr_dev(button0, "class", "add-event svelte-6pvm56");
     			add_location(button0, file$6, 20, 12, 671);
-    			attr_dev(li0, "class", "svelte-sc22eq");
+    			attr_dev(li0, "class", "svelte-6pvm56");
     			add_location(li0, file$6, 20, 8, 667);
-    			attr_dev(button1, "class", "logout svelte-sc22eq");
+    			attr_dev(button1, "class", "logout svelte-6pvm56");
     			add_location(button1, file$6, 21, 12, 756);
-    			attr_dev(li1, "class", "svelte-sc22eq");
+    			attr_dev(li1, "class", "svelte-6pvm56");
     			add_location(li1, file$6, 21, 8, 752);
-    			attr_dev(ul, "class", "svelte-sc22eq");
+    			attr_dev(ul, "class", "svelte-6pvm56");
     			add_location(ul, file$6, 19, 4, 654);
-    			attr_dev(h2, "class", "svelte-sc22eq");
+    			attr_dev(h2, "class", "svelte-6pvm56");
     			add_location(h2, file$6, 23, 4, 840);
-    			attr_dev(th0, "class", "svelte-sc22eq");
+    			attr_dev(th0, "class", "svelte-6pvm56");
     			add_location(th0, file$6, 26, 2, 889);
-    			attr_dev(th1, "class", "svelte-sc22eq");
+    			attr_dev(th1, "class", "svelte-6pvm56");
     			add_location(th1, file$6, 27, 2, 907);
-    			attr_dev(th2, "class", "svelte-sc22eq");
+    			attr_dev(th2, "class", "svelte-6pvm56");
     			add_location(th2, file$6, 28, 2, 929);
-    			attr_dev(th3, "class", "svelte-sc22eq");
+    			attr_dev(th3, "class", "svelte-6pvm56");
     			add_location(th3, file$6, 29, 2, 947);
-    			attr_dev(th4, "class", "svelte-sc22eq");
+    			attr_dev(th4, "class", "svelte-6pvm56");
     			add_location(th4, file$6, 30, 2, 965);
-    			attr_dev(th5, "class", "svelte-sc22eq");
+    			attr_dev(th5, "class", "svelte-6pvm56");
     			add_location(th5, file$6, 31, 2, 985);
+    			attr_dev(tr, "class", "svelte-6pvm56");
     			add_location(tr, file$6, 25, 5, 882);
+    			attr_dev(table, "class", "svelte-6pvm56");
     			add_location(table, file$6, 24, 4, 869);
-    			attr_dev(div0, "class", "left-panel svelte-sc22eq");
+    			attr_dev(div0, "class", "left-panel svelte-6pvm56");
     			add_location(div0, file$6, 17, 4, 580);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[15] + "pg, .jpeg, .png");
-    			add_location(input, file$6, 97, 2, 3157);
-    			attr_dev(h11, "class", "svelte-sc22eq");
-    			add_location(h11, file$6, 98, 12, 3330);
-    			attr_dev(h3, "class", "svelte-sc22eq");
-    			add_location(h3, file$6, 99, 12, 3360);
-    			attr_dev(div1, "class", "profile-container svelte-sc22eq");
-    			add_location(div1, file$6, 91, 8, 2723);
-    			attr_dev(hr, "class", "svelte-sc22eq");
-    			add_location(hr, file$6, 101, 8, 3405);
-    			add_location(p0, file$6, 104, 16, 3501);
-    			add_location(p1, file$6, 105, 16, 3534);
-    			add_location(p2, file$6, 106, 16, 3572);
-    			attr_dev(div2, "class", "info-titles svelte-sc22eq");
-    			add_location(div2, file$6, 103, 12, 3459);
-    			add_location(p3, file$6, 109, 16, 3667);
-    			add_location(p4, file$6, 110, 16, 3702);
-    			add_location(p5, file$6, 111, 16, 3741);
+    			add_location(input, file$6, 73, 2, 2193);
+    			attr_dev(h11, "class", "svelte-6pvm56");
+    			add_location(h11, file$6, 74, 12, 2366);
+    			attr_dev(h3, "class", "svelte-6pvm56");
+    			add_location(h3, file$6, 75, 12, 2396);
+    			attr_dev(div1, "class", "profile-container svelte-6pvm56");
+    			add_location(div1, file$6, 67, 8, 1759);
+    			attr_dev(hr, "class", "svelte-6pvm56");
+    			add_location(hr, file$6, 77, 8, 2441);
+    			add_location(p0, file$6, 80, 16, 2537);
+    			add_location(p1, file$6, 81, 16, 2570);
+    			add_location(p2, file$6, 82, 16, 2608);
+    			attr_dev(div2, "class", "info-titles svelte-6pvm56");
+    			add_location(div2, file$6, 79, 12, 2495);
+    			add_location(p3, file$6, 85, 16, 2703);
+    			add_location(p4, file$6, 86, 16, 2738);
+    			add_location(p5, file$6, 87, 16, 2777);
     			attr_dev(div3, "id", "o");
-    			attr_dev(div3, "class", "info svelte-sc22eq");
-    			add_location(div3, file$6, 108, 12, 3624);
-    			attr_dev(div4, "class", "info-container svelte-sc22eq");
-    			add_location(div4, file$6, 102, 8, 3418);
-    			attr_dev(div5, "class", "right-panel svelte-sc22eq");
-    			add_location(div5, file$6, 89, 4, 2688);
-    			attr_dev(div6, "class", "panel-container svelte-sc22eq");
+    			attr_dev(div3, "class", "info svelte-6pvm56");
+    			add_location(div3, file$6, 84, 12, 2660);
+    			attr_dev(div4, "class", "info-container svelte-6pvm56");
+    			add_location(div4, file$6, 78, 8, 2454);
+    			attr_dev(div5, "class", "right-panel svelte-6pvm56");
+    			add_location(div5, file$6, 65, 4, 1724);
+    			attr_dev(div6, "class", "panel-container svelte-6pvm56");
     			add_location(div6, file$6, 15, 4, 541);
-    			attr_dev(div7, "class", "load-animation svelte-sc22eq");
+    			attr_dev(div7, "class", "load-animation svelte-6pvm56");
     			add_location(div7, file$6, 4, 4, 200);
-    			attr_dev(div8, "class", "background svelte-sc22eq");
+    			attr_dev(div8, "class", "background svelte-6pvm56");
     			add_location(div8, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {

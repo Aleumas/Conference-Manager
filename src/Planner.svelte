@@ -34,17 +34,25 @@
 
 	{#each userConferences as conf, i}
 	<tr>
-            <td > {conf.name} </td>
-            <td > {conf.location} </td>
-            <td > {conf.date} </td>
-            <td > {conf.time} </td>
+            <td class='left-rounded-corners'> {conf.name} </td>
+            <td> {conf.location} </td>
+            <td> {conf.date} </td>
+            <td> {conf.time} </td>
 
             {#if conf.access == 'Private'} 
-                <td class='conf-info private'> {conf.access} </td>
+	    	<td>
+		    <div class='private'>
+        	      {conf.access} 
+		    </div>
+		</td>
             {:else}
-                <td class='conf-info public'> {conf.access} </td>
+		<td>
+		    <div class='public'>
+        	      {conf.access} 
+		    </div>
+		</td>
             {/if}
-	<td>
+	<td class='right-rounded-corners'>
             <select> 
                 <option value="none"> ••• </option>
                 <option value='delete'> delete </option>
@@ -54,38 +62,6 @@
     {/each}
 
     </table>
-<!-- 
-    <div class='info-title-container'>
-        <p class='info-category'> name </p>
-        <p class='info-category'> location </p>
-        <p class='info-category'> date </p>
-        <p class='info-category'> time </p>
-        <p class='info-category'> access </p>
-        <p></p>
-    </div>
-
-    {#each userConferences as conf}
-        <div class='cell-container load-animation'> 
-            <p class='conf-info'> {conf.name} </p>
-            <p class='conf-info'> {conf.location} </p>
-            <p class='conf-info'> {conf.date} </p>
-            <p class='conf-info'> {conf.time} </p>
-
-            {#if conf.access == 'Private'} 
-                <p class='conf-info private'> {conf.access} </p>
-            {:else}
-                <p class='conf-info public'> {conf.access} </p>
-            {/if}
-
-            <select> 
-                <option value="none"> ••• </option>
-                <option value='delete'> delete </option>
-            </select>
-
-        </div>
-    {/each}
-    -->
-    <!-- <button class='add-event'>+ Add an event</button> -->
     </div>
     <div class='right-panel'>
 
@@ -199,6 +175,35 @@
         font-size: 1.2vmax;
     }
 
+    td {
+    	background-color: white;
+	padding-right: 2vmax;
+	padding-left: 2vmax;
+    }
+
+    tr {
+    	margin-bottom: 2vmax;
+    }
+
+    .left-rounded-corners {
+        border-top-left-radius: 3vh;
+        border-bottom-left-radius: 3vh;
+    }
+
+    .right-rounded-corners {
+	border-top-right-radius: 3vh;
+	border-bottom-right-radius: 3vh;
+    }
+
+    table {
+    	border-spacing: 0 15px;
+	margin-left: 1vmax;
+    }
+
+    .access-container {
+    	background-color: white;
+    }
+
     .info-category {
         font-weight: 500;
     }
@@ -248,23 +253,25 @@
     }
 
     .private {
-        width: 10vw;
         height: 40%;
+	padding-left: 1vmax;
+	padding-right: 1vmax;
         display: flex;
         justify-content: center;
         align-items: center;
         text-align: center;
-        border-radius: 1vh;
+        border-radius: 0.5vmax;
         font-weight: 700;
         background-color: #E1BEBE;
         color: #C88A8A;
     }
     
     .public {
-        width: 10vw;
         height: 40%;
+	padding-left: 1vmax;
+	padding-right: 1vmax;
         display: flex;
-        justify-content: center;
+	justify-content: center;
         align-items: center;
         border-radius: 1vh;
         text-align: center;
