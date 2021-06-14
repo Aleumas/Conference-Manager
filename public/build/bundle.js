@@ -1,5 +1,5 @@
 
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 var app = (function () {
     'use strict';
 
@@ -44603,8 +44603,8 @@ var app = (function () {
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[20] = list[i];
-    	child_ctx[22] = i;
+    	child_ctx[22] = list[i];
+    	child_ctx[24] = i;
     	return child_ctx;
     }
 
@@ -44612,7 +44612,7 @@ var app = (function () {
     function create_else_block_1(ctx) {
     	let td;
     	let div;
-    	let t_value = /*conf*/ ctx[20].access + "";
+    	let t_value = /*conf*/ ctx[22].access + "";
     	let t;
 
     	const block = {
@@ -44620,9 +44620,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "public svelte-6pvm56");
+    			attr_dev(div, "class", "public svelte-9nfr0j");
     			add_location(div, file$6, 49, 6, 1390);
-    			attr_dev(td, "class", "svelte-6pvm56");
+    			attr_dev(td, "class", "svelte-9nfr0j");
     			add_location(td, file$6, 48, 2, 1379);
     		},
     		m: function mount(target, anchor) {
@@ -44631,7 +44631,7 @@ var app = (function () {
     			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[20].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[22].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -44653,7 +44653,7 @@ var app = (function () {
     function create_if_block_1(ctx) {
     	let td;
     	let div;
-    	let t_value = /*conf*/ ctx[20].access + "";
+    	let t_value = /*conf*/ ctx[22].access + "";
     	let t;
 
     	const block = {
@@ -44661,9 +44661,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "private svelte-6pvm56");
+    			attr_dev(div, "class", "private svelte-9nfr0j");
     			add_location(div, file$6, 43, 6, 1284);
-    			attr_dev(td, "class", "svelte-6pvm56");
+    			attr_dev(td, "class", "svelte-9nfr0j");
     			add_location(td, file$6, 42, 6, 1273);
     		},
     		m: function mount(target, anchor) {
@@ -44672,7 +44672,7 @@ var app = (function () {
     			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[20].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[22].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -44694,35 +44694,41 @@ var app = (function () {
     function create_each_block$4(ctx) {
     	let tr;
     	let td0;
-    	let t0_value = /*conf*/ ctx[20].name + "";
+    	let t0_value = /*conf*/ ctx[22].name + "";
     	let t0;
     	let t1;
     	let td1;
-    	let t2_value = /*conf*/ ctx[20].location + "";
+    	let t2_value = /*conf*/ ctx[22].location + "";
     	let t2;
     	let t3;
     	let td2;
-    	let t4_value = /*conf*/ ctx[20].date + "";
+    	let t4_value = /*conf*/ ctx[22].date + "";
     	let t4;
     	let t5;
     	let td3;
-    	let t6_value = /*conf*/ ctx[20].time + "";
+    	let t6_value = /*conf*/ ctx[22].time + "";
     	let t6;
     	let t7;
     	let t8;
     	let td4;
-    	let select;
-    	let option0;
-    	let option1;
-    	let t11;
+    	let button;
+    	let img;
+    	let img_src_value;
+    	let t9;
+    	let mounted;
+    	let dispose;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[20].access == "Private") return create_if_block_1;
+    		if (/*conf*/ ctx[22].access == "Private") return create_if_block_1;
     		return create_else_block_1;
     	}
 
     	let current_block_type = select_block_type(ctx);
     	let if_block = current_block_type(ctx);
+
+    	function click_handler_1() {
+    		return /*click_handler_1*/ ctx[14](/*i*/ ctx[24]);
+    	}
 
     	const block = {
     		c: function create() {
@@ -44742,33 +44748,25 @@ var app = (function () {
     			if_block.c();
     			t8 = space();
     			td4 = element("td");
-    			select = element("select");
-    			option0 = element("option");
-    			option0.textContent = "••• ";
-    			option1 = element("option");
-    			option1.textContent = "delete";
-    			t11 = space();
-    			attr_dev(td0, "class", "left-rounded-corners svelte-6pvm56");
+    			button = element("button");
+    			img = element("img");
+    			t9 = space();
+    			attr_dev(td0, "class", "left-rounded-corners svelte-9nfr0j");
     			add_location(td0, file$6, 36, 12, 1061);
-    			attr_dev(td1, "class", "svelte-6pvm56");
+    			attr_dev(td1, "class", "svelte-9nfr0j");
     			add_location(td1, file$6, 37, 12, 1125);
-    			attr_dev(td2, "class", "svelte-6pvm56");
+    			attr_dev(td2, "class", "svelte-9nfr0j");
     			add_location(td2, file$6, 38, 12, 1164);
-    			attr_dev(td3, "class", "svelte-6pvm56");
+    			attr_dev(td3, "class", "svelte-9nfr0j");
     			add_location(td3, file$6, 39, 12, 1199);
-    			option0.__value = "none";
-    			option0.value = option0.__value;
-    			attr_dev(option0, "class", "svelte-6pvm56");
-    			add_location(option0, file$6, 56, 16, 1554);
-    			option1.__value = "delete";
-    			option1.value = option1.__value;
-    			attr_dev(option1, "class", "svelte-6pvm56");
-    			add_location(option1, file$6, 57, 16, 1606);
-    			attr_dev(select, "class", "svelte-6pvm56");
-    			add_location(select, file$6, 55, 12, 1528);
-    			attr_dev(td4, "class", "right-rounded-corners svelte-6pvm56");
+    			attr_dev(img, "class", "delete-image svelte-9nfr0j");
+    			if (img.src !== (img_src_value = "delete.svg")) attr_dev(img, "src", img_src_value);
+    			add_location(img, file$6, 56, 6, 1590);
+    			attr_dev(button, "class", "delete svelte-9nfr0j");
+    			add_location(button, file$6, 55, 5, 1521);
+    			attr_dev(td4, "class", "right-rounded-corners svelte-9nfr0j");
     			add_location(td4, file$6, 54, 1, 1481);
-    			attr_dev(tr, "class", "svelte-6pvm56");
+    			attr_dev(tr, "class", "svelte-9nfr0j");
     			add_location(tr, file$6, 35, 1, 1044);
     		},
     		m: function mount(target, anchor) {
@@ -44788,16 +44786,21 @@ var app = (function () {
     			if_block.m(tr, null);
     			append_dev(tr, t8);
     			append_dev(tr, td4);
-    			append_dev(td4, select);
-    			append_dev(select, option0);
-    			append_dev(select, option1);
-    			append_dev(tr, t11);
+    			append_dev(td4, button);
+    			append_dev(button, img);
+    			append_dev(tr, t9);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler_1, false, false, false);
+    				mounted = true;
+    			}
     		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[20].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[20].location + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[20].date + "")) set_data_dev(t4, t4_value);
-    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[20].time + "")) set_data_dev(t6, t6_value);
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[22].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[22].location + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[22].date + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[22].time + "")) set_data_dev(t6, t6_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -44814,6 +44817,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(tr);
     			if_block.d();
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -44828,7 +44833,7 @@ var app = (function () {
     	return block;
     }
 
-    // (71:2) {:else}
+    // (70:2) {:else}
     function create_else_block$1(ctx) {
     	let img;
     	let img_src_value;
@@ -44840,15 +44845,15 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-6pvm56");
-    			add_location(img, file$6, 71, 10, 2014);
+    			attr_dev(img, "class", "svelte-9nfr0j");
+    			add_location(img, file$6, 70, 10, 2001);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(img, "click", /*click_handler_2*/ ctx[14], false, false, false),
+    					listen_dev(img, "click", /*click_handler_3*/ ctx[16], false, false, false),
     					listen_dev(img, "mouseover", profilePictureOnHover, false, false, false),
     					listen_dev(img, "mouseleave", profilePictureOffHover, false, false, false)
     				];
@@ -44868,14 +44873,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(71:2) {:else}",
+    		source: "(70:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (69:2) {#if userProfilePicture}
+    // (68:2) {#if userProfilePicture}
     function create_if_block$2(ctx) {
     	let img;
     	let img_src_value;
@@ -44887,15 +44892,15 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-6pvm56");
-    			add_location(img, file$6, 69, 10, 1828);
+    			attr_dev(img, "class", "svelte-9nfr0j");
+    			add_location(img, file$6, 68, 10, 1815);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(img, "click", /*click_handler_1*/ ctx[13], false, false, false),
+    					listen_dev(img, "click", /*click_handler_2*/ ctx[15], false, false, false),
     					listen_dev(img, "mouseover", profilePictureOnHover, false, false, false),
     					listen_dev(img, "mouseleave", profilePictureOffHover, false, false, false)
     				];
@@ -44919,7 +44924,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(69:2) {#if userProfilePicture}",
+    		source: "(68:2) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -45100,70 +45105,70 @@ var app = (function () {
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-6pvm56");
+    			attr_dev(h10, "class", "pageTitle svelte-9nfr0j");
     			add_location(h10, file$6, 18, 4, 609);
-    			attr_dev(button0, "class", "add-event svelte-6pvm56");
+    			attr_dev(button0, "class", "add-event svelte-9nfr0j");
     			add_location(button0, file$6, 20, 12, 671);
-    			attr_dev(li0, "class", "svelte-6pvm56");
+    			attr_dev(li0, "class", "svelte-9nfr0j");
     			add_location(li0, file$6, 20, 8, 667);
-    			attr_dev(button1, "class", "logout svelte-6pvm56");
+    			attr_dev(button1, "class", "logout svelte-9nfr0j");
     			add_location(button1, file$6, 21, 12, 756);
-    			attr_dev(li1, "class", "svelte-6pvm56");
+    			attr_dev(li1, "class", "svelte-9nfr0j");
     			add_location(li1, file$6, 21, 8, 752);
-    			attr_dev(ul, "class", "svelte-6pvm56");
+    			attr_dev(ul, "class", "svelte-9nfr0j");
     			add_location(ul, file$6, 19, 4, 654);
-    			attr_dev(h2, "class", "svelte-6pvm56");
+    			attr_dev(h2, "class", "svelte-9nfr0j");
     			add_location(h2, file$6, 23, 4, 840);
-    			attr_dev(th0, "class", "svelte-6pvm56");
+    			attr_dev(th0, "class", "svelte-9nfr0j");
     			add_location(th0, file$6, 26, 2, 889);
-    			attr_dev(th1, "class", "svelte-6pvm56");
+    			attr_dev(th1, "class", "svelte-9nfr0j");
     			add_location(th1, file$6, 27, 2, 907);
-    			attr_dev(th2, "class", "svelte-6pvm56");
+    			attr_dev(th2, "class", "svelte-9nfr0j");
     			add_location(th2, file$6, 28, 2, 929);
-    			attr_dev(th3, "class", "svelte-6pvm56");
+    			attr_dev(th3, "class", "svelte-9nfr0j");
     			add_location(th3, file$6, 29, 2, 947);
-    			attr_dev(th4, "class", "svelte-6pvm56");
+    			attr_dev(th4, "class", "svelte-9nfr0j");
     			add_location(th4, file$6, 30, 2, 965);
-    			attr_dev(th5, "class", "svelte-6pvm56");
+    			attr_dev(th5, "class", "svelte-9nfr0j");
     			add_location(th5, file$6, 31, 2, 985);
-    			attr_dev(tr, "class", "svelte-6pvm56");
+    			attr_dev(tr, "class", "svelte-9nfr0j");
     			add_location(tr, file$6, 25, 5, 882);
-    			attr_dev(table, "class", "svelte-6pvm56");
+    			attr_dev(table, "class", "svelte-9nfr0j");
     			add_location(table, file$6, 24, 4, 869);
-    			attr_dev(div0, "class", "left-panel svelte-6pvm56");
+    			attr_dev(div0, "class", "left-panel svelte-9nfr0j");
     			add_location(div0, file$6, 17, 4, 580);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
-    			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[15] + "pg, .jpeg, .png");
-    			add_location(input, file$6, 73, 2, 2193);
-    			attr_dev(h11, "class", "svelte-6pvm56");
-    			add_location(h11, file$6, 74, 12, 2366);
-    			attr_dev(h3, "class", "svelte-6pvm56");
-    			add_location(h3, file$6, 75, 12, 2396);
-    			attr_dev(div1, "class", "profile-container svelte-6pvm56");
-    			add_location(div1, file$6, 67, 8, 1759);
-    			attr_dev(hr, "class", "svelte-6pvm56");
-    			add_location(hr, file$6, 77, 8, 2441);
-    			add_location(p0, file$6, 80, 16, 2537);
-    			add_location(p1, file$6, 81, 16, 2570);
-    			add_location(p2, file$6, 82, 16, 2608);
-    			attr_dev(div2, "class", "info-titles svelte-6pvm56");
-    			add_location(div2, file$6, 79, 12, 2495);
-    			add_location(p3, file$6, 85, 16, 2703);
-    			add_location(p4, file$6, 86, 16, 2738);
-    			add_location(p5, file$6, 87, 16, 2777);
+    			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[17] + "pg, .jpeg, .png");
+    			add_location(input, file$6, 72, 2, 2180);
+    			attr_dev(h11, "class", "svelte-9nfr0j");
+    			add_location(h11, file$6, 73, 12, 2353);
+    			attr_dev(h3, "class", "svelte-9nfr0j");
+    			add_location(h3, file$6, 74, 12, 2383);
+    			attr_dev(div1, "class", "profile-container svelte-9nfr0j");
+    			add_location(div1, file$6, 66, 8, 1746);
+    			attr_dev(hr, "class", "svelte-9nfr0j");
+    			add_location(hr, file$6, 76, 8, 2428);
+    			add_location(p0, file$6, 79, 16, 2524);
+    			add_location(p1, file$6, 80, 16, 2557);
+    			add_location(p2, file$6, 81, 16, 2595);
+    			attr_dev(div2, "class", "info-titles svelte-9nfr0j");
+    			add_location(div2, file$6, 78, 12, 2482);
+    			add_location(p3, file$6, 84, 16, 2690);
+    			add_location(p4, file$6, 85, 16, 2725);
+    			add_location(p5, file$6, 86, 16, 2764);
     			attr_dev(div3, "id", "o");
-    			attr_dev(div3, "class", "info svelte-6pvm56");
-    			add_location(div3, file$6, 84, 12, 2660);
-    			attr_dev(div4, "class", "info-container svelte-6pvm56");
-    			add_location(div4, file$6, 78, 8, 2454);
-    			attr_dev(div5, "class", "right-panel svelte-6pvm56");
-    			add_location(div5, file$6, 65, 4, 1724);
-    			attr_dev(div6, "class", "panel-container svelte-6pvm56");
+    			attr_dev(div3, "class", "info svelte-9nfr0j");
+    			add_location(div3, file$6, 83, 12, 2647);
+    			attr_dev(div4, "class", "info-container svelte-9nfr0j");
+    			add_location(div4, file$6, 77, 8, 2441);
+    			attr_dev(div5, "class", "right-panel svelte-9nfr0j");
+    			add_location(div5, file$6, 64, 4, 1711);
+    			attr_dev(div6, "class", "panel-container svelte-9nfr0j");
     			add_location(div6, file$6, 15, 4, 541);
-    			attr_dev(div7, "class", "load-animation svelte-6pvm56");
+    			attr_dev(div7, "class", "load-animation svelte-9nfr0j");
     			add_location(div7, file$6, 4, 4, 200);
-    			attr_dev(div8, "class", "background svelte-6pvm56");
+    			attr_dev(div8, "class", "background svelte-9nfr0j");
     			add_location(div8, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
@@ -45214,7 +45219,7 @@ var app = (function () {
     			if_block.m(div1, null);
     			append_dev(div1, t22);
     			append_dev(div1, input);
-    			/*input_binding*/ ctx[17](input);
+    			/*input_binding*/ ctx[19](input);
     			append_dev(div1, t23);
     			append_dev(div1, h11);
     			append_dev(h11, t24);
@@ -45244,16 +45249,16 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*addConf*/ ctx[11], false, false, false),
-    					listen_dev(button1, "click", /*click_handler*/ ctx[12], false, false, false),
-    					listen_dev(input, "change", /*change_handler*/ ctx[16], false, false, false)
+    					listen_dev(button0, "click", /*addConf*/ ctx[12], false, false, false),
+    					listen_dev(button1, "click", /*click_handler*/ ctx[13], false, false, false),
+    					listen_dev(input, "change", /*change_handler*/ ctx[18], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*userConferences*/ 1) {
+    			if (dirty & /*deleteConference, userConferences*/ 1025) {
     				each_value = /*userConferences*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
@@ -45289,7 +45294,7 @@ var app = (function () {
     				}
     			}
 
-    			if (dirty & /*fileinput*/ 64 && input_accept_value !== (input_accept_value = ".jon:click=" + /*func*/ ctx[15] + "pg, .jpeg, .png")) {
+    			if (dirty & /*fileinput*/ 64 && input_accept_value !== (input_accept_value = ".jon:click=" + /*func*/ ctx[17] + "pg, .jpeg, .png")) {
     				attr_dev(input, "accept", input_accept_value);
     			}
 
@@ -45309,7 +45314,7 @@ var app = (function () {
     			if (detaching) detach_dev(div8);
     			destroy_each(each_blocks, detaching);
     			if_block.d();
-    			/*input_binding*/ ctx[17](null);
+    			/*input_binding*/ ctx[19](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -45336,11 +45341,6 @@ var app = (function () {
 
     function changeProfilePicture() {
     	
-    }
-
-    function deleteConference(index) {
-    	console.log("click");
-    	console.log(index);
     }
 
     function instance$7($$self, $$props, $$invalidate) {
@@ -45401,6 +45401,29 @@ var app = (function () {
     		};
     	};
 
+    	function deleteConference(row) {
+    		let database = firebase$1.database();
+    		let confRef = database.ref("users/" + firebase$1.auth().currentUser.uid + "/conferences/conference");
+    		let rowFirstIndexRef = database.ref("users/" + firebase$1.auth().currentUser.uid + "/rowFirstIndex");
+    		let rowFirstIndex;
+    		let rowIndex;
+
+    		rowFirstIndexRef.on("value", snapshot => {
+    			const data = snapshot.val();
+    			rowFirstIndex = data;
+    		});
+
+    		if (rowFirstIndex) {
+    			rowIndex = row + rowFirstIndex;
+    			database.ref("users/" + firebase$1.auth().currentUser.uid).update({ rowFirstIndex: rowFirstIndex + 1 });
+    		} else {
+    			rowIndex = row;
+    			database.ref("users/" + firebase$1.auth().currentUser.uid).update({ rowFirstIndex: row });
+    		}
+
+    		confRef.child(rowIndex).remove();
+    	}
+
     	function logout() {
     		firebase$1.auth().signOut().then(
     			function () {
@@ -45425,12 +45448,13 @@ var app = (function () {
     	});
 
     	const click_handler = () => logout();
+    	const click_handler_1 = i => deleteConference(i);
 
-    	const click_handler_1 = () => {
+    	const click_handler_2 = () => {
     		fileinput.click();
     	};
 
-    	const click_handler_2 = () => {
+    	const click_handler_3 = () => {
     		fileinput.click();
     	};
 
@@ -45505,11 +45529,13 @@ var app = (function () {
     		activeConferences,
     		defaultProfilePicture,
     		onFileSelected,
+    		deleteConference,
     		logout,
     		addConf,
     		click_handler,
     		click_handler_1,
     		click_handler_2,
+    		click_handler_3,
     		func,
     		change_handler,
     		input_binding

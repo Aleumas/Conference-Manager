@@ -216,6 +216,7 @@
     // Login with firebase
     function handleLogin() {
         firebase.auth().signInWithEmailAndPassword(email, password) .then((userCredential) => {
+
             // Set boolean values
             visible = true;
             errorOccured = false;

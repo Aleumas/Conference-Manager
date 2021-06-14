@@ -53,11 +53,10 @@
 		</td>
             {/if}
 	<td class='right-rounded-corners'>
-            <select> 
-                <option value="none"> ••• </option>
-                <option value='delete'> delete </option>
-            </select>
-	</td>
+	    <button class='delete' on:click='{() => deleteConference(i)}'>
+	    	<img class='delete-image' src='delete.svg'>
+	    </button>
+        </td>
 	</tr>
     {/each}
 
@@ -226,7 +225,7 @@
         font-weight: 700;
         background-color: #4C82F8;
         font-size: 1.2vmax;
-        border-radius: 2vh;
+        border-radius: 1vmax;
         border: none;
     }
 
@@ -240,7 +239,24 @@
     .add-event {
         margin: 0;
         margin-top: 1vw;
-    
+    }
+
+    .delete {
+	display: flex;
+        justify-content: space-around;
+        align-items: center;
+	margin: 1vmax;
+
+    	width: 3vmax;
+	height: 3vmax;
+    	background-color: red;
+    }
+
+    .delete-image {
+    	margin: 0;
+	filter: invert(1);
+    	width: 1.5vmax;
+	height: 1.5vmax;
     }
 
     .frame {
@@ -470,10 +486,34 @@ import firebase from 'firebase/app';
 	}
     }
 
-    function deleteConference(index) {
-    	console.log("click");
-    	console.log(index);
+    function deleteConference(row) {
+    	let database = firebase.database();
+	let confRef = database.ref('users/' + firebase.auth().currentUser.uid + '/conferences/conference');
+	let rowFirstIndexRef = database.ref('users/' + firebase.auth().currentUser.uid + '/rowFirstIndex');
+	let rowFirstIndex;
+	let rowIndex;
+	
+	
+	rowFirstIndexRef.on('value', (snapshot) => {
+		const data = snapshot.val();
+		rowFirstIndex = data;
+	})
+
+	if (rowFirstIndex) {
+		rowIndex = row + rowFirstIndex;	
+		database.ref('users/' + firebase.auth().currentUser.uid).update({
+			rowFirstIndex: rowFirstIndex + 1
+		});
+	} else {
+		rowIndex = row;
+		database.ref('users/' + firebase.auth().currentUser.uid).update({
+			rowFirstIndex: row
+		});
+	}
+
+	confRef.child(rowIndex).remove();
     }
+
     function logout() {
         firebase.auth().signOut().then(function() {
         console.log('Signed Out');
