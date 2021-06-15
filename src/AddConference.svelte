@@ -140,25 +140,23 @@
     function addConf(newConferenceData) {
 
         var user = firebase.auth().currentUser;
+        var conferencesSnapshot;
 
         let confRef = firebase.database().ref('users/' + user.uid + '/conferences');
-        let conferences; 
         confRef.on('value', (snapshot) => {
-            const data = snapshot.val();
-            conferences = data;
+            conferencesSnapshot = snapshot.val(); 
         });
 
-        if (conferences == null) {
+        if (conferencesSnapshot == null) {
             firebase.database().ref('users/' + user.uid + '/conferences').set({
-                conference: [newConferenceData] 
+                conference: [conferenceData] 
             }); 
         } else {
             firebase.database().ref('users/' + user.uid + '/conferences').update({
-                conference: conferences.conference.concat(newConferenceData)
+                conference: conferencesSnapshot.conference.concat(conferenceData)
             });
         }
         
         Router.redirect('/Planner');
-        console.log('New conf created');
     }
 </script>

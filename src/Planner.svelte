@@ -3,16 +3,6 @@
 
 <div class='background'>
     <div class='load-animation'>
-    <!-- <div class='header'>
-        <ul>   
-            <li><h1> Dashboard </h1></li>
-            <li><button class='logout' on:click={() => logout()}>Logout</button></li>
-        </ul>
-    </div> -->
-
-    <!-- <div class='right-panel'>
-        <Calendar class='frame' {today} year={2020}/>
-    </div> -->
     <div class='panel-container'>
     
     <div class='left-panel'>
@@ -32,7 +22,7 @@
 		<th></th>
     	</tr>
 
-	{#each userConferences as conf, i}
+	{#each userConferences as conf, index}
 	<tr>
             <td class='left-rounded-corners'> {conf.name} </td>
             <td> {conf.location} </td>
@@ -53,7 +43,7 @@
 		</td>
             {/if}
 	<td class='right-rounded-corners'>
-	    <button class='delete' on:click='{() => deleteConference(i)}'>
+	    <button class='delete' on:click='{() => deleteConference(index)}'>
 	    	<img class='delete-image' src='delete.svg'>
 	    </button>
         </td>
@@ -169,8 +159,8 @@
     }
 
     th, td {
-  	margin: 1vmax 2vmax 1vmax 2vmax;
-  	text-align: center;
+        margin: 1vmax 2vmax 1vmax 2vmax;
+        text-align: center;
         font-size: 1.2vmax;
     }
 
@@ -478,7 +468,6 @@ import firebase from 'firebase/app';
     	let image = e.target.files[0];
 	let reader = new FileReader();
 	reader.readAsDataURL(image);
-	//avatar = e.target.result
 	reader.onload = e => {
 	firebase.database().ref('users/' + firebase.auth().currentUser.uid).update({
 		profilePicture: e.target.result 
@@ -486,32 +475,21 @@ import firebase from 'firebase/app';
 	}
     }
 
-    function deleteConference(row) {
-    	let database = firebase.database();
-	let confRef = database.ref('users/' + firebase.auth().currentUser.uid + '/conferences/conference');
-	let rowFirstIndexRef = database.ref('users/' + firebase.auth().currentUser.uid + '/rowFirstIndex');
-	let rowFirstIndex;
-	let rowIndex;
+    function deleteConference(index) {
+    	  let database = firebase.database();
+    	  let confsRef = database.ref('users/' + firebase.auth().currentUser.uid + '/conferences/conference');
+        let confRef = database.ref('users/' + firebase.auth().currentUser.uid + '/conferences');
+        let userRef = database.ref('users/' + firebase.auth().currentUser.uid);
+        let conferenceArraySnapshot;
 	
-	
-	rowFirstIndexRef.on('value', (snapshot) => {
-		const data = snapshot.val();
-		rowFirstIndex = data;
-	})
+        confsRef.on('value', (snapshot) => {
+            conferenceArraySnapshot = snapshot.val();
+	      });
+        
+        confRef.update({
+            conference: conferenceArraySnapshot.slice(0, index).concat(conferenceArraySnapshot.slice(index + 1,conferenceArraySnapshot.length))
+        });
 
-	if (rowFirstIndex) {
-		rowIndex = row + rowFirstIndex;	
-		database.ref('users/' + firebase.auth().currentUser.uid).update({
-			rowFirstIndex: rowFirstIndex + 1
-		});
-	} else {
-		rowIndex = row;
-		database.ref('users/' + firebase.auth().currentUser.uid).update({
-			rowFirstIndex: row
-		});
-	}
-
-	confRef.child(rowIndex).remove();
     }
 
     function logout() {
@@ -527,7 +505,5 @@ import firebase from 'firebase/app';
     function addConf() {
         Router.redirect('/AddConference');
     }
-
-    
 
 </script>
