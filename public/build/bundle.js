@@ -44620,9 +44620,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "public svelte-l6drsd");
+    			attr_dev(div, "class", "public svelte-cgf4dw");
     			add_location(div, file$6, 39, 6, 1086);
-    			attr_dev(td, "class", "svelte-l6drsd");
+    			attr_dev(td, "class", "svelte-cgf4dw");
     			add_location(td, file$6, 38, 2, 1075);
     		},
     		m: function mount(target, anchor) {
@@ -44661,9 +44661,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "private svelte-l6drsd");
+    			attr_dev(div, "class", "private svelte-cgf4dw");
     			add_location(div, file$6, 33, 6, 980);
-    			attr_dev(td, "class", "svelte-l6drsd");
+    			attr_dev(td, "class", "svelte-cgf4dw");
     			add_location(td, file$6, 32, 6, 969);
     		},
     		m: function mount(target, anchor) {
@@ -44751,22 +44751,22 @@ var app = (function () {
     			button = element("button");
     			img = element("img");
     			t9 = space();
-    			attr_dev(td0, "class", "left-rounded-corners svelte-l6drsd");
+    			attr_dev(td0, "class", "left-rounded-corners svelte-cgf4dw");
     			add_location(td0, file$6, 26, 12, 757);
-    			attr_dev(td1, "class", "svelte-l6drsd");
+    			attr_dev(td1, "class", "svelte-cgf4dw");
     			add_location(td1, file$6, 27, 12, 821);
-    			attr_dev(td2, "class", "svelte-l6drsd");
+    			attr_dev(td2, "class", "svelte-cgf4dw");
     			add_location(td2, file$6, 28, 12, 860);
-    			attr_dev(td3, "class", "svelte-l6drsd");
+    			attr_dev(td3, "class", "svelte-cgf4dw");
     			add_location(td3, file$6, 29, 12, 895);
-    			attr_dev(img, "class", "delete-image svelte-l6drsd");
+    			attr_dev(img, "class", "delete-image svelte-cgf4dw");
     			if (img.src !== (img_src_value = "delete.svg")) attr_dev(img, "src", img_src_value);
     			add_location(img, file$6, 46, 6, 1290);
-    			attr_dev(button, "class", "delete svelte-l6drsd");
+    			attr_dev(button, "class", "delete svelte-cgf4dw");
     			add_location(button, file$6, 45, 5, 1217);
-    			attr_dev(td4, "class", "right-rounded-corners svelte-l6drsd");
+    			attr_dev(td4, "class", "right-rounded-corners svelte-cgf4dw");
     			add_location(td4, file$6, 44, 1, 1177);
-    			attr_dev(tr, "class", "svelte-l6drsd");
+    			attr_dev(tr, "class", "svelte-cgf4dw");
     			add_location(tr, file$6, 25, 1, 740);
     		},
     		m: function mount(target, anchor) {
@@ -44845,7 +44845,7 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-l6drsd");
+    			attr_dev(img, "class", "svelte-cgf4dw");
     			add_location(img, file$6, 60, 10, 1701);
     		},
     		m: function mount(target, anchor) {
@@ -44892,7 +44892,7 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-l6drsd");
+    			attr_dev(img, "class", "svelte-cgf4dw");
     			add_location(img, file$6, 58, 10, 1515);
     		},
     		m: function mount(target, anchor) {
@@ -45105,70 +45105,69 @@ var app = (function () {
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-l6drsd");
+    			attr_dev(h10, "class", "pageTitle svelte-cgf4dw");
     			add_location(h10, file$6, 8, 4, 301);
-    			attr_dev(button0, "class", "add-event svelte-l6drsd");
+    			attr_dev(button0, "class", "add-event svelte-cgf4dw");
     			add_location(button0, file$6, 10, 12, 363);
-    			attr_dev(li0, "class", "svelte-l6drsd");
+    			attr_dev(li0, "class", "svelte-cgf4dw");
     			add_location(li0, file$6, 10, 8, 359);
-    			attr_dev(button1, "class", "logout svelte-l6drsd");
+    			attr_dev(button1, "class", "logout svelte-cgf4dw");
     			add_location(button1, file$6, 11, 12, 448);
-    			attr_dev(li1, "class", "svelte-l6drsd");
+    			attr_dev(li1, "class", "svelte-cgf4dw");
     			add_location(li1, file$6, 11, 8, 444);
-    			attr_dev(ul, "class", "svelte-l6drsd");
+    			attr_dev(ul, "class", "svelte-cgf4dw");
     			add_location(ul, file$6, 9, 4, 346);
-    			attr_dev(h2, "class", "svelte-l6drsd");
+    			attr_dev(h2, "class", "svelte-cgf4dw");
     			add_location(h2, file$6, 13, 4, 532);
-    			attr_dev(th0, "class", "svelte-l6drsd");
+    			attr_dev(th0, "class", "svelte-cgf4dw");
     			add_location(th0, file$6, 16, 2, 581);
-    			attr_dev(th1, "class", "svelte-l6drsd");
+    			attr_dev(th1, "class", "svelte-cgf4dw");
     			add_location(th1, file$6, 17, 2, 599);
-    			attr_dev(th2, "class", "svelte-l6drsd");
+    			attr_dev(th2, "class", "svelte-cgf4dw");
     			add_location(th2, file$6, 18, 2, 621);
-    			attr_dev(th3, "class", "svelte-l6drsd");
+    			attr_dev(th3, "class", "svelte-cgf4dw");
     			add_location(th3, file$6, 19, 2, 639);
-    			attr_dev(th4, "class", "svelte-l6drsd");
+    			attr_dev(th4, "class", "svelte-cgf4dw");
     			add_location(th4, file$6, 20, 2, 657);
-    			attr_dev(th5, "class", "svelte-l6drsd");
+    			attr_dev(th5, "class", "svelte-cgf4dw");
     			add_location(th5, file$6, 21, 2, 677);
-    			attr_dev(tr, "class", "svelte-l6drsd");
+    			attr_dev(tr, "class", "svelte-cgf4dw");
     			add_location(tr, file$6, 15, 5, 574);
-    			attr_dev(table, "class", "svelte-l6drsd");
+    			attr_dev(table, "class", "svelte-cgf4dw");
     			add_location(table, file$6, 14, 4, 561);
-    			attr_dev(div0, "class", "left-panel svelte-l6drsd");
+    			attr_dev(div0, "class", "left-panel svelte-cgf4dw");
     			add_location(div0, file$6, 7, 4, 272);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[17] + "pg, .jpeg, .png");
     			add_location(input, file$6, 62, 2, 1880);
-    			attr_dev(h11, "class", "svelte-l6drsd");
+    			attr_dev(h11, "class", "svelte-cgf4dw");
     			add_location(h11, file$6, 63, 12, 2053);
-    			attr_dev(h3, "class", "svelte-l6drsd");
+    			attr_dev(h3, "class", "svelte-cgf4dw");
     			add_location(h3, file$6, 64, 12, 2083);
-    			attr_dev(div1, "class", "profile-container svelte-l6drsd");
+    			attr_dev(div1, "class", "profile-container svelte-cgf4dw");
     			add_location(div1, file$6, 56, 8, 1446);
-    			attr_dev(hr, "class", "svelte-l6drsd");
+    			attr_dev(hr, "class", "svelte-cgf4dw");
     			add_location(hr, file$6, 66, 8, 2128);
     			add_location(p0, file$6, 69, 16, 2224);
     			add_location(p1, file$6, 70, 16, 2257);
     			add_location(p2, file$6, 71, 16, 2295);
-    			attr_dev(div2, "class", "info-titles svelte-l6drsd");
+    			attr_dev(div2, "class", "info-titles svelte-cgf4dw");
     			add_location(div2, file$6, 68, 12, 2182);
-    			add_location(p3, file$6, 74, 16, 2390);
-    			add_location(p4, file$6, 75, 16, 2425);
-    			add_location(p5, file$6, 76, 16, 2464);
-    			attr_dev(div3, "id", "o");
-    			attr_dev(div3, "class", "info svelte-l6drsd");
+    			add_location(p3, file$6, 74, 16, 2382);
+    			add_location(p4, file$6, 75, 16, 2417);
+    			add_location(p5, file$6, 76, 16, 2456);
+    			attr_dev(div3, "class", "info svelte-cgf4dw");
     			add_location(div3, file$6, 73, 12, 2347);
-    			attr_dev(div4, "class", "info-container svelte-l6drsd");
+    			attr_dev(div4, "class", "info-container svelte-cgf4dw");
     			add_location(div4, file$6, 67, 8, 2141);
-    			attr_dev(div5, "class", "right-panel svelte-l6drsd");
+    			attr_dev(div5, "class", "right-panel svelte-cgf4dw");
     			add_location(div5, file$6, 54, 4, 1411);
-    			attr_dev(div6, "class", "panel-container svelte-l6drsd");
+    			attr_dev(div6, "class", "panel-container svelte-cgf4dw");
     			add_location(div6, file$6, 5, 4, 233);
-    			attr_dev(div7, "class", "load-animation svelte-l6drsd");
+    			attr_dev(div7, "class", "load-animation svelte-cgf4dw");
     			add_location(div7, file$6, 4, 4, 200);
-    			attr_dev(div8, "class", "background svelte-l6drsd");
+    			attr_dev(div8, "class", "background svelte-cgf4dw");
     			add_location(div8, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
@@ -48699,7 +48698,7 @@ var app = (function () {
     	return block;
     }
 
-    // (9:4) <Datepicker bind:formattedSelected bind:dateChosen>
+    // (9:4) <Datepicker bind:formattedSelected bind:dateChosen required>
     function create_default_slot(ctx) {
     	let button;
 
@@ -48716,7 +48715,7 @@ var app = (function () {
     			button = element("button");
     			if_block.c();
     			attr_dev(button, "class", "date-picker svelte-ckeoo8");
-    			add_location(button, file, 9, 8, 558);
+    			add_location(button, file, 9, 8, 594);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -48745,7 +48744,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(9:4) <Datepicker bind:formattedSelected bind:dateChosen>",
+    		source: "(9:4) <Datepicker bind:formattedSelected bind:dateChosen required>",
     		ctx
     	});
 
@@ -48791,6 +48790,7 @@ var app = (function () {
     	}
 
     	let datepicker_props = {
+    		required: true,
     		$$slots: { default: [create_default_slot] },
     		$$scope: { ctx }
     	};
@@ -48850,35 +48850,39 @@ var app = (function () {
     			add_location(h3, file, 4, 4, 241);
     			attr_dev(input0, "id", "name");
     			attr_dev(input0, "placeholder", "name");
+    			input0.required = true;
     			attr_dev(input0, "class", "svelte-ckeoo8");
     			add_location(input0, file, 5, 4, 308);
     			attr_dev(input1, "id", "location");
     			attr_dev(input1, "placeholder", "location");
+    			input1.required = true;
     			attr_dev(input1, "class", "svelte-ckeoo8");
-    			add_location(input1, file, 6, 4, 367);
+    			add_location(input1, file, 6, 4, 376);
     			attr_dev(input2, "id", "time");
     			attr_dev(input2, "placeholder", "time");
+    			input2.required = true;
     			attr_dev(input2, "class", "svelte-ckeoo8");
-    			add_location(input2, file, 7, 4, 438);
+    			add_location(input2, file, 7, 4, 456);
     			option0.__value = "";
     			option0.value = option0.__value;
     			attr_dev(option0, "class", "svelte-ckeoo8");
-    			add_location(option0, file, 14, 8, 773);
+    			add_location(option0, file, 14, 8, 818);
     			option1.__value = "Public";
     			option1.value = option1.__value;
     			attr_dev(option1, "class", "svelte-ckeoo8");
-    			add_location(option1, file, 15, 8, 816);
+    			add_location(option1, file, 15, 8, 861);
     			option2.__value = "Private";
     			option2.value = option2.__value;
     			attr_dev(option2, "class", "svelte-ckeoo8");
-    			add_location(option2, file, 16, 8, 865);
+    			add_location(option2, file, 16, 8, 910);
     			attr_dev(select, "id", "access");
     			attr_dev(select, "placeholder", "access");
+    			select.required = true;
     			attr_dev(select, "class", "svelte-ckeoo8");
     			if (/*access*/ ctx[3] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[14].call(select));
-    			add_location(select, file, 13, 4, 703);
+    			add_location(select, file, 13, 4, 739);
     			attr_dev(button, "class", "svelte-ckeoo8");
-    			add_location(button, file, 18, 4, 926);
+    			add_location(button, file, 18, 4, 971);
     			attr_dev(div, "class", "load-animation svelte-ckeoo8");
     			add_location(div, file, 2, 0, 170);
     		},

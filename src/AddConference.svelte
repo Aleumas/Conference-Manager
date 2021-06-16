@@ -3,15 +3,15 @@
 <div class='load-animation'>
     <h2> Create a new conference</h2>
     <h3> Enter conference information to share with attendees</h3>
-    <input id='name' bind:value={name} placeholder="name">
-    <input id='location' bind:value={location} placeholder="location">
-    <input id='time' bind:value={time} placeholder="time">
-    <Datepicker bind:formattedSelected bind:dateChosen> 
+    <input id='name' bind:value={name} placeholder="name" required>
+    <input id='location' bind:value={location} placeholder="location" required>
+    <input id='time' bind:value={time} placeholder="time" required>
+    <Datepicker bind:formattedSelected bind:dateChosen required> 
         <button class='date-picker'> 
             {#if dateChosen} {formattedSelected} {:else} Pick a date {/if}
         </button>
     </Datepicker>
-    <select id='access' bind:value={access} placeholder="access">
+    <select id='access' bind:value={access} placeholder="access" required>
         <option value=''> access </option>
         <option value='Public'> public </option>
         <option value='Private'> private </option>

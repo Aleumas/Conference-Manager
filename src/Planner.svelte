@@ -71,7 +71,7 @@
                 <p> Joining Date </p>
                 <p> Conferences </p>
             </div>
-            <div  id='o' class='info'>
+            <div class='info'>
                 <p> {company} </p>
                 <p> {joiningDate} </p>
                 <p> {activeConferences} </p>
@@ -244,6 +244,7 @@
 
     .delete-image {
     	margin: 0;
+    padding: 0;
 	filter: invert(1);
     	width: 1.5vmax;
 	height: 1.5vmax;
@@ -307,12 +308,11 @@
     }
 
     .info-container {
-        display: inline;
-        margin-left: 90%;
+        display: flex;
+        justify-content: space-between;
     }
 
     .info-titles {
-        float: left;
         color: #5C5C5C;
         font-weight: 700;
         font-size: 1vmax;
@@ -320,8 +320,8 @@
     }
 
     .info {
-        float: right;
         font-size: 1vmax;
+        margin-top: 0;
         margin-right: 10%;
         color: #5C5C5C;
         font-weight: 500;
@@ -360,10 +360,13 @@
         width: 80%;
         height: 2px;
         border: none;
+        margin: 0.5vmax;
+        margin-left: auto;
+        margin-right: auto;
         background-color: #bfbfbf;
     }
 
-    h3 {
+   h3 {
         font-size: 1.2vmax;
         font-weight: 500;
         text-align: center;
@@ -385,7 +388,7 @@
 
     img {
         width: 5vmax;
-        margin-top: 4vmax;
+        padding-top: 2vmax;
         height: 10%;
         display: block;
         margin-left: auto;
@@ -487,9 +490,8 @@ import firebase from 'firebase/app';
 	      });
         
         confRef.update({
-            conference: conferenceArraySnapshot.slice(0, index).concat(conferenceArraySnapshot.slice(index + 1,conferenceArraySnapshot.length))
+            conference: conferenceArraySnapshot.slice(0, index).concat(conferenceArraySnapshot.slice(index + 1, conferenceArraySnapshot.length))
         });
-
     }
 
     function logout() {
