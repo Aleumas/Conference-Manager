@@ -44620,9 +44620,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "public svelte-cgf4dw");
+    			attr_dev(div, "class", "public svelte-82ys6m");
     			add_location(div, file$6, 39, 6, 1086);
-    			attr_dev(td, "class", "svelte-cgf4dw");
+    			attr_dev(td, "class", "svelte-82ys6m");
     			add_location(td, file$6, 38, 2, 1075);
     		},
     		m: function mount(target, anchor) {
@@ -44661,9 +44661,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "private svelte-cgf4dw");
+    			attr_dev(div, "class", "private svelte-82ys6m");
     			add_location(div, file$6, 33, 6, 980);
-    			attr_dev(td, "class", "svelte-cgf4dw");
+    			attr_dev(td, "class", "svelte-82ys6m");
     			add_location(td, file$6, 32, 6, 969);
     		},
     		m: function mount(target, anchor) {
@@ -44751,22 +44751,22 @@ var app = (function () {
     			button = element("button");
     			img = element("img");
     			t9 = space();
-    			attr_dev(td0, "class", "left-rounded-corners svelte-cgf4dw");
+    			attr_dev(td0, "class", "left-rounded-corners svelte-82ys6m");
     			add_location(td0, file$6, 26, 12, 757);
-    			attr_dev(td1, "class", "svelte-cgf4dw");
+    			attr_dev(td1, "class", "svelte-82ys6m");
     			add_location(td1, file$6, 27, 12, 821);
-    			attr_dev(td2, "class", "svelte-cgf4dw");
+    			attr_dev(td2, "class", "svelte-82ys6m");
     			add_location(td2, file$6, 28, 12, 860);
-    			attr_dev(td3, "class", "svelte-cgf4dw");
+    			attr_dev(td3, "class", "svelte-82ys6m");
     			add_location(td3, file$6, 29, 12, 895);
-    			attr_dev(img, "class", "delete-image svelte-cgf4dw");
+    			attr_dev(img, "class", "delete-image svelte-82ys6m");
     			if (img.src !== (img_src_value = "delete.svg")) attr_dev(img, "src", img_src_value);
     			add_location(img, file$6, 46, 6, 1290);
-    			attr_dev(button, "class", "delete svelte-cgf4dw");
+    			attr_dev(button, "class", "delete svelte-82ys6m");
     			add_location(button, file$6, 45, 5, 1217);
-    			attr_dev(td4, "class", "right-rounded-corners svelte-cgf4dw");
+    			attr_dev(td4, "class", "right-rounded-corners svelte-82ys6m");
     			add_location(td4, file$6, 44, 1, 1177);
-    			attr_dev(tr, "class", "svelte-cgf4dw");
+    			attr_dev(tr, "class", "svelte-82ys6m");
     			add_location(tr, file$6, 25, 1, 740);
     		},
     		m: function mount(target, anchor) {
@@ -44833,7 +44833,7 @@ var app = (function () {
     	return block;
     }
 
-    // (60:2) {:else}
+    // (60:12) {:else}
     function create_else_block$1(ctx) {
     	let img;
     	let img_src_value;
@@ -44845,8 +44845,8 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-cgf4dw");
-    			add_location(img, file$6, 60, 10, 1701);
+    			attr_dev(img, "class", "svelte-82ys6m");
+    			add_location(img, file$6, 60, 16, 1733);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -44873,14 +44873,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(60:2) {:else}",
+    		source: "(60:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (58:2) {#if userProfilePicture}
+    // (58:12) {#if userProfilePicture}
     function create_if_block$2(ctx) {
     	let img;
     	let img_src_value;
@@ -44892,8 +44892,8 @@ var app = (function () {
     			img = element("img");
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
-    			attr_dev(img, "class", "svelte-cgf4dw");
-    			add_location(img, file$6, 58, 10, 1515);
+    			attr_dev(img, "class", "svelte-82ys6m");
+    			add_location(img, file$6, 58, 16, 1531);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -44924,7 +44924,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(58:2) {#if userProfilePicture}",
+    		source: "(58:12) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -44936,9 +44936,9 @@ var app = (function () {
     	let t0;
     	let link1;
     	let t1;
+    	let div10;
+    	let div9;
     	let div8;
-    	let div7;
-    	let div6;
     	let div0;
     	let h10;
     	let t3;
@@ -44966,37 +44966,40 @@ var app = (function () {
     	let th5;
     	let t20;
     	let t21;
-    	let div5;
-    	let div1;
+    	let div7;
+    	let div3;
     	let t22;
     	let input;
     	let input_accept_value;
     	let t23;
-    	let h11;
-    	let t24;
+    	let div2;
+    	let div1;
     	let t25;
-    	let h3;
+    	let h11;
     	let t26;
     	let t27;
-    	let hr;
+    	let h3;
     	let t28;
-    	let div4;
-    	let div2;
-    	let p0;
+    	let t29;
+    	let hr;
     	let t30;
-    	let p1;
+    	let div6;
+    	let div4;
+    	let p0;
     	let t32;
-    	let p2;
+    	let p1;
     	let t34;
-    	let div3;
-    	let p3;
-    	let t35;
+    	let p2;
     	let t36;
-    	let p4;
+    	let div5;
+    	let p3;
     	let t37;
     	let t38;
-    	let p5;
+    	let p4;
     	let t39;
+    	let t40;
+    	let p5;
+    	let t41;
     	let mounted;
     	let dispose;
     	let each_value = /*userConferences*/ ctx[0];
@@ -45021,9 +45024,9 @@ var app = (function () {
     			t0 = space();
     			link1 = element("link");
     			t1 = space();
+    			div10 = element("div");
+    			div9 = element("div");
     			div8 = element("div");
-    			div7 = element("div");
-    			div6 = element("div");
     			div0 = element("div");
     			h10 = element("h1");
     			h10.textContent = "Conferences";
@@ -45065,110 +45068,118 @@ var app = (function () {
     			}
 
     			t21 = space();
-    			div5 = element("div");
-    			div1 = element("div");
+    			div7 = element("div");
+    			div3 = element("div");
     			if_block.c();
     			t22 = space();
     			input = element("input");
     			t23 = space();
-    			h11 = element("h1");
-    			t24 = text(/*name*/ ctx[2]);
-    			t25 = space();
-    			h3 = element("h3");
-    			t26 = text(/*position*/ ctx[3]);
-    			t27 = space();
-    			hr = element("hr");
-    			t28 = space();
-    			div4 = element("div");
     			div2 = element("div");
+    			div1 = element("div");
+    			div1.textContent = "Change Profile Picture";
+    			t25 = space();
+    			h11 = element("h1");
+    			t26 = text(/*name*/ ctx[2]);
+    			t27 = space();
+    			h3 = element("h3");
+    			t28 = text(/*position*/ ctx[3]);
+    			t29 = space();
+    			hr = element("hr");
+    			t30 = space();
+    			div6 = element("div");
+    			div4 = element("div");
     			p0 = element("p");
     			p0.textContent = "Company";
-    			t30 = space();
+    			t32 = space();
     			p1 = element("p");
     			p1.textContent = "Joining Date";
-    			t32 = space();
+    			t34 = space();
     			p2 = element("p");
     			p2.textContent = "Conferences";
-    			t34 = space();
-    			div3 = element("div");
-    			p3 = element("p");
-    			t35 = text(/*company*/ ctx[4]);
     			t36 = space();
-    			p4 = element("p");
-    			t37 = text(/*joiningDate*/ ctx[5]);
+    			div5 = element("div");
+    			p3 = element("p");
+    			t37 = text(/*company*/ ctx[4]);
     			t38 = space();
+    			p4 = element("p");
+    			t39 = text(/*joiningDate*/ ctx[5]);
+    			t40 = space();
     			p5 = element("p");
-    			t39 = text(/*activeConferences*/ ctx[7]);
+    			t41 = text(/*activeConferences*/ ctx[7]);
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			add_location(link0, file$6, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-cgf4dw");
+    			attr_dev(h10, "class", "pageTitle svelte-82ys6m");
     			add_location(h10, file$6, 8, 4, 301);
-    			attr_dev(button0, "class", "add-event svelte-cgf4dw");
+    			attr_dev(button0, "class", "add-event svelte-82ys6m");
     			add_location(button0, file$6, 10, 12, 363);
-    			attr_dev(li0, "class", "svelte-cgf4dw");
+    			attr_dev(li0, "class", "svelte-82ys6m");
     			add_location(li0, file$6, 10, 8, 359);
-    			attr_dev(button1, "class", "logout svelte-cgf4dw");
+    			attr_dev(button1, "class", "logout svelte-82ys6m");
     			add_location(button1, file$6, 11, 12, 448);
-    			attr_dev(li1, "class", "svelte-cgf4dw");
+    			attr_dev(li1, "class", "svelte-82ys6m");
     			add_location(li1, file$6, 11, 8, 444);
-    			attr_dev(ul, "class", "svelte-cgf4dw");
+    			attr_dev(ul, "class", "svelte-82ys6m");
     			add_location(ul, file$6, 9, 4, 346);
-    			attr_dev(h2, "class", "svelte-cgf4dw");
+    			attr_dev(h2, "class", "svelte-82ys6m");
     			add_location(h2, file$6, 13, 4, 532);
-    			attr_dev(th0, "class", "svelte-cgf4dw");
+    			attr_dev(th0, "class", "svelte-82ys6m");
     			add_location(th0, file$6, 16, 2, 581);
-    			attr_dev(th1, "class", "svelte-cgf4dw");
+    			attr_dev(th1, "class", "svelte-82ys6m");
     			add_location(th1, file$6, 17, 2, 599);
-    			attr_dev(th2, "class", "svelte-cgf4dw");
+    			attr_dev(th2, "class", "svelte-82ys6m");
     			add_location(th2, file$6, 18, 2, 621);
-    			attr_dev(th3, "class", "svelte-cgf4dw");
+    			attr_dev(th3, "class", "svelte-82ys6m");
     			add_location(th3, file$6, 19, 2, 639);
-    			attr_dev(th4, "class", "svelte-cgf4dw");
+    			attr_dev(th4, "class", "svelte-82ys6m");
     			add_location(th4, file$6, 20, 2, 657);
-    			attr_dev(th5, "class", "svelte-cgf4dw");
+    			attr_dev(th5, "class", "svelte-82ys6m");
     			add_location(th5, file$6, 21, 2, 677);
-    			attr_dev(tr, "class", "svelte-cgf4dw");
+    			attr_dev(tr, "class", "svelte-82ys6m");
     			add_location(tr, file$6, 15, 5, 574);
-    			attr_dev(table, "class", "svelte-cgf4dw");
+    			attr_dev(table, "class", "svelte-82ys6m");
     			add_location(table, file$6, 14, 4, 561);
-    			attr_dev(div0, "class", "left-panel svelte-cgf4dw");
+    			attr_dev(div0, "class", "left-panel svelte-82ys6m");
     			add_location(div0, file$6, 7, 4, 272);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[17] + "pg, .jpeg, .png");
-    			add_location(input, file$6, 62, 2, 1880);
-    			attr_dev(h11, "class", "svelte-cgf4dw");
-    			add_location(h11, file$6, 63, 12, 2053);
-    			attr_dev(h3, "class", "svelte-cgf4dw");
-    			add_location(h3, file$6, 64, 12, 2083);
-    			attr_dev(div1, "class", "profile-container svelte-cgf4dw");
-    			add_location(div1, file$6, 56, 8, 1446);
-    			attr_dev(hr, "class", "svelte-cgf4dw");
-    			add_location(hr, file$6, 66, 8, 2128);
-    			add_location(p0, file$6, 69, 16, 2224);
-    			add_location(p1, file$6, 70, 16, 2257);
-    			add_location(p2, file$6, 71, 16, 2295);
-    			attr_dev(div2, "class", "info-titles svelte-cgf4dw");
-    			add_location(div2, file$6, 68, 12, 2182);
-    			add_location(p3, file$6, 74, 16, 2382);
-    			add_location(p4, file$6, 75, 16, 2417);
-    			add_location(p5, file$6, 76, 16, 2456);
-    			attr_dev(div3, "class", "info svelte-cgf4dw");
-    			add_location(div3, file$6, 73, 12, 2347);
-    			attr_dev(div4, "class", "info-container svelte-cgf4dw");
-    			add_location(div4, file$6, 67, 8, 2141);
-    			attr_dev(div5, "class", "right-panel svelte-cgf4dw");
-    			add_location(div5, file$6, 54, 4, 1411);
-    			attr_dev(div6, "class", "panel-container svelte-cgf4dw");
-    			add_location(div6, file$6, 5, 4, 233);
-    			attr_dev(div7, "class", "load-animation svelte-cgf4dw");
-    			add_location(div7, file$6, 4, 4, 200);
-    			attr_dev(div8, "class", "background svelte-cgf4dw");
-    			add_location(div8, file$6, 3, 0, 171);
+    			add_location(input, file$6, 62, 12, 1932);
+    			attr_dev(div1, "class", "text svelte-82ys6m");
+    			add_location(div1, file$6, 64, 16, 2143);
+    			attr_dev(div2, "class", "overlay svelte-82ys6m");
+    			add_location(div2, file$6, 63, 12, 2105);
+    			attr_dev(h11, "class", "svelte-82ys6m");
+    			add_location(h11, file$6, 66, 12, 2221);
+    			attr_dev(h3, "class", "svelte-82ys6m");
+    			add_location(h3, file$6, 67, 12, 2251);
+    			attr_dev(div3, "class", "profile-container svelte-82ys6m");
+    			add_location(div3, file$6, 56, 8, 1446);
+    			attr_dev(hr, "class", "svelte-82ys6m");
+    			add_location(hr, file$6, 69, 8, 2296);
+    			add_location(p0, file$6, 72, 16, 2392);
+    			add_location(p1, file$6, 73, 16, 2425);
+    			add_location(p2, file$6, 74, 16, 2463);
+    			attr_dev(div4, "class", "info-titles svelte-82ys6m");
+    			add_location(div4, file$6, 71, 12, 2350);
+    			add_location(p3, file$6, 77, 16, 2550);
+    			add_location(p4, file$6, 78, 16, 2585);
+    			add_location(p5, file$6, 79, 16, 2624);
+    			attr_dev(div5, "class", "info svelte-82ys6m");
+    			add_location(div5, file$6, 76, 12, 2515);
+    			attr_dev(div6, "class", "info-container svelte-82ys6m");
+    			add_location(div6, file$6, 70, 8, 2309);
+    			attr_dev(div7, "class", "right-panel svelte-82ys6m");
+    			add_location(div7, file$6, 54, 4, 1411);
+    			attr_dev(div8, "class", "panel-container svelte-82ys6m");
+    			add_location(div8, file$6, 5, 4, 233);
+    			attr_dev(div9, "class", "load-animation svelte-82ys6m");
+    			add_location(div9, file$6, 4, 4, 200);
+    			attr_dev(div10, "class", "background svelte-82ys6m");
+    			add_location(div10, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -45178,10 +45189,10 @@ var app = (function () {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, link1, anchor);
     			insert_dev(target, t1, anchor);
-    			insert_dev(target, div8, anchor);
-    			append_dev(div8, div7);
-    			append_dev(div7, div6);
-    			append_dev(div6, div0);
+    			insert_dev(target, div10, anchor);
+    			append_dev(div10, div9);
+    			append_dev(div9, div8);
+    			append_dev(div8, div0);
     			append_dev(div0, h10);
     			append_dev(div0, t3);
     			append_dev(div0, ul);
@@ -45212,39 +45223,42 @@ var app = (function () {
     				each_blocks[i].m(table, null);
     			}
 
-    			append_dev(div6, t21);
-    			append_dev(div6, div5);
-    			append_dev(div5, div1);
-    			if_block.m(div1, null);
-    			append_dev(div1, t22);
-    			append_dev(div1, input);
+    			append_dev(div8, t21);
+    			append_dev(div8, div7);
+    			append_dev(div7, div3);
+    			if_block.m(div3, null);
+    			append_dev(div3, t22);
+    			append_dev(div3, input);
     			/*input_binding*/ ctx[19](input);
-    			append_dev(div1, t23);
-    			append_dev(div1, h11);
-    			append_dev(h11, t24);
-    			append_dev(div1, t25);
-    			append_dev(div1, h3);
-    			append_dev(h3, t26);
-    			append_dev(div5, t27);
-    			append_dev(div5, hr);
-    			append_dev(div5, t28);
-    			append_dev(div5, div4);
-    			append_dev(div4, div2);
-    			append_dev(div2, p0);
-    			append_dev(div2, t30);
-    			append_dev(div2, p1);
-    			append_dev(div2, t32);
-    			append_dev(div2, p2);
+    			append_dev(div3, t23);
+    			append_dev(div3, div2);
+    			append_dev(div2, div1);
+    			append_dev(div3, t25);
+    			append_dev(div3, h11);
+    			append_dev(h11, t26);
+    			append_dev(div3, t27);
+    			append_dev(div3, h3);
+    			append_dev(h3, t28);
+    			append_dev(div7, t29);
+    			append_dev(div7, hr);
+    			append_dev(div7, t30);
+    			append_dev(div7, div6);
+    			append_dev(div6, div4);
+    			append_dev(div4, p0);
+    			append_dev(div4, t32);
+    			append_dev(div4, p1);
     			append_dev(div4, t34);
-    			append_dev(div4, div3);
-    			append_dev(div3, p3);
-    			append_dev(p3, t35);
-    			append_dev(div3, t36);
-    			append_dev(div3, p4);
-    			append_dev(p4, t37);
-    			append_dev(div3, t38);
-    			append_dev(div3, p5);
-    			append_dev(p5, t39);
+    			append_dev(div4, p2);
+    			append_dev(div6, t36);
+    			append_dev(div6, div5);
+    			append_dev(div5, p3);
+    			append_dev(p3, t37);
+    			append_dev(div5, t38);
+    			append_dev(div5, p4);
+    			append_dev(p4, t39);
+    			append_dev(div5, t40);
+    			append_dev(div5, p5);
+    			append_dev(p5, t41);
 
     			if (!mounted) {
     				dispose = [
@@ -45289,7 +45303,7 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(div1, t22);
+    					if_block.m(div3, t22);
     				}
     			}
 
@@ -45297,11 +45311,11 @@ var app = (function () {
     				attr_dev(input, "accept", input_accept_value);
     			}
 
-    			if (dirty & /*name*/ 4) set_data_dev(t24, /*name*/ ctx[2]);
-    			if (dirty & /*position*/ 8) set_data_dev(t26, /*position*/ ctx[3]);
-    			if (dirty & /*company*/ 16) set_data_dev(t35, /*company*/ ctx[4]);
-    			if (dirty & /*joiningDate*/ 32) set_data_dev(t37, /*joiningDate*/ ctx[5]);
-    			if (dirty & /*activeConferences*/ 128) set_data_dev(t39, /*activeConferences*/ ctx[7]);
+    			if (dirty & /*name*/ 4) set_data_dev(t26, /*name*/ ctx[2]);
+    			if (dirty & /*position*/ 8) set_data_dev(t28, /*position*/ ctx[3]);
+    			if (dirty & /*company*/ 16) set_data_dev(t37, /*company*/ ctx[4]);
+    			if (dirty & /*joiningDate*/ 32) set_data_dev(t39, /*joiningDate*/ ctx[5]);
+    			if (dirty & /*activeConferences*/ 128) set_data_dev(t41, /*activeConferences*/ ctx[7]);
     		},
     		i: noop$1,
     		o: noop$1,
@@ -45310,7 +45324,7 @@ var app = (function () {
     			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(link1);
     			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(div8);
+    			if (detaching) detach_dev(div10);
     			destroy_each(each_blocks, detaching);
     			if_block.d();
     			/*input_binding*/ ctx[19](null);

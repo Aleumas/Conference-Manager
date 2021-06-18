@@ -55,12 +55,15 @@
     <div class='right-panel'>
 
         <div class='profile-container'>
-		{#if userProfilePicture}
-        		<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture'/>
-		{:else}
-        		<img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture'/>
-		{/if}
-		<input style="display:none" type="file" accept=".jon:click={()=>{fileinput.click();}}pg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
+            {#if userProfilePicture}
+                <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture'/>
+            {:else}
+                <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture'/>
+            {/if}
+            <input style="display:none" type="file" accept=".jon:click={()=>{fileinput.click();}}pg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
+            <div class="overlay">
+                <div class="text">Change Profile Picture</div>
+            </div>
             <h1> {name} </h1>
             <h3> {position} </h3>
         </div>
@@ -79,7 +82,7 @@
         </div>
     </div>
     </div>
-</div>
+</div   >
 </div>
 
 <style>
@@ -182,6 +185,35 @@
     .right-rounded-corners {
 	border-top-right-radius: 3vh;
 	border-bottom-right-radius: 3vh;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transition: .5s ease;
+      background-color: gray;
+    }
+
+    .profile-container:hover .overlay {
+      opacity: 1;
+    }
+
+    .text {
+      color: white;
+      font-size: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      text-align: center;
     }
 
     table {
@@ -302,9 +334,7 @@
     }
 
     .profile-container {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
+        display: relative;
     }
 
     .info-container {
