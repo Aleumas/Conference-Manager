@@ -56,17 +56,14 @@
 
         <div class='profile-container'>
             {#if userProfilePicture}
-                <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture'/>
+                <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture' title="Change Profile Picture"/>
             {:else}
-                <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture'/>
+                <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={defaultProfilePicture} alt='profile picture' title="Change Profile Picture"/>
             {/if}
             <input style="display:none" type="file" accept=".jon:click={()=>{fileinput.click();}}pg, .jpeg, .png" on:change={(e)=>onFileSelected(e)} bind:this={fileinput} >
-            <div class="overlay">
-                <div class="text">Change Profile Picture</div>
-            </div>
-            <h1> {name} </h1>
-            <h3> {position} </h3>
         </div>
+        <h1> {name} </h1>
+        <h3> {position} </h3>
         <hr>
         <div class='info-container'>
             <div class='info-titles'>
@@ -185,23 +182,6 @@
     .right-rounded-corners {
 	border-top-right-radius: 3vh;
 	border-bottom-right-radius: 3vh;
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      width: 100%;
-      opacity: 0;
-      transition: .5s ease;
-      background-color: gray;
-    }
-
-    .profile-container:hover .overlay {
-      opacity: 1;
     }
 
     .text {
