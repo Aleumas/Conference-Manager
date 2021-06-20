@@ -53,6 +53,14 @@
     </table>
     </div>
     <div class='right-panel'>
+        <div class='calendar-container'>
+            <Calendar {today} year={2021}/>
+        </div>
+    </div>
+    <br>
+    <div class='right-panel'>
+
+        
 
         <div class='profile-container'>
             {#if userProfilePicture}
@@ -88,8 +96,8 @@
         font-size: 1.8vmax;
         margin-top: 0;
         margin-bottom: 0;
-        margin-left: 2vh;
-        padding-top: 2vh;
+        margin-left: 1vmax;
+        padding-top: 1.5vmax;
     }
     
     ul {
@@ -198,7 +206,7 @@
 
     table {
     	border-spacing: 0 15px;
-	margin-left: 1vmax;
+	    margin-left: 1vmax;
     }
 
     .access-container {
@@ -222,7 +230,7 @@
         display: inline-block;
         margin-right: 0;
         margin-bottom: 5vh;
-        padding: 2vh 2vh;
+        padding: 1.5vmax 1.5vmax;
         color: white;
         font-weight: 700;
         background-color: #4C82F8;
@@ -340,18 +348,22 @@
     .panel-container {
         display: flex;
     }
+    
+    .calendar-container {
+        
+    }
 
     .right-panel {
         flex: 1;
         background-color: white;
-        width:28vmax;
+        width:20vmax;
         height: 25vmax;
         border-radius: 3vh;
     }
 
     .left-panel {
         flex: 1;
-        width: 65vmax;
+        width: 90vmax;
         height: 100vmax;
         margin-right: 1vw;
     }
@@ -475,7 +487,7 @@ import firebase from 'firebase/app';
     	console.log("changed");
     }
 
-    let  avatar, fileinput;
+    let fileinput;
 	
     const onFileSelected =(e)=>{
     	let image = e.target.files[0];
@@ -486,7 +498,11 @@ import firebase from 'firebase/app';
 		profilePicture: e.target.result 
 	})
 	}
+    
     }
+
+    import Calendar from './Calendar.svelte';
+	  const today = new Date;
 
     function deleteConference(index) {
     	  let database = firebase.database();

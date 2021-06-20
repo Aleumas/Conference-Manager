@@ -76,7 +76,7 @@
 <style>
 	header {
 		display: flex;
-		margin: 2rem auto;
+		margin: 0.5vmax auto;
 		align-items: center;
 		justify-content: center;
 		user-select: none;
@@ -86,19 +86,20 @@
 		display: block;
 		text-align: center;
 		text-transform: uppercase;
-		font-size: 140%;
-		margin: 0 1rem;
+		font-size: 1vmax;
+		margin: 0 0.5vmax;
 	}
 	
 	.month {
 		display: grid;
 		grid-template-columns: repeat(7, 1fr);
 		text-align: right;
-		grid-gap: 4px;
+		grid-gap: 0.5vmax;
 	}
 	
 	.label {
 		font-weight: 300;
+		font-size: 1vmax;
 		text-align: center;
 		text-transform: uppercase;
 		margin-bottom: 0.5rem;
@@ -106,9 +107,8 @@
 	}
 	
 	.date {
-		height: 50px;
-		font-size: 16px;
-		letter-spacing: -1px;
+		height: 0.7vmax;
+		font-size: 1vmax;
 		border: 1px solid #e6e4e4;
 		padding-right: 4px;
 		font-weight: 700;

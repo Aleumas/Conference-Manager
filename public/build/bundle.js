@@ -520,6 +520,11 @@ var app = (function () {
         : typeof globalThis !== 'undefined'
             ? globalThis
             : global);
+
+    function destroy_block(block, lookup) {
+        block.d(1);
+        lookup.delete(block.key);
+    }
     function outro_and_destroy_block(block, lookup) {
         transition_out(block, 1, 1, () => {
             lookup.delete(block.key);
@@ -42997,15 +43002,15 @@ var app = (function () {
 
     const { console: console_1$3 } = globals;
 
-    const file$9 = "src/Login.svelte";
+    const file$b = "src/Login.svelte";
 
     // (12:12) {#if visible}
-    function create_if_block$4(ctx) {
+    function create_if_block$5(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*errorOccured*/ ctx[3]) return create_if_block_1$2;
-    		return create_else_block$3;
+    		if (/*errorOccured*/ ctx[3]) return create_if_block_1$3;
+    		return create_else_block$4;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -43039,7 +43044,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$4.name,
+    		id: create_if_block$5.name,
     		type: "if",
     		source: "(12:12) {#if visible}",
     		ctx
@@ -43049,7 +43054,7 @@ var app = (function () {
     }
 
     // (15:16) {:else}
-    function create_else_block$3(ctx) {
+    function create_else_block$4(ctx) {
     	let p;
 
     	const block = {
@@ -43057,7 +43062,7 @@ var app = (function () {
     			p = element("p");
     			p.textContent = "Login succesful!";
     			attr_dev(p, "class", "success svelte-1qffzrv");
-    			add_location(p, file$9, 15, 20, 787);
+    			add_location(p, file$b, 15, 20, 787);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -43069,7 +43074,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$3.name,
+    		id: create_else_block$4.name,
     		type: "else",
     		source: "(15:16) {:else}",
     		ctx
@@ -43079,7 +43084,7 @@ var app = (function () {
     }
 
     // (13:16) {#if errorOccured}
-    function create_if_block_1$2(ctx) {
+    function create_if_block_1$3(ctx) {
     	let p;
 
     	const block = {
@@ -43088,7 +43093,7 @@ var app = (function () {
     			p.textContent = "The username or password you entered is incorrect.";
     			attr_dev(p, "class", "error svelte-1qffzrv");
     			attr_dev(p, "id", "error");
-    			add_location(p, file$9, 13, 20, 658);
+    			add_location(p, file$b, 13, 20, 658);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -43100,7 +43105,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$2.name,
+    		id: create_if_block_1$3.name,
     		type: "if",
     		source: "(13:16) {#if errorOccured}",
     		ctx
@@ -43109,7 +43114,7 @@ var app = (function () {
     	return block;
     }
 
-    function create_fragment$a(ctx) {
+    function create_fragment$c(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -43133,7 +43138,7 @@ var app = (function () {
     	let a;
     	let mounted;
     	let dispose;
-    	let if_block = /*visible*/ ctx[2] && create_if_block$4(ctx);
+    	let if_block = /*visible*/ ctx[2] && create_if_block$5(ctx);
 
     	const block = {
     		c: function create() {
@@ -43165,38 +43170,38 @@ var app = (function () {
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			attr_dev(link0, "class", "svelte-1qffzrv");
-    			add_location(link0, file$9, 0, 0, 0);
+    			add_location(link0, file$b, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			attr_dev(link1, "class", "svelte-1qffzrv");
-    			add_location(link1, file$9, 1, 0, 57);
+    			add_location(link1, file$b, 1, 0, 57);
     			attr_dev(h1, "class", "svelte-1qffzrv");
-    			add_location(h1, file$9, 6, 12, 318);
+    			add_location(h1, file$b, 6, 12, 318);
     			attr_dev(input0, "id", "email");
     			attr_dev(input0, "placeholder", "Email");
     			attr_dev(input0, "class", "svelte-1qffzrv");
-    			add_location(input0, file$9, 7, 12, 361);
+    			add_location(input0, file$b, 7, 12, 361);
     			attr_dev(input1, "type", "password");
     			attr_dev(input1, "id", "password");
     			attr_dev(input1, "placeholder", "Password");
     			attr_dev(input1, "class", "svelte-1qffzrv");
-    			add_location(input1, file$9, 8, 12, 431);
+    			add_location(input1, file$b, 8, 12, 431);
     			attr_dev(button, "class", "svelte-1qffzrv");
-    			add_location(button, file$9, 9, 12, 526);
+    			add_location(button, file$b, 9, 12, 526);
     			attr_dev(hr, "class", "svelte-1qffzrv");
-    			add_location(hr, file$9, 19, 12, 882);
+    			add_location(hr, file$b, 19, 12, 882);
     			attr_dev(a, "href", "./Signup");
     			attr_dev(a, "class", "svelte-1qffzrv");
-    			add_location(a, file$9, 20, 39, 926);
+    			add_location(a, file$b, 20, 39, 926);
     			attr_dev(p, "class", "svelte-1qffzrv");
-    			add_location(p, file$9, 20, 12, 899);
+    			add_location(p, file$b, 20, 12, 899);
     			attr_dev(div0, "class", "sign-in__content load-animation__fade svelte-1qffzrv");
-    			add_location(div0, file$9, 5, 8, 253);
+    			add_location(div0, file$b, 5, 8, 253);
     			attr_dev(div1, "class", "sign-in__container  svelte-1qffzrv");
     			attr_dev(div1, "id", "container");
-    			add_location(div1, file$9, 4, 4, 196);
+    			add_location(div1, file$b, 4, 4, 196);
     			attr_dev(div2, "class", "background svelte-1qffzrv");
-    			add_location(div2, file$9, 3, 0, 167);
+    			add_location(div2, file$b, 3, 0, 167);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -43250,7 +43255,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$4(ctx);
+    					if_block = create_if_block$5(ctx);
     					if_block.c();
     					if_block.m(div0, t8);
     				}
@@ -43275,7 +43280,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$a.name,
+    		id: create_fragment$c.name,
     		type: "component",
     		source: "",
     		ctx
@@ -43284,7 +43289,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$a($$self, $$props, $$invalidate) {
+    function instance$c($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Login", slots, []);
     	let email = "";
@@ -43382,13 +43387,13 @@ var app = (function () {
     class Login extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$a, create_fragment$a, safe_not_equal, {});
+    		init(this, options, instance$c, create_fragment$c, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Login",
     			options,
-    			id: create_fragment$a.name
+    			id: create_fragment$c.name
     		});
     	}
     }
@@ -43397,15 +43402,15 @@ var app = (function () {
 
     const { console: console_1$2 } = globals;
 
-    const file$8 = "src/Signup.svelte";
+    const file$a = "src/Signup.svelte";
 
     // (16:12) {#if visible}
-    function create_if_block$3(ctx) {
+    function create_if_block$4(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*errorOccured*/ ctx[8]) return create_if_block_1$1;
-    		return create_else_block$2;
+    		if (/*errorOccured*/ ctx[8]) return create_if_block_1$2;
+    		return create_else_block$3;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -43441,7 +43446,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$3.name,
+    		id: create_if_block$4.name,
     		type: "if",
     		source: "(16:12) {#if visible}",
     		ctx
@@ -43451,7 +43456,7 @@ var app = (function () {
     }
 
     // (19:16) {:else}
-    function create_else_block$2(ctx) {
+    function create_else_block$3(ctx) {
     	let p;
 
     	const block = {
@@ -43459,7 +43464,7 @@ var app = (function () {
     			p = element("p");
     			p.textContent = "Sign up succesful!";
     			attr_dev(p, "class", "success svelte-1ots9yc");
-    			add_location(p, file$8, 19, 20, 985);
+    			add_location(p, file$a, 19, 20, 985);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -43472,7 +43477,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block$2.name,
+    		id: create_else_block$3.name,
     		type: "else",
     		source: "(19:16) {:else}",
     		ctx
@@ -43482,7 +43487,7 @@ var app = (function () {
     }
 
     // (17:16) {#if errorOccured}
-    function create_if_block_1$1(ctx) {
+    function create_if_block_1$2(ctx) {
     	let p;
     	let t;
 
@@ -43492,7 +43497,7 @@ var app = (function () {
     			t = text(/*errorMessage*/ ctx[6]);
     			attr_dev(p, "class", "error svelte-1ots9yc");
     			attr_dev(p, "id", "error");
-    			add_location(p, file$8, 17, 20, 892);
+    			add_location(p, file$a, 17, 20, 892);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -43508,7 +43513,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$1.name,
+    		id: create_if_block_1$2.name,
     		type: "if",
     		source: "(17:16) {#if errorOccured}",
     		ctx
@@ -43517,7 +43522,7 @@ var app = (function () {
     	return block;
     }
 
-    function create_fragment$9(ctx) {
+    function create_fragment$b(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -43549,7 +43554,7 @@ var app = (function () {
     	let a;
     	let mounted;
     	let dispose;
-    	let if_block = /*visible*/ ctx[7] && create_if_block$3(ctx);
+    	let if_block = /*visible*/ ctx[7] && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -43589,47 +43594,47 @@ var app = (function () {
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			attr_dev(link0, "class", "svelte-1ots9yc");
-    			add_location(link0, file$8, 0, 0, 0);
+    			add_location(link0, file$a, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			attr_dev(link1, "class", "svelte-1ots9yc");
-    			add_location(link1, file$8, 1, 0, 57);
+    			add_location(link1, file$a, 1, 0, 57);
     			attr_dev(h1, "class", "svelte-1ots9yc");
-    			add_location(h1, file$8, 6, 12, 295);
+    			add_location(h1, file$a, 6, 12, 295);
     			attr_dev(input0, "placeholder", "First name");
     			attr_dev(input0, "class", "svelte-1ots9yc");
-    			add_location(input0, file$8, 7, 12, 338);
+    			add_location(input0, file$a, 7, 12, 338);
     			attr_dev(input1, "placeholder", "Last name");
     			attr_dev(input1, "class", "svelte-1ots9yc");
-    			add_location(input1, file$8, 8, 12, 406);
+    			add_location(input1, file$a, 8, 12, 406);
     			attr_dev(input2, "placeholder", "Company name");
     			attr_dev(input2, "class", "svelte-1ots9yc");
-    			add_location(input2, file$8, 9, 12, 472);
+    			add_location(input2, file$a, 9, 12, 472);
     			attr_dev(input3, "placeholder", "Company position name");
     			attr_dev(input3, "class", "svelte-1ots9yc");
-    			add_location(input3, file$8, 10, 12, 540);
+    			add_location(input3, file$a, 10, 12, 540);
     			attr_dev(input4, "placeholder", "Email");
     			attr_dev(input4, "class", "svelte-1ots9yc");
-    			add_location(input4, file$8, 11, 12, 618);
+    			add_location(input4, file$a, 11, 12, 618);
     			attr_dev(input5, "type", "password");
     			attr_dev(input5, "placeholder", "Password");
     			attr_dev(input5, "class", "svelte-1ots9yc");
-    			add_location(input5, file$8, 12, 12, 677);
+    			add_location(input5, file$a, 12, 12, 677);
     			attr_dev(button, "class", "svelte-1ots9yc");
-    			add_location(button, file$8, 13, 12, 758);
+    			add_location(button, file$a, 13, 12, 758);
     			attr_dev(hr, "class", "svelte-1ots9yc");
-    			add_location(hr, file$8, 23, 12, 1082);
+    			add_location(hr, file$a, 23, 12, 1082);
     			attr_dev(a, "href", "./");
     			attr_dev(a, "class", "svelte-1ots9yc");
-    			add_location(a, file$8, 24, 33, 1120);
+    			add_location(a, file$a, 24, 33, 1120);
     			attr_dev(p, "class", "svelte-1ots9yc");
-    			add_location(p, file$8, 24, 12, 1099);
+    			add_location(p, file$a, 24, 12, 1099);
     			attr_dev(div0, "class", "sign-in__content load-animation svelte-1ots9yc");
-    			add_location(div0, file$8, 5, 8, 237);
+    			add_location(div0, file$a, 5, 8, 237);
     			attr_dev(div1, "class", "sign-in__container svelte-1ots9yc");
-    			add_location(div1, file$8, 4, 4, 196);
+    			add_location(div1, file$a, 4, 4, 196);
     			attr_dev(div2, "class", "background svelte-1ots9yc");
-    			add_location(div2, file$8, 3, 0, 167);
+    			add_location(div2, file$a, 3, 0, 167);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -43715,7 +43720,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$3(ctx);
+    					if_block = create_if_block$4(ctx);
     					if_block.c();
     					if_block.m(div0, t12);
     				}
@@ -43740,7 +43745,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$9.name,
+    		id: create_fragment$b.name,
     		type: "component",
     		source: "",
     		ctx
@@ -43749,7 +43754,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$9($$self, $$props, $$invalidate) {
+    function instance$b($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Signup", slots, []);
     	let firstName = "";
@@ -43910,22 +43915,22 @@ var app = (function () {
     class Signup extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$9, create_fragment$9, safe_not_equal, {});
+    		init(this, options, instance$b, create_fragment$b, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Signup",
     			options,
-    			id: create_fragment$9.name
+    			id: create_fragment$b.name
     		});
     	}
     }
 
     /* src/Role.svelte generated by Svelte v3.38.2 */
 
-    const file$7 = "src/Role.svelte";
+    const file$9 = "src/Role.svelte";
 
-    function create_fragment$8(ctx) {
+    function create_fragment$a(ctx) {
     	let link0;
     	let t0;
     	let link1;
@@ -44096,346 +44101,346 @@ var app = (function () {
     			p3.textContent = "Attend and participate in conferences";
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
-    			add_location(link0, file$7, 0, 0, 0);
+    			add_location(link0, file$9, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
-    			add_location(link1, file$7, 1, 0, 57);
+    			add_location(link1, file$9, 1, 0, 57);
     			attr_dev(h1, "class", "svelte-1113jpr");
-    			add_location(h1, file$7, 5, 4, 211);
+    			add_location(h1, file$9, 5, 4, 211);
     			attr_dev(button0, "class", "svelte-1113jpr");
-    			add_location(button0, file$7, 9, 12, 321);
+    			add_location(button0, file$9, 9, 12, 321);
     			attr_dev(div0, "id", "left");
     			attr_dev(div0, "class", "inline svelte-1113jpr");
-    			add_location(div0, file$7, 8, 8, 278);
+    			add_location(div0, file$9, 8, 8, 278);
     			attr_dev(p0, "class", "inline svelte-1113jpr");
-    			add_location(p0, file$7, 12, 8, 416);
+    			add_location(p0, file$9, 12, 8, 416);
     			attr_dev(button1, "class", "svelte-1113jpr");
-    			add_location(button1, file$7, 15, 12, 500);
+    			add_location(button1, file$9, 15, 12, 500);
     			attr_dev(div1, "id", "right");
     			attr_dev(div1, "class", "inline svelte-1113jpr");
-    			add_location(div1, file$7, 14, 8, 456);
+    			add_location(div1, file$9, 14, 8, 456);
     			attr_dev(path0, "d", "M195 93.217C195 95.8912 194.721 97.5404 194.38 98.5072C194.218 98.9666 194.068 99.1957 193.99 99.2937C193.952 99.3416 193.927 99.3634 193.918 99.3708C193.91 99.3779 193.904 99.3813 193.897 99.385C193.879 99.394 193.539 99.5572 192.462 99.3957C191.393 99.2352 190.005 98.8178 188.196 98.1277C186.693 97.5546 185.071 96.8614 183.251 96.0839C182.894 95.9315 182.53 95.7759 182.157 95.6174C179.924 94.6666 177.464 93.6385 174.854 92.6973C169.645 90.8185 163.66 89.217 157.244 89.217C150.828 89.217 144.843 90.8185 139.633 92.6973C137.024 93.6385 134.564 94.6666 132.331 95.6174C131.958 95.776 131.594 95.9316 131.237 96.0839C129.417 96.8615 127.794 97.5546 126.292 98.1277C124.483 98.8178 123.095 99.2352 122.025 99.3957C120.949 99.5572 120.608 99.394 120.591 99.385C120.584 99.3813 120.578 99.3779 120.57 99.3708C120.561 99.3634 120.536 99.3417 120.498 99.2937C120.42 99.1957 120.27 98.9666 120.108 98.5072C119.767 97.5404 119.488 95.8912 119.488 93.217C119.488 72.3649 136.392 55.4608 157.244 55.4608C178.096 55.4608 195 72.3649 195 93.217Z");
     			attr_dev(path0, "fill", "white");
     			attr_dev(path0, "stroke", "#4C82F8");
     			attr_dev(path0, "stroke-width", "8");
-    			add_location(path0, file$7, 19, 12, 727);
+    			add_location(path0, file$9, 19, 12, 727);
     			attr_dev(circle0, "cx", "157.244");
     			attr_dev(circle0, "cy", "31.1627");
     			attr_dev(circle0, "r", "20.9377");
     			attr_dev(circle0, "fill", "white");
     			attr_dev(circle0, "stroke", "#4C82F8");
     			attr_dev(circle0, "stroke-width", "8");
-    			add_location(circle0, file$7, 20, 12, 1837);
+    			add_location(circle0, file$9, 20, 12, 1837);
     			attr_dev(path1, "d", "M79.8382 97.1076C79.8382 99.7818 79.5589 101.431 79.2178 102.398C79.0557 102.857 78.9058 103.086 78.8279 103.184C78.7899 103.232 78.7652 103.254 78.7562 103.261C78.7477 103.268 78.7421 103.272 78.735 103.276C78.7174 103.285 78.377 103.448 77.3005 103.286C76.2313 103.126 74.8427 102.708 73.0338 102.018C71.5314 101.445 69.9088 100.752 68.0887 99.9745C67.732 99.8222 67.3678 99.6666 66.9953 99.508C64.7624 98.5572 62.3023 97.5291 59.6924 96.5879C54.483 94.7091 48.498 93.1076 42.082 93.1076C35.666 93.1076 29.681 94.7091 24.4716 96.5879C21.8617 97.5291 19.4017 98.5572 17.1687 99.508C16.7962 99.6666 16.432 99.8222 16.0753 99.9745C14.2552 100.752 12.6326 101.445 11.1302 102.018C9.32133 102.708 7.93273 103.126 6.86351 103.286C5.78697 103.448 5.4466 103.285 5.42904 103.276C5.42187 103.272 5.41635 103.268 5.40783 103.261C5.39885 103.254 5.37411 103.232 5.33608 103.184C5.25825 103.086 5.10832 102.857 4.94623 102.398C4.60509 101.431 4.32581 99.7818 4.32581 97.1076C4.32581 76.2555 21.2298 59.3514 42.082 59.3514C62.9342 59.3514 79.8382 76.2555 79.8382 97.1076Z");
     			attr_dev(path1, "fill", "white");
     			attr_dev(path1, "stroke", "#4C82F8");
     			attr_dev(path1, "stroke-width", "8");
-    			add_location(path1, file$7, 21, 12, 1944);
+    			add_location(path1, file$9, 21, 12, 1944);
     			attr_dev(circle1, "cx", "42.082");
     			attr_dev(circle1, "cy", "35.0533");
     			attr_dev(circle1, "r", "20.9377");
     			attr_dev(circle1, "fill", "white");
     			attr_dev(circle1, "stroke", "#4C82F8");
     			attr_dev(circle1, "stroke-width", "8");
-    			add_location(circle1, file$7, 22, 12, 3076);
+    			add_location(circle1, file$9, 22, 12, 3076);
     			attr_dev(path2, "d", "M135.085 86.9921C135.085 89.6662 134.806 91.3154 134.464 92.2823C134.302 92.7416 134.152 92.9707 134.075 93.0688C134.036 93.1167 134.012 93.1385 134.003 93.1459C133.994 93.1529 133.989 93.1564 133.982 93.16C133.964 93.169 133.624 93.3323 132.547 93.1707C131.478 93.0103 130.089 92.5928 128.28 91.9028C126.778 91.3296 125.155 90.6365 123.335 89.8589C122.979 89.7066 122.614 89.551 122.242 89.3924C120.009 88.4416 117.549 87.4135 114.939 86.4723C109.73 84.5935 103.745 82.9921 97.3286 82.9921C90.9126 82.9921 84.9276 84.5935 79.7182 86.4723C77.1083 87.4135 74.6482 88.4416 72.4153 89.3924C72.0428 89.551 71.6786 89.7066 71.3219 89.859C69.5017 90.6365 67.8792 91.3296 66.3768 91.9028C64.5679 92.5928 63.1793 93.0103 62.1101 93.1707C61.0336 93.3323 60.6932 93.169 60.6756 93.16C60.6685 93.1564 60.6629 93.1529 60.6544 93.1459C60.6454 93.1385 60.6207 93.1167 60.5827 93.0688C60.5048 92.9707 60.3549 92.7416 60.1928 92.2823C59.8517 91.3154 59.5724 89.6662 59.5724 86.9921C59.5724 66.1399 76.4764 49.2359 97.3286 49.2359C118.181 49.2359 135.085 66.1399 135.085 86.9921Z");
     			attr_dev(path2, "fill", "white");
     			attr_dev(path2, "stroke", "#4C82F8");
     			attr_dev(path2, "stroke-width", "8");
-    			add_location(path2, file$7, 23, 12, 3182);
+    			add_location(path2, file$9, 23, 12, 3182);
     			attr_dev(circle2, "cx", "97.3285");
     			attr_dev(circle2, "cy", "24.9377");
     			attr_dev(circle2, "r", "20.9377");
     			attr_dev(circle2, "fill", "white");
     			attr_dev(circle2, "stroke", "#4C82F8");
     			attr_dev(circle2, "stroke-width", "8");
-    			add_location(circle2, file$7, 24, 12, 4316);
+    			add_location(circle2, file$9, 24, 12, 4316);
     			attr_dev(circle3, "cx", "64.2321");
     			attr_dev(circle3, "cy", "51.4565");
     			attr_dev(circle3, "r", "30.4472");
     			attr_dev(circle3, "fill", "white");
-    			add_location(circle3, file$7, 25, 12, 4423);
+    			add_location(circle3, file$9, 25, 12, 4423);
     			attr_dev(circle4, "cx", "62.5754");
     			attr_dev(circle4, "cy", "110.493");
     			attr_dev(circle4, "r", "47.4653");
     			attr_dev(circle4, "fill", "white");
-    			add_location(circle4, file$7, 26, 12, 4496);
+    			add_location(circle4, file$9, 26, 12, 4496);
     			attr_dev(circle5, "cx", "136.497");
     			attr_dev(circle5, "cy", "109.715");
     			attr_dev(circle5, "r", "47.4653");
     			attr_dev(circle5, "fill", "white");
-    			add_location(circle5, file$7, 27, 12, 4569);
+    			add_location(circle5, file$9, 27, 12, 4569);
     			attr_dev(circle6, "cx", "135.819");
     			attr_dev(circle6, "cy", "49.9002");
     			attr_dev(circle6, "r", "30.4472");
     			attr_dev(circle6, "fill", "white");
-    			add_location(circle6, file$7, 28, 12, 4642);
+    			add_location(circle6, file$9, 28, 12, 4642);
     			attr_dev(path3, "d", "M172.959 112.67C172.959 115.344 172.68 116.993 172.339 117.96C172.177 118.42 172.027 118.649 171.949 118.747C171.911 118.795 171.886 118.816 171.877 118.824C171.869 118.831 171.863 118.834 171.856 118.838C171.838 118.847 171.498 119.01 170.421 118.849C169.352 118.688 167.964 118.271 166.155 117.581C164.652 117.008 163.03 116.314 161.21 115.537C160.853 115.385 160.489 115.229 160.116 115.07C157.883 114.12 155.423 113.091 152.813 112.15C147.604 110.271 141.619 108.67 135.203 108.67C128.787 108.67 122.802 110.271 117.593 112.15C114.983 113.091 112.523 114.12 110.29 115.07C109.917 115.229 109.553 115.385 109.196 115.537C107.376 116.314 105.754 117.008 104.251 117.581C102.442 118.271 101.054 118.688 99.9845 118.849C98.9079 119.01 98.5676 118.847 98.55 118.838C98.5428 118.834 98.5373 118.831 98.5288 118.824C98.5198 118.816 98.4951 118.795 98.4571 118.747C98.3792 118.649 98.2293 118.42 98.0672 117.96C97.7261 116.993 97.4468 115.344 97.4468 112.67C97.4468 91.8179 114.351 74.9138 135.203 74.9138C156.055 74.9138 172.959 91.8179 172.959 112.67Z");
     			attr_dev(path3, "fill", "white");
     			attr_dev(path3, "stroke", "#4C82F8");
     			attr_dev(path3, "stroke-width", "8");
-    			add_location(path3, file$7, 29, 12, 4715);
+    			add_location(path3, file$9, 29, 12, 4715);
     			attr_dev(circle7, "cx", "135.203");
     			attr_dev(circle7, "cy", "50.6157");
     			attr_dev(circle7, "r", "20.9377");
     			attr_dev(circle7, "fill", "white");
     			attr_dev(circle7, "stroke", "#4C82F8");
     			attr_dev(circle7, "stroke-width", "8");
-    			add_location(circle7, file$7, 30, 12, 5836);
+    			add_location(circle7, file$9, 30, 12, 5836);
     			attr_dev(path4, "d", "M101.626 112.67C101.626 115.344 101.346 116.993 101.005 117.96C100.843 118.42 100.693 118.649 100.615 118.747C100.577 118.795 100.553 118.816 100.544 118.824C100.535 118.831 100.529 118.834 100.522 118.838C100.505 118.847 100.164 119.01 99.0879 118.849C98.0186 118.688 96.63 118.271 94.8212 117.581C93.3187 117.008 91.6962 116.314 89.876 115.537C89.5194 115.385 89.1551 115.229 88.7827 115.07C86.5497 114.12 84.0896 113.091 81.4798 112.15C76.2703 110.271 70.2853 108.67 63.8694 108.67C57.4534 108.67 51.4684 110.271 46.2589 112.15C43.6491 113.091 41.189 114.12 38.956 115.07C38.5836 115.229 38.2193 115.385 37.8627 115.537C36.0425 116.314 34.42 117.008 32.9175 117.581C31.1087 118.271 29.7201 118.688 28.6509 118.849C27.5743 119.01 27.234 118.847 27.2164 118.838C27.2092 118.834 27.2037 118.831 27.1952 118.824C27.1862 118.816 27.1615 118.795 27.1234 118.747C27.0456 118.649 26.8957 118.42 26.7336 117.96C26.3924 116.993 26.1132 115.344 26.1132 112.67C26.1132 91.8179 43.0172 74.9138 63.8694 74.9138C84.7215 74.9138 101.626 91.8179 101.626 112.67Z");
     			attr_dev(path4, "fill", "white");
     			attr_dev(path4, "stroke", "#4C82F8");
     			attr_dev(path4, "stroke-width", "8");
-    			add_location(path4, file$7, 31, 12, 5943);
+    			add_location(path4, file$9, 31, 12, 5943);
     			attr_dev(circle8, "cx", "63.8694");
     			attr_dev(circle8, "cy", "50.6157");
     			attr_dev(circle8, "r", "20.9377");
     			attr_dev(circle8, "fill", "white");
     			attr_dev(circle8, "stroke", "#4C82F8");
     			attr_dev(circle8, "stroke-width", "8");
-    			add_location(circle8, file$7, 32, 12, 7062);
+    			add_location(circle8, file$9, 32, 12, 7062);
     			attr_dev(circle9, "cx", "98.9563");
     			attr_dev(circle9, "cy", "63.0845");
     			attr_dev(circle9, "r", "30.4472");
     			attr_dev(circle9, "fill", "white");
-    			add_location(circle9, file$7, 33, 12, 7169);
+    			add_location(circle9, file$9, 33, 12, 7169);
     			attr_dev(path5, "d", "M137.002 125.429C137.002 128.103 136.723 129.752 136.382 130.719C136.22 131.178 136.07 131.408 135.992 131.506C135.954 131.553 135.929 131.575 135.92 131.583C135.912 131.59 135.906 131.593 135.899 131.597C135.882 131.606 135.541 131.769 134.465 131.608C133.395 131.447 132.007 131.03 130.198 130.34C128.696 129.766 127.073 129.073 125.253 128.296C124.896 128.143 124.532 127.988 124.16 127.829C121.927 126.878 119.466 125.85 116.857 124.909C111.647 123.03 105.662 121.429 99.2462 121.429C92.8302 121.429 86.8452 123.03 81.6358 124.909C79.0259 125.85 76.5658 126.878 74.3329 127.829C73.9604 127.988 73.5962 128.143 73.2395 128.296C71.4193 129.073 69.7968 129.766 68.2944 130.34C66.4855 131.03 65.0969 131.447 64.0277 131.608C62.9512 131.769 62.6108 131.606 62.5932 131.597C62.5861 131.593 62.5805 131.59 62.572 131.583C62.563 131.575 62.5383 131.553 62.5003 131.506C62.4224 131.408 62.2725 131.178 62.1104 130.719C61.7693 129.752 61.49 128.103 61.49 125.429C61.49 104.577 78.394 87.6727 99.2462 87.6727C120.098 87.6727 137.002 104.577 137.002 125.429Z");
     			attr_dev(path5, "fill", "white");
     			attr_dev(path5, "stroke", "#4C82F8");
     			attr_dev(path5, "stroke-width", "8");
-    			add_location(path5, file$7, 34, 12, 7242);
+    			add_location(path5, file$9, 34, 12, 7242);
     			attr_dev(circle10, "cx", "99.2462");
     			attr_dev(circle10, "cy", "63.3745");
     			attr_dev(circle10, "r", "20.9377");
     			attr_dev(circle10, "fill", "white");
     			attr_dev(circle10, "stroke", "#4C82F8");
     			attr_dev(circle10, "stroke-width", "8");
-    			add_location(circle10, file$7, 35, 12, 8364);
+    			add_location(circle10, file$9, 35, 12, 8364);
     			attr_dev(svg0, "class", "group-svg svelte-1113jpr");
     			attr_dev(svg0, "width", "199");
     			attr_dev(svg0, "height", "158");
     			attr_dev(svg0, "viewBox", "0 0 199 158");
     			attr_dev(svg0, "fill", "none");
     			attr_dev(svg0, "xmlns", "http://www.w3.org/2000/svg");
-    			add_location(svg0, file$7, 18, 8, 597);
+    			add_location(svg0, file$9, 18, 8, 597);
     			attr_dev(path6, "d", "M195 93.217C195 95.8912 194.721 97.5404 194.38 98.5072C194.218 98.9666 194.068 99.1957 193.99 99.2937C193.952 99.3416 193.927 99.3634 193.918 99.3708C193.91 99.3779 193.904 99.3813 193.897 99.385C193.879 99.394 193.539 99.5572 192.462 99.3957C191.393 99.2352 190.005 98.8178 188.196 98.1277C186.693 97.5546 185.071 96.8614 183.251 96.0839C182.894 95.9315 182.53 95.7759 182.157 95.6174C179.924 94.6666 177.464 93.6385 174.854 92.6973C169.645 90.8185 163.66 89.217 157.244 89.217C150.828 89.217 144.843 90.8185 139.633 92.6973C137.024 93.6385 134.564 94.6666 132.331 95.6174C131.958 95.776 131.594 95.9316 131.237 96.0839C129.417 96.8615 127.794 97.5546 126.292 98.1277C124.483 98.8178 123.095 99.2352 122.025 99.3957C120.949 99.5572 120.608 99.394 120.591 99.385C120.584 99.3813 120.578 99.3779 120.57 99.3708C120.561 99.3634 120.536 99.3417 120.498 99.2937C120.42 99.1957 120.27 98.9666 120.108 98.5072C119.767 97.5404 119.488 95.8912 119.488 93.217C119.488 72.3649 136.392 55.4608 157.244 55.4608C178.096 55.4608 195 72.3649 195 93.217Z");
     			attr_dev(path6, "fill", "white");
     			attr_dev(path6, "stroke", "#4C82F8");
     			attr_dev(path6, "stroke-width", "8");
-    			add_location(path6, file$7, 39, 12, 8615);
+    			add_location(path6, file$9, 39, 12, 8615);
     			attr_dev(circle11, "cx", "157.244");
     			attr_dev(circle11, "cy", "31.1627");
     			attr_dev(circle11, "r", "20.9377");
     			attr_dev(circle11, "fill", "white");
     			attr_dev(circle11, "stroke", "#4C82F8");
     			attr_dev(circle11, "stroke-width", "8");
-    			add_location(circle11, file$7, 40, 12, 9725);
+    			add_location(circle11, file$9, 40, 12, 9725);
     			attr_dev(path7, "d", "M79.8382 97.1076C79.8382 99.7818 79.5589 101.431 79.2178 102.398C79.0557 102.857 78.9058 103.086 78.8279 103.184C78.7899 103.232 78.7652 103.254 78.7562 103.261C78.7477 103.268 78.7421 103.272 78.735 103.276C78.7174 103.285 78.377 103.448 77.3005 103.286C76.2313 103.126 74.8427 102.708 73.0338 102.018C71.5314 101.445 69.9088 100.752 68.0887 99.9745C67.732 99.8222 67.3678 99.6666 66.9953 99.508C64.7624 98.5572 62.3023 97.5291 59.6924 96.5879C54.483 94.7091 48.498 93.1076 42.082 93.1076C35.666 93.1076 29.681 94.7091 24.4716 96.5879C21.8617 97.5291 19.4017 98.5572 17.1687 99.508C16.7962 99.6666 16.432 99.8222 16.0753 99.9745C14.2552 100.752 12.6326 101.445 11.1302 102.018C9.32133 102.708 7.93273 103.126 6.86351 103.286C5.78697 103.448 5.4466 103.285 5.42904 103.276C5.42187 103.272 5.41635 103.268 5.40783 103.261C5.39885 103.254 5.37411 103.232 5.33608 103.184C5.25825 103.086 5.10832 102.857 4.94623 102.398C4.60509 101.431 4.32581 99.7818 4.32581 97.1076C4.32581 76.2555 21.2298 59.3514 42.082 59.3514C62.9342 59.3514 79.8382 76.2555 79.8382 97.1076Z");
     			attr_dev(path7, "fill", "white");
     			attr_dev(path7, "stroke", "#4C82F8");
     			attr_dev(path7, "stroke-width", "8");
-    			add_location(path7, file$7, 41, 12, 9832);
+    			add_location(path7, file$9, 41, 12, 9832);
     			attr_dev(circle12, "cx", "42.082");
     			attr_dev(circle12, "cy", "35.0533");
     			attr_dev(circle12, "r", "20.9377");
     			attr_dev(circle12, "fill", "white");
     			attr_dev(circle12, "stroke", "#4C82F8");
     			attr_dev(circle12, "stroke-width", "8");
-    			add_location(circle12, file$7, 42, 12, 10964);
+    			add_location(circle12, file$9, 42, 12, 10964);
     			attr_dev(path8, "d", "M135.085 86.9921C135.085 89.6662 134.806 91.3154 134.464 92.2823C134.302 92.7416 134.152 92.9707 134.075 93.0688C134.036 93.1167 134.012 93.1385 134.003 93.1459C133.994 93.1529 133.989 93.1564 133.982 93.16C133.964 93.169 133.624 93.3323 132.547 93.1707C131.478 93.0103 130.089 92.5928 128.28 91.9028C126.778 91.3296 125.155 90.6365 123.335 89.8589C122.979 89.7066 122.614 89.551 122.242 89.3924C120.009 88.4416 117.549 87.4135 114.939 86.4723C109.73 84.5935 103.745 82.9921 97.3286 82.9921C90.9126 82.9921 84.9276 84.5935 79.7182 86.4723C77.1083 87.4135 74.6482 88.4416 72.4153 89.3924C72.0428 89.551 71.6786 89.7066 71.3219 89.859C69.5017 90.6365 67.8792 91.3296 66.3768 91.9028C64.5679 92.5928 63.1793 93.0103 62.1101 93.1707C61.0336 93.3323 60.6932 93.169 60.6756 93.16C60.6685 93.1564 60.6629 93.1529 60.6544 93.1459C60.6454 93.1385 60.6207 93.1167 60.5827 93.0688C60.5048 92.9707 60.3549 92.7416 60.1928 92.2823C59.8517 91.3154 59.5724 89.6662 59.5724 86.9921C59.5724 66.1399 76.4764 49.2359 97.3286 49.2359C118.181 49.2359 135.085 66.1399 135.085 86.9921Z");
     			attr_dev(path8, "fill", "white");
     			attr_dev(path8, "stroke", "#4C82F8");
     			attr_dev(path8, "stroke-width", "8");
-    			add_location(path8, file$7, 43, 12, 11070);
+    			add_location(path8, file$9, 43, 12, 11070);
     			attr_dev(circle13, "cx", "97.3285");
     			attr_dev(circle13, "cy", "24.9377");
     			attr_dev(circle13, "r", "20.9377");
     			attr_dev(circle13, "fill", "white");
     			attr_dev(circle13, "stroke", "#4C82F8");
     			attr_dev(circle13, "stroke-width", "8");
-    			add_location(circle13, file$7, 44, 12, 12204);
+    			add_location(circle13, file$9, 44, 12, 12204);
     			attr_dev(circle14, "cx", "64.2321");
     			attr_dev(circle14, "cy", "51.4565");
     			attr_dev(circle14, "r", "30.4472");
     			attr_dev(circle14, "fill", "white");
-    			add_location(circle14, file$7, 45, 12, 12311);
+    			add_location(circle14, file$9, 45, 12, 12311);
     			attr_dev(circle15, "cx", "62.5754");
     			attr_dev(circle15, "cy", "110.493");
     			attr_dev(circle15, "r", "47.4653");
     			attr_dev(circle15, "fill", "white");
-    			add_location(circle15, file$7, 46, 12, 12384);
+    			add_location(circle15, file$9, 46, 12, 12384);
     			attr_dev(circle16, "cx", "136.497");
     			attr_dev(circle16, "cy", "109.715");
     			attr_dev(circle16, "r", "47.4653");
     			attr_dev(circle16, "fill", "white");
-    			add_location(circle16, file$7, 47, 12, 12457);
+    			add_location(circle16, file$9, 47, 12, 12457);
     			attr_dev(circle17, "cx", "135.819");
     			attr_dev(circle17, "cy", "49.9002");
     			attr_dev(circle17, "r", "30.4472");
     			attr_dev(circle17, "fill", "white");
-    			add_location(circle17, file$7, 48, 12, 12530);
+    			add_location(circle17, file$9, 48, 12, 12530);
     			attr_dev(path9, "d", "M172.959 112.67C172.959 115.344 172.68 116.993 172.339 117.96C172.177 118.42 172.027 118.649 171.949 118.747C171.911 118.795 171.886 118.816 171.877 118.824C171.869 118.831 171.863 118.834 171.856 118.838C171.838 118.847 171.498 119.01 170.421 118.849C169.352 118.688 167.964 118.271 166.155 117.581C164.652 117.008 163.03 116.314 161.21 115.537C160.853 115.385 160.489 115.229 160.116 115.07C157.883 114.12 155.423 113.091 152.813 112.15C147.604 110.271 141.619 108.67 135.203 108.67C128.787 108.67 122.802 110.271 117.593 112.15C114.983 113.091 112.523 114.12 110.29 115.07C109.917 115.229 109.553 115.385 109.196 115.537C107.376 116.314 105.754 117.008 104.251 117.581C102.442 118.271 101.054 118.688 99.9845 118.849C98.9079 119.01 98.5676 118.847 98.55 118.838C98.5428 118.834 98.5373 118.831 98.5288 118.824C98.5198 118.816 98.4951 118.795 98.4571 118.747C98.3792 118.649 98.2293 118.42 98.0672 117.96C97.7261 116.993 97.4468 115.344 97.4468 112.67C97.4468 91.8179 114.351 74.9138 135.203 74.9138C156.055 74.9138 172.959 91.8179 172.959 112.67Z");
     			attr_dev(path9, "fill", "white");
     			attr_dev(path9, "stroke", "#4C82F8");
     			attr_dev(path9, "stroke-width", "8");
-    			add_location(path9, file$7, 49, 12, 12603);
+    			add_location(path9, file$9, 49, 12, 12603);
     			attr_dev(circle18, "cx", "135.203");
     			attr_dev(circle18, "cy", "50.6157");
     			attr_dev(circle18, "r", "20.9377");
     			attr_dev(circle18, "fill", "white");
     			attr_dev(circle18, "stroke", "#4C82F8");
     			attr_dev(circle18, "stroke-width", "8");
-    			add_location(circle18, file$7, 50, 12, 13724);
+    			add_location(circle18, file$9, 50, 12, 13724);
     			attr_dev(path10, "d", "M101.626 112.67C101.626 115.344 101.346 116.993 101.005 117.96C100.843 118.42 100.693 118.649 100.615 118.747C100.577 118.795 100.553 118.816 100.544 118.824C100.535 118.831 100.529 118.834 100.522 118.838C100.505 118.847 100.164 119.01 99.0879 118.849C98.0186 118.688 96.63 118.271 94.8212 117.581C93.3187 117.008 91.6962 116.314 89.876 115.537C89.5194 115.385 89.1551 115.229 88.7827 115.07C86.5497 114.12 84.0896 113.091 81.4798 112.15C76.2703 110.271 70.2853 108.67 63.8694 108.67C57.4534 108.67 51.4684 110.271 46.2589 112.15C43.6491 113.091 41.189 114.12 38.956 115.07C38.5836 115.229 38.2193 115.385 37.8627 115.537C36.0425 116.314 34.42 117.008 32.9175 117.581C31.1087 118.271 29.7201 118.688 28.6509 118.849C27.5743 119.01 27.234 118.847 27.2164 118.838C27.2092 118.834 27.2037 118.831 27.1952 118.824C27.1862 118.816 27.1615 118.795 27.1234 118.747C27.0456 118.649 26.8957 118.42 26.7336 117.96C26.3924 116.993 26.1132 115.344 26.1132 112.67C26.1132 91.8179 43.0172 74.9138 63.8694 74.9138C84.7215 74.9138 101.626 91.8179 101.626 112.67Z");
     			attr_dev(path10, "fill", "white");
     			attr_dev(path10, "stroke", "#4C82F8");
     			attr_dev(path10, "stroke-width", "8");
-    			add_location(path10, file$7, 51, 12, 13831);
+    			add_location(path10, file$9, 51, 12, 13831);
     			attr_dev(circle19, "cx", "63.8694");
     			attr_dev(circle19, "cy", "50.6157");
     			attr_dev(circle19, "r", "20.9377");
     			attr_dev(circle19, "fill", "white");
     			attr_dev(circle19, "stroke", "#4C82F8");
     			attr_dev(circle19, "stroke-width", "8");
-    			add_location(circle19, file$7, 52, 12, 14950);
+    			add_location(circle19, file$9, 52, 12, 14950);
     			attr_dev(circle20, "cx", "98.9563");
     			attr_dev(circle20, "cy", "63.0845");
     			attr_dev(circle20, "r", "30.4472");
     			attr_dev(circle20, "fill", "white");
-    			add_location(circle20, file$7, 53, 12, 15057);
+    			add_location(circle20, file$9, 53, 12, 15057);
     			attr_dev(path11, "d", "M137.002 125.429C137.002 128.103 136.723 129.752 136.382 130.719C136.22 131.178 136.07 131.408 135.992 131.506C135.954 131.553 135.929 131.575 135.92 131.583C135.912 131.59 135.906 131.593 135.899 131.597C135.882 131.606 135.541 131.769 134.465 131.608C133.395 131.447 132.007 131.03 130.198 130.34C128.696 129.766 127.073 129.073 125.253 128.296C124.896 128.143 124.532 127.988 124.16 127.829C121.927 126.878 119.466 125.85 116.857 124.909C111.647 123.03 105.662 121.429 99.2462 121.429C92.8302 121.429 86.8452 123.03 81.6358 124.909C79.0259 125.85 76.5658 126.878 74.3329 127.829C73.9604 127.988 73.5962 128.143 73.2395 128.296C71.4193 129.073 69.7968 129.766 68.2944 130.34C66.4855 131.03 65.0969 131.447 64.0277 131.608C62.9512 131.769 62.6108 131.606 62.5932 131.597C62.5861 131.593 62.5805 131.59 62.572 131.583C62.563 131.575 62.5383 131.553 62.5003 131.506C62.4224 131.408 62.2725 131.178 62.1104 130.719C61.7693 129.752 61.49 128.103 61.49 125.429C61.49 104.577 78.394 87.6727 99.2462 87.6727C120.098 87.6727 137.002 104.577 137.002 125.429Z");
     			attr_dev(path11, "fill", "white");
     			attr_dev(path11, "stroke", "#F88A4C");
     			attr_dev(path11, "stroke-width", "8");
-    			add_location(path11, file$7, 54, 12, 15130);
+    			add_location(path11, file$9, 54, 12, 15130);
     			attr_dev(circle21, "cx", "99.2462");
     			attr_dev(circle21, "cy", "63.3745");
     			attr_dev(circle21, "r", "20.9377");
     			attr_dev(circle21, "fill", "white");
     			attr_dev(circle21, "stroke", "#F88A4C");
     			attr_dev(circle21, "stroke-width", "8");
-    			add_location(circle21, file$7, 55, 12, 16252);
+    			add_location(circle21, file$9, 55, 12, 16252);
     			attr_dev(svg1, "class", "planner-svg svelte-1113jpr");
     			attr_dev(svg1, "width", "199");
     			attr_dev(svg1, "height", "158");
     			attr_dev(svg1, "viewBox", "0 0 199 158");
     			attr_dev(svg1, "fill", "none");
     			attr_dev(svg1, "xmlns", "http://www.w3.org/2000/svg");
-    			add_location(svg1, file$7, 38, 8, 8483);
+    			add_location(svg1, file$9, 38, 8, 8483);
     			attr_dev(path12, "d", "M195 93.217C195 95.8912 194.721 97.5404 194.38 98.5072C194.218 98.9666 194.068 99.1957 193.99 99.2937C193.952 99.3416 193.927 99.3634 193.918 99.3708C193.91 99.3779 193.904 99.3813 193.897 99.385C193.879 99.394 193.539 99.5572 192.462 99.3957C191.393 99.2352 190.005 98.8178 188.196 98.1277C186.693 97.5546 185.071 96.8614 183.251 96.0839C182.894 95.9315 182.53 95.7759 182.157 95.6174C179.924 94.6666 177.464 93.6385 174.854 92.6973C169.645 90.8185 163.66 89.217 157.244 89.217C150.828 89.217 144.843 90.8185 139.633 92.6973C137.024 93.6385 134.564 94.6666 132.331 95.6174C131.958 95.776 131.594 95.9316 131.237 96.0839C129.417 96.8615 127.794 97.5546 126.292 98.1277C124.483 98.8178 123.095 99.2352 122.025 99.3957C120.949 99.5572 120.608 99.394 120.591 99.385C120.584 99.3813 120.578 99.3779 120.57 99.3708C120.561 99.3634 120.536 99.3417 120.498 99.2937C120.42 99.1957 120.27 98.9666 120.108 98.5072C119.767 97.5404 119.488 95.8912 119.488 93.217C119.488 72.3649 136.392 55.4608 157.244 55.4608C178.096 55.4608 195 72.3649 195 93.217Z");
     			attr_dev(path12, "fill", "white");
     			attr_dev(path12, "stroke", "#F88A4C");
     			attr_dev(path12, "stroke-width", "8");
-    			add_location(path12, file$7, 59, 12, 16504);
+    			add_location(path12, file$9, 59, 12, 16504);
     			attr_dev(circle22, "cx", "157.244");
     			attr_dev(circle22, "cy", "31.1627");
     			attr_dev(circle22, "r", "20.9377");
     			attr_dev(circle22, "fill", "white");
     			attr_dev(circle22, "stroke", "#F88A4C");
     			attr_dev(circle22, "stroke-width", "8");
-    			add_location(circle22, file$7, 60, 12, 17614);
+    			add_location(circle22, file$9, 60, 12, 17614);
     			attr_dev(path13, "d", "M79.8382 97.1076C79.8382 99.7818 79.5589 101.431 79.2178 102.398C79.0557 102.857 78.9058 103.086 78.8279 103.184C78.7899 103.232 78.7652 103.254 78.7562 103.261C78.7477 103.268 78.7421 103.272 78.735 103.276C78.7174 103.285 78.377 103.448 77.3005 103.286C76.2313 103.126 74.8427 102.708 73.0338 102.018C71.5314 101.445 69.9088 100.752 68.0887 99.9745C67.732 99.8222 67.3678 99.6666 66.9953 99.508C64.7624 98.5572 62.3023 97.5291 59.6924 96.5879C54.483 94.7091 48.498 93.1076 42.082 93.1076C35.666 93.1076 29.681 94.7091 24.4716 96.5879C21.8617 97.5291 19.4017 98.5572 17.1687 99.508C16.7962 99.6666 16.432 99.8222 16.0753 99.9745C14.2552 100.752 12.6326 101.445 11.1302 102.018C9.32133 102.708 7.93273 103.126 6.86351 103.286C5.78697 103.448 5.4466 103.285 5.42904 103.276C5.42187 103.272 5.41635 103.268 5.40783 103.261C5.39885 103.254 5.37411 103.232 5.33608 103.184C5.25825 103.086 5.10832 102.857 4.94623 102.398C4.60509 101.431 4.32581 99.7818 4.32581 97.1076C4.32581 76.2555 21.2298 59.3514 42.082 59.3514C62.9342 59.3514 79.8382 76.2555 79.8382 97.1076Z");
     			attr_dev(path13, "fill", "white");
     			attr_dev(path13, "stroke", "#F88A4C");
     			attr_dev(path13, "stroke-width", "8");
-    			add_location(path13, file$7, 61, 12, 17721);
+    			add_location(path13, file$9, 61, 12, 17721);
     			attr_dev(circle23, "cx", "42.082");
     			attr_dev(circle23, "cy", "35.0533");
     			attr_dev(circle23, "r", "20.9377");
     			attr_dev(circle23, "fill", "white");
     			attr_dev(circle23, "stroke", "#F88A4C");
     			attr_dev(circle23, "stroke-width", "8");
-    			add_location(circle23, file$7, 62, 12, 18853);
+    			add_location(circle23, file$9, 62, 12, 18853);
     			attr_dev(path14, "d", "M135.085 86.9921C135.085 89.6662 134.806 91.3154 134.464 92.2823C134.302 92.7416 134.152 92.9707 134.075 93.0688C134.036 93.1167 134.012 93.1385 134.003 93.1459C133.994 93.1529 133.989 93.1564 133.982 93.16C133.964 93.169 133.624 93.3323 132.547 93.1707C131.478 93.0103 130.089 92.5928 128.28 91.9028C126.778 91.3296 125.155 90.6365 123.335 89.8589C122.979 89.7066 122.614 89.551 122.242 89.3924C120.009 88.4416 117.549 87.4135 114.939 86.4723C109.73 84.5935 103.745 82.9921 97.3286 82.9921C90.9126 82.9921 84.9276 84.5935 79.7182 86.4723C77.1083 87.4135 74.6482 88.4416 72.4153 89.3924C72.0428 89.551 71.6786 89.7066 71.3219 89.859C69.5017 90.6365 67.8792 91.3296 66.3768 91.9028C64.5679 92.5928 63.1793 93.0103 62.1101 93.1707C61.0336 93.3323 60.6932 93.169 60.6756 93.16C60.6685 93.1564 60.6629 93.1529 60.6544 93.1459C60.6454 93.1385 60.6207 93.1167 60.5827 93.0688C60.5048 92.9707 60.3549 92.7416 60.1928 92.2823C59.8517 91.3154 59.5724 89.6662 59.5724 86.9921C59.5724 66.1399 76.4764 49.2359 97.3286 49.2359C118.181 49.2359 135.085 66.1399 135.085 86.9921Z");
     			attr_dev(path14, "fill", "white");
     			attr_dev(path14, "stroke", "#F88A4C");
     			attr_dev(path14, "stroke-width", "8");
-    			add_location(path14, file$7, 63, 12, 18959);
+    			add_location(path14, file$9, 63, 12, 18959);
     			attr_dev(circle24, "cx", "97.3285");
     			attr_dev(circle24, "cy", "24.9377");
     			attr_dev(circle24, "r", "20.9377");
     			attr_dev(circle24, "fill", "white");
     			attr_dev(circle24, "stroke", "#F88A4C");
     			attr_dev(circle24, "stroke-width", "8");
-    			add_location(circle24, file$7, 64, 12, 20093);
+    			add_location(circle24, file$9, 64, 12, 20093);
     			attr_dev(circle25, "cx", "64.2321");
     			attr_dev(circle25, "cy", "51.4565");
     			attr_dev(circle25, "r", "30.4472");
     			attr_dev(circle25, "fill", "white");
-    			add_location(circle25, file$7, 65, 12, 20200);
+    			add_location(circle25, file$9, 65, 12, 20200);
     			attr_dev(circle26, "cx", "62.5754");
     			attr_dev(circle26, "cy", "110.493");
     			attr_dev(circle26, "r", "47.4653");
     			attr_dev(circle26, "fill", "white");
-    			add_location(circle26, file$7, 66, 12, 20273);
+    			add_location(circle26, file$9, 66, 12, 20273);
     			attr_dev(circle27, "cx", "136.497");
     			attr_dev(circle27, "cy", "109.715");
     			attr_dev(circle27, "r", "47.4653");
     			attr_dev(circle27, "fill", "white");
-    			add_location(circle27, file$7, 67, 12, 20346);
+    			add_location(circle27, file$9, 67, 12, 20346);
     			attr_dev(circle28, "cx", "135.819");
     			attr_dev(circle28, "cy", "49.9002");
     			attr_dev(circle28, "r", "30.4472");
     			attr_dev(circle28, "fill", "white");
-    			add_location(circle28, file$7, 68, 12, 20419);
+    			add_location(circle28, file$9, 68, 12, 20419);
     			attr_dev(path15, "d", "M172.959 112.67C172.959 115.344 172.68 116.993 172.339 117.96C172.177 118.42 172.027 118.649 171.949 118.747C171.911 118.795 171.886 118.816 171.877 118.824C171.869 118.831 171.863 118.834 171.856 118.838C171.838 118.847 171.498 119.01 170.421 118.849C169.352 118.688 167.964 118.271 166.155 117.581C164.652 117.008 163.03 116.314 161.21 115.537C160.853 115.385 160.489 115.229 160.116 115.07C157.883 114.12 155.423 113.091 152.813 112.15C147.604 110.271 141.619 108.67 135.203 108.67C128.787 108.67 122.802 110.271 117.593 112.15C114.983 113.091 112.523 114.12 110.29 115.07C109.917 115.229 109.553 115.385 109.196 115.537C107.376 116.314 105.754 117.008 104.251 117.581C102.442 118.271 101.054 118.688 99.9845 118.849C98.9079 119.01 98.5676 118.847 98.55 118.838C98.5428 118.834 98.5373 118.831 98.5288 118.824C98.5198 118.816 98.4951 118.795 98.4571 118.747C98.3792 118.649 98.2293 118.42 98.0672 117.96C97.7261 116.993 97.4468 115.344 97.4468 112.67C97.4468 91.8179 114.351 74.9138 135.203 74.9138C156.055 74.9138 172.959 91.8179 172.959 112.67Z");
     			attr_dev(path15, "fill", "white");
     			attr_dev(path15, "stroke", "#4C82F8");
     			attr_dev(path15, "stroke-width", "8");
-    			add_location(path15, file$7, 69, 12, 20492);
+    			add_location(path15, file$9, 69, 12, 20492);
     			attr_dev(circle29, "cx", "135.203");
     			attr_dev(circle29, "cy", "50.6157");
     			attr_dev(circle29, "r", "20.9377");
     			attr_dev(circle29, "fill", "white");
     			attr_dev(circle29, "stroke", "#4C82F8");
     			attr_dev(circle29, "stroke-width", "8");
-    			add_location(circle29, file$7, 70, 12, 21613);
+    			add_location(circle29, file$9, 70, 12, 21613);
     			attr_dev(path16, "d", "M101.626 112.67C101.626 115.344 101.346 116.993 101.005 117.96C100.843 118.42 100.693 118.649 100.615 118.747C100.577 118.795 100.553 118.816 100.544 118.824C100.535 118.831 100.529 118.834 100.522 118.838C100.505 118.847 100.164 119.01 99.0879 118.849C98.0186 118.688 96.63 118.271 94.8212 117.581C93.3187 117.008 91.6962 116.314 89.876 115.537C89.5194 115.385 89.1551 115.229 88.7827 115.07C86.5497 114.12 84.0896 113.091 81.4798 112.15C76.2703 110.271 70.2853 108.67 63.8694 108.67C57.4534 108.67 51.4684 110.271 46.2589 112.15C43.6491 113.091 41.189 114.12 38.956 115.07C38.5836 115.229 38.2193 115.385 37.8627 115.537C36.0425 116.314 34.42 117.008 32.9175 117.581C31.1087 118.271 29.7201 118.688 28.6509 118.849C27.5743 119.01 27.234 118.847 27.2164 118.838C27.2092 118.834 27.2037 118.831 27.1952 118.824C27.1862 118.816 27.1615 118.795 27.1234 118.747C27.0456 118.649 26.8957 118.42 26.7336 117.96C26.3924 116.993 26.1132 115.344 26.1132 112.67C26.1132 91.8179 43.0172 74.9138 63.8694 74.9138C84.7215 74.9138 101.626 91.8179 101.626 112.67Z");
     			attr_dev(path16, "fill", "white");
     			attr_dev(path16, "stroke", "#4C82F8");
     			attr_dev(path16, "stroke-width", "8");
-    			add_location(path16, file$7, 71, 12, 21720);
+    			add_location(path16, file$9, 71, 12, 21720);
     			attr_dev(circle30, "cx", "63.8694");
     			attr_dev(circle30, "cy", "50.6157");
     			attr_dev(circle30, "r", "20.9377");
     			attr_dev(circle30, "fill", "white");
     			attr_dev(circle30, "stroke", "#4C82F8");
     			attr_dev(circle30, "stroke-width", "8");
-    			add_location(circle30, file$7, 72, 12, 22839);
+    			add_location(circle30, file$9, 72, 12, 22839);
     			attr_dev(circle31, "cx", "98.9563");
     			attr_dev(circle31, "cy", "63.0845");
     			attr_dev(circle31, "r", "30.4472");
     			attr_dev(circle31, "fill", "white");
-    			add_location(circle31, file$7, 73, 12, 22946);
+    			add_location(circle31, file$9, 73, 12, 22946);
     			attr_dev(path17, "d", "M137.002 125.429C137.002 128.103 136.723 129.752 136.382 130.719C136.22 131.178 136.07 131.408 135.992 131.506C135.954 131.553 135.929 131.575 135.92 131.583C135.912 131.59 135.906 131.593 135.899 131.597C135.882 131.606 135.541 131.769 134.465 131.608C133.395 131.447 132.007 131.03 130.198 130.34C128.696 129.766 127.073 129.073 125.253 128.296C124.896 128.143 124.532 127.988 124.16 127.829C121.927 126.878 119.466 125.85 116.857 124.909C111.647 123.03 105.662 121.429 99.2462 121.429C92.8302 121.429 86.8452 123.03 81.6358 124.909C79.0259 125.85 76.5658 126.878 74.3329 127.829C73.9604 127.988 73.5962 128.143 73.2395 128.296C71.4193 129.073 69.7968 129.766 68.2944 130.34C66.4855 131.03 65.0969 131.447 64.0277 131.608C62.9512 131.769 62.6108 131.606 62.5932 131.597C62.5861 131.593 62.5805 131.59 62.572 131.583C62.563 131.575 62.5383 131.553 62.5003 131.506C62.4224 131.408 62.2725 131.178 62.1104 130.719C61.7693 129.752 61.49 128.103 61.49 125.429C61.49 104.577 78.394 87.6727 99.2462 87.6727C120.098 87.6727 137.002 104.577 137.002 125.429Z");
     			attr_dev(path17, "fill", "white");
     			attr_dev(path17, "stroke", "#4C82F8");
     			attr_dev(path17, "stroke-width", "8");
-    			add_location(path17, file$7, 74, 12, 23019);
+    			add_location(path17, file$9, 74, 12, 23019);
     			attr_dev(circle32, "cx", "99.2462");
     			attr_dev(circle32, "cy", "63.3745");
     			attr_dev(circle32, "r", "20.9377");
     			attr_dev(circle32, "fill", "white");
     			attr_dev(circle32, "stroke", "#4C82F8");
     			attr_dev(circle32, "stroke-width", "8");
-    			add_location(circle32, file$7, 75, 12, 24141);
+    			add_location(circle32, file$9, 75, 12, 24141);
     			attr_dev(svg2, "class", "attendee-svg svelte-1113jpr");
     			attr_dev(svg2, "width", "199");
     			attr_dev(svg2, "height", "158");
     			attr_dev(svg2, "viewBox", "0 0 199 158");
     			attr_dev(svg2, "fill", "none");
     			attr_dev(svg2, "xmlns", "http://www.w3.org/2000/svg");
-    			add_location(svg2, file$7, 58, 8, 16371);
+    			add_location(svg2, file$9, 58, 8, 16371);
     			attr_dev(p1, "class", "default-choice choice svelte-1113jpr");
-    			add_location(p1, file$7, 79, 8, 24261);
+    			add_location(p1, file$9, 79, 8, 24261);
     			attr_dev(p2, "class", "planner-choice choice svelte-1113jpr");
-    			add_location(p2, file$7, 80, 8, 24320);
+    			add_location(p2, file$9, 80, 8, 24320);
     			attr_dev(p3, "class", "attendee-choice choice svelte-1113jpr");
-    			add_location(p3, file$7, 81, 8, 24395);
+    			add_location(p3, file$9, 81, 8, 24395);
     			attr_dev(div2, "class", "content inline svelte-1113jpr");
-    			add_location(div2, file$7, 6, 4, 240);
+    			add_location(div2, file$9, 6, 4, 240);
     			attr_dev(div3, "class", "container load-animation svelte-1113jpr");
-    			add_location(div3, file$7, 4, 0, 168);
+    			add_location(div3, file$9, 4, 0, 168);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -44545,7 +44550,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$8.name,
+    		id: create_fragment$a.name,
     		type: "component",
     		source: "",
     		ctx
@@ -44554,7 +44559,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$8($$self, $$props, $$invalidate) {
+    function instance$a($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Role", slots, []);
 
@@ -44585,14 +44590,887 @@ var app = (function () {
     class Role extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {});
+    		init(this, options, instance$a, create_fragment$a, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Role",
     			options,
+    			id: create_fragment$a.name
+    		});
+    	}
+    }
+
+    function calendarize (target, offset) {
+    	var i=0, j=0, week, out=[], date = new Date(target || new Date);
+    	var year = date.getFullYear(), month = date.getMonth();
+
+    	// day index (of week) for 1st of month
+    	var first = new Date(year, month, 1 - (offset | 0)).getDay();
+
+    	// how many days there are in this month
+    	var days = new Date(year, month+1, 0).getDate();
+
+    	while (i < days) {
+    		for (j=0, week=Array(7); j < 7;) {
+    			while (j < first) week[j++] = 0;
+    			week[j++] = ++i > days ? 0 : i;
+    			first = 0;
+    		}
+    		out.push(week);
+    	}
+
+    	return out;
+    }
+
+    /* src/Arrow.svelte generated by Svelte v3.38.2 */
+
+    const file$8 = "src/Arrow.svelte";
+
+    function create_fragment$9(ctx) {
+    	let svg;
+    	let path0;
+    	let path1;
+    	let path2;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			svg = svg_element("svg");
+    			path0 = svg_element("path");
+    			path1 = svg_element("path");
+    			path2 = svg_element("path");
+    			attr_dev(path0, "fill", "#c4d9fd");
+    			attr_dev(path0, "d", "M0 256c0 141.2 114.8 256 256 256V0A256.3 256.3 0 000 256z");
+    			add_location(path0, file$8, 5, 1, 130);
+    			attr_dev(path1, "fill", "#c4d9fd");
+    			attr_dev(path1, "d", "M256 0v512c141.2 0 256-114.8 256-256S397.2 0 256 0z");
+    			add_location(path1, file$8, 6, 1, 216);
+    			attr_dev(path2, "fill", "#5286fa");
+    			attr_dev(path2, "d", "M226 115.4a23.3 23.3 0 00-33 33L300.7 256 193 363.7a23.3 23.3 0 1033 32.9l124-124.1a23.3 23.3 0 000-33l-124-124z");
+    			add_location(path2, file$8, 7, 1, 296);
+    			attr_dev(svg, "xmlns", "http://www.w3.org/2000/svg");
+    			attr_dev(svg, "viewBox", "0 0 512 512");
+    			attr_dev(svg, "class", "svelte-18ya01c");
+    			toggle_class(svg, "left", /*left*/ ctx[0]);
+    			add_location(svg, file$8, 4, 0, 46);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, svg, anchor);
+    			append_dev(svg, path0);
+    			append_dev(svg, path1);
+    			append_dev(svg, path2);
+
+    			if (!mounted) {
+    				dispose = listen_dev(svg, "click", /*click_handler*/ ctx[1], false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*left*/ 1) {
+    				toggle_class(svg, "left", /*left*/ ctx[0]);
+    			}
+    		},
+    		i: noop$1,
+    		o: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(svg);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$9.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$9($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Arrow", slots, []);
+    	let { left = false } = $$props;
+    	const writable_props = ["left"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Arrow> was created with unknown prop '${key}'`);
+    	});
+
+    	function click_handler(event) {
+    		bubble($$self, event);
+    	}
+
+    	$$self.$$set = $$props => {
+    		if ("left" in $$props) $$invalidate(0, left = $$props.left);
+    	};
+
+    	$$self.$capture_state = () => ({ left });
+
+    	$$self.$inject_state = $$props => {
+    		if ("left" in $$props) $$invalidate(0, left = $$props.left);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [left, click_handler];
+    }
+
+    class Arrow extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$9, create_fragment$9, safe_not_equal, { left: 0 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Arrow",
+    			options,
+    			id: create_fragment$9.name
+    		});
+    	}
+
+    	get left() {
+    		throw new Error("<Arrow>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set left(value) {
+    		throw new Error("<Arrow>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src/Calendar.svelte generated by Svelte v3.38.2 */
+    const file$7 = "src/Calendar.svelte";
+
+    function get_each_context$5(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[18] = list[i];
+    	child_ctx[20] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[21] = list[i];
+    	child_ctx[23] = i;
+    	return child_ctx;
+    }
+
+    // (55:1) {#each labels as txt, idx (txt)}
+    function create_each_block_2(key_1, ctx) {
+    	let span;
+    	let t_value = /*labels*/ ctx[3][(/*idx*/ ctx[23] + /*offset*/ ctx[2]) % 7] + "";
+    	let t;
+
+    	const block = {
+    		key: key_1,
+    		first: null,
+    		c: function create() {
+    			span = element("span");
+    			t = text(t_value);
+    			attr_dev(span, "class", "label svelte-eg2bz8");
+    			add_location(span, file$7, 55, 2, 1351);
+    			this.first = span;
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*labels, offset*/ 12 && t_value !== (t_value = /*labels*/ ctx[3][(/*idx*/ ctx[23] + /*offset*/ ctx[2]) % 7] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_2.name,
+    		type: "each",
+    		source: "(55:1) {#each labels as txt, idx (txt)}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (60:2) {#if current[idxw]}
+    function create_if_block$3(ctx) {
+    	let each_blocks = [];
+    	let each_1_lookup = new Map();
+    	let each_1_anchor;
+    	let each_value_1 = { length: 7 };
+    	validate_each_argument(each_value_1);
+    	const get_key = ctx => /*idxd*/ ctx[20];
+    	validate_each_keys(ctx, each_value_1, get_each_context_1, get_key);
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		let child_ctx = get_each_context_1(ctx, each_value_1, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block_1(key, child_ctx));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*isToday, current, prev, next*/ 1248) {
+    				each_value_1 = { length: 7 };
+    				validate_each_argument(each_value_1);
+    				validate_each_keys(ctx, each_value_1, get_each_context_1, get_key);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value_1, each_1_lookup, each_1_anchor.parentNode, destroy_block, create_each_block_1, each_1_anchor, get_each_context_1);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d(detaching);
+    			}
+
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$3.name,
+    		type: "if",
+    		source: "(60:2) {#if current[idxw]}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (68:4) {:else}
+    function create_else_block$2(ctx) {
+    	let span;
+    	let t_value = /*next*/ ctx[7][0][/*idxd*/ ctx[20]] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t = text(t_value);
+    			attr_dev(span, "class", "date other svelte-eg2bz8");
+    			add_location(span, file$7, 68, 5, 1779);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*next*/ 128 && t_value !== (t_value = /*next*/ ctx[7][0][/*idxd*/ ctx[20]] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$2.name,
+    		type: "else",
+    		source: "(68:4) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (66:25) 
+    function create_if_block_2(ctx) {
+    	let span;
+    	let t_value = /*prev*/ ctx[5][/*prev*/ ctx[5].length - 1][/*idxd*/ ctx[20]] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t = text(t_value);
+    			attr_dev(span, "class", "date other svelte-eg2bz8");
+    			add_location(span, file$7, 66, 5, 1698);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*prev*/ 32 && t_value !== (t_value = /*prev*/ ctx[5][/*prev*/ ctx[5].length - 1][/*idxd*/ ctx[20]] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2.name,
+    		type: "if",
+    		source: "(66:25) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (62:4) {#if current[idxw][idxd] != 0}
+    function create_if_block_1$1(ctx) {
+    	let span;
+    	let t0_value = /*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]] + "";
+    	let t0;
+    	let t1;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr_dev(span, "class", "date svelte-eg2bz8");
+    			toggle_class(span, "today", /*isToday*/ ctx[10](/*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]]));
+    			add_location(span, file$7, 62, 5, 1561);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t0);
+    			append_dev(span, t1);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*current*/ 64 && t0_value !== (t0_value = /*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]] + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*isToday, current*/ 1088) {
+    				toggle_class(span, "today", /*isToday*/ ctx[10](/*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]]));
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(62:4) {#if current[idxw][idxd] != 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (61:3) {#each { length:7 } as d,idxd (idxd)}
+    function create_each_block_1(key_1, ctx) {
+    	let first;
+    	let if_block_anchor;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]] != 0) return create_if_block_1$1;
+    		if (/*idxw*/ ctx[17] < 1) return create_if_block_2;
+    		return create_else_block$2;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		key: key_1,
+    		first: null,
+    		c: function create() {
+    			first = empty();
+    			if_block.c();
+    			if_block_anchor = empty();
+    			this.first = first;
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, first, anchor);
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(first);
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(61:3) {#each { length:7 } as d,idxd (idxd)}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (59:1) {#each { length:6 } as w,idxw (idxw)}
+    function create_each_block$5(key_1, ctx) {
+    	let first;
+    	let if_block_anchor;
+    	let if_block = /*current*/ ctx[6][/*idxw*/ ctx[17]] && create_if_block$3(ctx);
+
+    	const block = {
+    		key: key_1,
+    		first: null,
+    		c: function create() {
+    			first = empty();
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    			this.first = first;
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, first, anchor);
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (/*current*/ ctx[6][/*idxw*/ ctx[17]]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$3(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(first);
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$5.name,
+    		type: "each",
+    		source: "(59:1) {#each { length:6 } as w,idxw (idxw)}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$8(ctx) {
+    	let header;
+    	let arrow0;
+    	let t0;
+    	let h4;
+    	let t1_value = /*months*/ ctx[4][/*month*/ ctx[1]] + "";
+    	let t1;
+    	let t2;
+    	let t3;
+    	let t4;
+    	let arrow1;
+    	let t5;
+    	let div;
+    	let each_blocks_1 = [];
+    	let each0_lookup = new Map();
+    	let t6;
+    	let each_blocks = [];
+    	let each1_lookup = new Map();
+    	let current;
+    	arrow0 = new Arrow({ props: { left: true }, $$inline: true });
+    	arrow0.$on("click", /*toPrev*/ ctx[8]);
+    	arrow1 = new Arrow({ $$inline: true });
+    	arrow1.$on("click", /*toNext*/ ctx[9]);
+    	let each_value_2 = /*labels*/ ctx[3];
+    	validate_each_argument(each_value_2);
+    	const get_key = ctx => /*txt*/ ctx[21];
+    	validate_each_keys(ctx, each_value_2, get_each_context_2, get_key);
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		let child_ctx = get_each_context_2(ctx, each_value_2, i);
+    		let key = get_key(child_ctx);
+    		each0_lookup.set(key, each_blocks_1[i] = create_each_block_2(key, child_ctx));
+    	}
+
+    	let each_value = { length: 6 };
+    	validate_each_argument(each_value);
+    	const get_key_1 = ctx => /*idxw*/ ctx[17];
+    	validate_each_keys(ctx, each_value, get_each_context$5, get_key_1);
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$5(ctx, each_value, i);
+    		let key = get_key_1(child_ctx);
+    		each1_lookup.set(key, each_blocks[i] = create_each_block$5(key, child_ctx));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			header = element("header");
+    			create_component(arrow0.$$.fragment);
+    			t0 = space();
+    			h4 = element("h4");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			t3 = text(/*year*/ ctx[0]);
+    			t4 = space();
+    			create_component(arrow1.$$.fragment);
+    			t5 = space();
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].c();
+    			}
+
+    			t6 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(h4, "class", "svelte-eg2bz8");
+    			add_location(h4, file$7, 49, 1, 1223);
+    			attr_dev(header, "class", "svelte-eg2bz8");
+    			add_location(header, file$7, 47, 0, 1179);
+    			attr_dev(div, "class", "month svelte-eg2bz8");
+    			add_location(div, file$7, 53, 0, 1295);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, header, anchor);
+    			mount_component(arrow0, header, null);
+    			append_dev(header, t0);
+    			append_dev(header, h4);
+    			append_dev(h4, t1);
+    			append_dev(h4, t2);
+    			append_dev(h4, t3);
+    			append_dev(header, t4);
+    			mount_component(arrow1, header, null);
+    			insert_dev(target, t5, anchor);
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].m(div, null);
+    			}
+
+    			append_dev(div, t6);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if ((!current || dirty & /*months, month*/ 18) && t1_value !== (t1_value = /*months*/ ctx[4][/*month*/ ctx[1]] + "")) set_data_dev(t1, t1_value);
+    			if (!current || dirty & /*year*/ 1) set_data_dev(t3, /*year*/ ctx[0]);
+
+    			if (dirty & /*labels, offset*/ 12) {
+    				each_value_2 = /*labels*/ ctx[3];
+    				validate_each_argument(each_value_2);
+    				validate_each_keys(ctx, each_value_2, get_each_context_2, get_key);
+    				each_blocks_1 = update_keyed_each(each_blocks_1, dirty, get_key, 1, ctx, each_value_2, each0_lookup, div, destroy_block, create_each_block_2, t6, get_each_context_2);
+    			}
+
+    			if (dirty & /*isToday, current, prev, next*/ 1248) {
+    				each_value = { length: 6 };
+    				validate_each_argument(each_value);
+    				validate_each_keys(ctx, each_value, get_each_context$5, get_key_1);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key_1, 1, ctx, each_value, each1_lookup, div, destroy_block, create_each_block$5, null, get_each_context$5);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(arrow0.$$.fragment, local);
+    			transition_in(arrow1.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(arrow0.$$.fragment, local);
+    			transition_out(arrow1.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(header);
+    			destroy_component(arrow0);
+    			destroy_component(arrow1);
+    			if (detaching) detach_dev(t5);
+    			if (detaching) detach_dev(div);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].d();
+    			}
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d();
+    			}
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$8.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$8($$self, $$props, $$invalidate) {
+    	let today_month;
+    	let today_year;
+    	let today_day;
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Calendar", slots, []);
+    	let { year = 2019 } = $$props;
+    	let { month = 0 } = $$props; // Jan
+    	let { offset = 0 } = $$props; // Sun
+    	let { today = null } = $$props; // Date
+    	let { labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } = $$props;
+
+    	let { months = [
+    		"Jan",
+    		"Feb",
+    		"Mar",
+    		"Apr",
+    		"May",
+    		"Jun",
+    		"July",
+    		"Aug",
+    		"Sep",
+    		"Oct",
+    		"Nov",
+    		"Dec"
+    	] } = $$props;
+
+    	let prev = calendarize(new Date(year, month - 1), offset);
+    	let current = calendarize(new Date(year, month), offset);
+    	let next = calendarize(new Date(year, month + 1), offset);
+
+    	function toPrev() {
+    		$$invalidate(6, [current, next] = [prev, current], current, $$invalidate(7, next));
+
+    		if ($$invalidate(1, --month) < 0) {
+    			$$invalidate(1, month = 11);
+    			$$invalidate(0, year--, year);
+    		}
+
+    		$$invalidate(5, prev = calendarize(new Date(year, month - 1), offset));
+    	}
+
+    	function toNext() {
+    		$$invalidate(5, [prev, current] = [current, next], prev, $$invalidate(6, current));
+
+    		if ($$invalidate(1, ++month) > 11) {
+    			$$invalidate(1, month = 0);
+    			$$invalidate(0, year++, year);
+    		}
+
+    		$$invalidate(7, next = calendarize(new Date(year, month + 1), offset));
+    	}
+
+    	function isToday(day) {
+    		return today && today_year === year && today_month === month && today_day === day;
+    	}
+
+    	const writable_props = ["year", "month", "offset", "today", "labels", "months"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Calendar> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$$set = $$props => {
+    		if ("year" in $$props) $$invalidate(0, year = $$props.year);
+    		if ("month" in $$props) $$invalidate(1, month = $$props.month);
+    		if ("offset" in $$props) $$invalidate(2, offset = $$props.offset);
+    		if ("today" in $$props) $$invalidate(11, today = $$props.today);
+    		if ("labels" in $$props) $$invalidate(3, labels = $$props.labels);
+    		if ("months" in $$props) $$invalidate(4, months = $$props.months);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		calendarize,
+    		Arrow,
+    		year,
+    		month,
+    		offset,
+    		today,
+    		labels,
+    		months,
+    		prev,
+    		current,
+    		next,
+    		toPrev,
+    		toNext,
+    		isToday,
+    		today_month,
+    		today_year,
+    		today_day
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("year" in $$props) $$invalidate(0, year = $$props.year);
+    		if ("month" in $$props) $$invalidate(1, month = $$props.month);
+    		if ("offset" in $$props) $$invalidate(2, offset = $$props.offset);
+    		if ("today" in $$props) $$invalidate(11, today = $$props.today);
+    		if ("labels" in $$props) $$invalidate(3, labels = $$props.labels);
+    		if ("months" in $$props) $$invalidate(4, months = $$props.months);
+    		if ("prev" in $$props) $$invalidate(5, prev = $$props.prev);
+    		if ("current" in $$props) $$invalidate(6, current = $$props.current);
+    		if ("next" in $$props) $$invalidate(7, next = $$props.next);
+    		if ("today_month" in $$props) today_month = $$props.today_month;
+    		if ("today_year" in $$props) today_year = $$props.today_year;
+    		if ("today_day" in $$props) today_day = $$props.today_day;
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*today*/ 2048) {
+    			today_month = today && today.getMonth();
+    		}
+
+    		if ($$self.$$.dirty & /*today*/ 2048) {
+    			today_year = today && today.getFullYear();
+    		}
+
+    		if ($$self.$$.dirty & /*today*/ 2048) {
+    			today_day = today && today.getDate();
+    		}
+    	};
+
+    	return [
+    		year,
+    		month,
+    		offset,
+    		labels,
+    		months,
+    		prev,
+    		current,
+    		next,
+    		toPrev,
+    		toNext,
+    		isToday,
+    		today
+    	];
+    }
+
+    class Calendar extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {
+    			year: 0,
+    			month: 1,
+    			offset: 2,
+    			today: 11,
+    			labels: 3,
+    			months: 4
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Calendar",
+    			options,
     			id: create_fragment$8.name
     		});
+    	}
+
+    	get year() {
+    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set year(value) {
+    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get month() {
+    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set month(value) {
+    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get offset() {
+    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set offset(value) {
+    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get today() {
+    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set today(value) {
+    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get labels() {
+    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set labels(value) {
+    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get months() {
+    		throw new Error("<Calendar>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set months(value) {
+    		throw new Error("<Calendar>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
@@ -44620,9 +45498,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "public svelte-16avebn");
+    			attr_dev(div, "class", "public svelte-13e1zdw");
     			add_location(div, file$6, 39, 6, 1086);
-    			attr_dev(td, "class", "svelte-16avebn");
+    			attr_dev(td, "class", "svelte-13e1zdw");
     			add_location(td, file$6, 38, 2, 1075);
     		},
     		m: function mount(target, anchor) {
@@ -44661,9 +45539,9 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "private svelte-16avebn");
+    			attr_dev(div, "class", "private svelte-13e1zdw");
     			add_location(div, file$6, 33, 6, 980);
-    			attr_dev(td, "class", "svelte-16avebn");
+    			attr_dev(td, "class", "svelte-13e1zdw");
     			add_location(td, file$6, 32, 6, 969);
     		},
     		m: function mount(target, anchor) {
@@ -44727,7 +45605,7 @@ var app = (function () {
     	let if_block = current_block_type(ctx);
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[14](/*index*/ ctx[24]);
+    		return /*click_handler_1*/ ctx[15](/*index*/ ctx[24]);
     	}
 
     	const block = {
@@ -44751,22 +45629,22 @@ var app = (function () {
     			button = element("button");
     			img = element("img");
     			t9 = space();
-    			attr_dev(td0, "class", "left-rounded-corners svelte-16avebn");
+    			attr_dev(td0, "class", "left-rounded-corners svelte-13e1zdw");
     			add_location(td0, file$6, 26, 12, 757);
-    			attr_dev(td1, "class", "svelte-16avebn");
+    			attr_dev(td1, "class", "svelte-13e1zdw");
     			add_location(td1, file$6, 27, 12, 821);
-    			attr_dev(td2, "class", "svelte-16avebn");
+    			attr_dev(td2, "class", "svelte-13e1zdw");
     			add_location(td2, file$6, 28, 12, 860);
-    			attr_dev(td3, "class", "svelte-16avebn");
+    			attr_dev(td3, "class", "svelte-13e1zdw");
     			add_location(td3, file$6, 29, 12, 895);
-    			attr_dev(img, "class", "delete-image svelte-16avebn");
+    			attr_dev(img, "class", "delete-image svelte-13e1zdw");
     			if (img.src !== (img_src_value = "delete.svg")) attr_dev(img, "src", img_src_value);
     			add_location(img, file$6, 46, 6, 1290);
-    			attr_dev(button, "class", "delete svelte-16avebn");
+    			attr_dev(button, "class", "delete svelte-13e1zdw");
     			add_location(button, file$6, 45, 5, 1217);
-    			attr_dev(td4, "class", "right-rounded-corners svelte-16avebn");
+    			attr_dev(td4, "class", "right-rounded-corners svelte-13e1zdw");
     			add_location(td4, file$6, 44, 1, 1177);
-    			attr_dev(tr, "class", "svelte-16avebn");
+    			attr_dev(tr, "class", "svelte-13e1zdw");
     			add_location(tr, file$6, 25, 1, 740);
     		},
     		m: function mount(target, anchor) {
@@ -44833,7 +45711,7 @@ var app = (function () {
     	return block;
     }
 
-    // (60:12) {:else}
+    // (68:12) {:else}
     function create_else_block$1(ctx) {
     	let img;
     	let img_src_value;
@@ -44846,15 +45724,15 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
     			attr_dev(img, "title", "Change Profile Picture");
-    			attr_dev(img, "class", "svelte-16avebn");
-    			add_location(img, file$6, 60, 16, 1764);
+    			attr_dev(img, "class", "svelte-13e1zdw");
+    			add_location(img, file$6, 68, 16, 1924);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(img, "click", /*click_handler_3*/ ctx[16], false, false, false),
+    					listen_dev(img, "click", /*click_handler_3*/ ctx[17], false, false, false),
     					listen_dev(img, "mouseover", profilePictureOnHover, false, false, false),
     					listen_dev(img, "mouseleave", profilePictureOffHover, false, false, false)
     				];
@@ -44874,14 +45752,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(60:12) {:else}",
+    		source: "(68:12) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (58:12) {#if userProfilePicture}
+    // (66:12) {#if userProfilePicture}
     function create_if_block$2(ctx) {
     	let img;
     	let img_src_value;
@@ -44894,15 +45772,15 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
     			attr_dev(img, "title", "Change Profile Picture");
-    			attr_dev(img, "class", "svelte-16avebn");
-    			add_location(img, file$6, 58, 16, 1531);
+    			attr_dev(img, "class", "svelte-13e1zdw");
+    			add_location(img, file$6, 66, 16, 1691);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(img, "click", /*click_handler_2*/ ctx[15], false, false, false),
+    					listen_dev(img, "click", /*click_handler_2*/ ctx[16], false, false, false),
     					listen_dev(img, "mouseover", profilePictureOnHover, false, false, false),
     					listen_dev(img, "mouseleave", profilePictureOffHover, false, false, false)
     				];
@@ -44926,7 +45804,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(58:12) {#if userProfilePicture}",
+    		source: "(66:12) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -44938,9 +45816,9 @@ var app = (function () {
     	let t0;
     	let link1;
     	let t1;
+    	let div10;
+    	let div9;
     	let div8;
-    	let div7;
-    	let div6;
     	let div0;
     	let h10;
     	let t3;
@@ -44968,37 +45846,44 @@ var app = (function () {
     	let th5;
     	let t20;
     	let t21;
-    	let div5;
+    	let div2;
     	let div1;
+    	let calendar;
     	let t22;
+    	let br;
+    	let t23;
+    	let div7;
+    	let div3;
+    	let t24;
     	let input;
     	let input_accept_value;
-    	let t23;
-    	let h11;
-    	let t24;
     	let t25;
-    	let h3;
+    	let h11;
     	let t26;
     	let t27;
-    	let hr;
+    	let h3;
     	let t28;
-    	let div4;
-    	let div2;
-    	let p0;
+    	let t29;
+    	let hr;
     	let t30;
-    	let p1;
+    	let div6;
+    	let div4;
+    	let p0;
     	let t32;
-    	let p2;
+    	let p1;
     	let t34;
-    	let div3;
-    	let p3;
-    	let t35;
+    	let p2;
     	let t36;
-    	let p4;
+    	let div5;
+    	let p3;
     	let t37;
     	let t38;
-    	let p5;
+    	let p4;
     	let t39;
+    	let t40;
+    	let p5;
+    	let t41;
+    	let current;
     	let mounted;
     	let dispose;
     	let each_value = /*userConferences*/ ctx[0];
@@ -45008,6 +45893,11 @@ var app = (function () {
     	for (let i = 0; i < each_value.length; i += 1) {
     		each_blocks[i] = create_each_block$4(get_each_context$4(ctx, each_value, i));
     	}
+
+    	calendar = new Calendar({
+    			props: { today: /*today*/ ctx[10], year: 2021 },
+    			$$inline: true
+    		});
 
     	function select_block_type_1(ctx, dirty) {
     		if (/*userProfilePicture*/ ctx[1]) return create_if_block$2;
@@ -45023,9 +45913,9 @@ var app = (function () {
     			t0 = space();
     			link1 = element("link");
     			t1 = space();
+    			div10 = element("div");
+    			div9 = element("div");
     			div8 = element("div");
-    			div7 = element("div");
-    			div6 = element("div");
     			div0 = element("div");
     			h10 = element("h1");
     			h10.textContent = "Conferences";
@@ -45067,110 +45957,121 @@ var app = (function () {
     			}
 
     			t21 = space();
-    			div5 = element("div");
-    			div1 = element("div");
-    			if_block.c();
-    			t22 = space();
-    			input = element("input");
-    			t23 = space();
-    			h11 = element("h1");
-    			t24 = text(/*name*/ ctx[2]);
-    			t25 = space();
-    			h3 = element("h3");
-    			t26 = text(/*position*/ ctx[3]);
-    			t27 = space();
-    			hr = element("hr");
-    			t28 = space();
-    			div4 = element("div");
     			div2 = element("div");
+    			div1 = element("div");
+    			create_component(calendar.$$.fragment);
+    			t22 = space();
+    			br = element("br");
+    			t23 = space();
+    			div7 = element("div");
+    			div3 = element("div");
+    			if_block.c();
+    			t24 = space();
+    			input = element("input");
+    			t25 = space();
+    			h11 = element("h1");
+    			t26 = text(/*name*/ ctx[2]);
+    			t27 = space();
+    			h3 = element("h3");
+    			t28 = text(/*position*/ ctx[3]);
+    			t29 = space();
+    			hr = element("hr");
+    			t30 = space();
+    			div6 = element("div");
+    			div4 = element("div");
     			p0 = element("p");
     			p0.textContent = "Company";
-    			t30 = space();
+    			t32 = space();
     			p1 = element("p");
     			p1.textContent = "Joining Date";
-    			t32 = space();
+    			t34 = space();
     			p2 = element("p");
     			p2.textContent = "Conferences";
-    			t34 = space();
-    			div3 = element("div");
-    			p3 = element("p");
-    			t35 = text(/*company*/ ctx[4]);
     			t36 = space();
-    			p4 = element("p");
-    			t37 = text(/*joiningDate*/ ctx[5]);
+    			div5 = element("div");
+    			p3 = element("p");
+    			t37 = text(/*company*/ ctx[4]);
     			t38 = space();
+    			p4 = element("p");
+    			t39 = text(/*joiningDate*/ ctx[5]);
+    			t40 = space();
     			p5 = element("p");
-    			t39 = text(/*activeConferences*/ ctx[7]);
+    			t41 = text(/*activeConferences*/ ctx[7]);
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
     			add_location(link0, file$6, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-16avebn");
+    			attr_dev(h10, "class", "pageTitle svelte-13e1zdw");
     			add_location(h10, file$6, 8, 4, 301);
-    			attr_dev(button0, "class", "add-event svelte-16avebn");
+    			attr_dev(button0, "class", "add-event svelte-13e1zdw");
     			add_location(button0, file$6, 10, 12, 363);
-    			attr_dev(li0, "class", "svelte-16avebn");
+    			attr_dev(li0, "class", "svelte-13e1zdw");
     			add_location(li0, file$6, 10, 8, 359);
-    			attr_dev(button1, "class", "logout svelte-16avebn");
+    			attr_dev(button1, "class", "logout svelte-13e1zdw");
     			add_location(button1, file$6, 11, 12, 448);
-    			attr_dev(li1, "class", "svelte-16avebn");
+    			attr_dev(li1, "class", "svelte-13e1zdw");
     			add_location(li1, file$6, 11, 8, 444);
-    			attr_dev(ul, "class", "svelte-16avebn");
+    			attr_dev(ul, "class", "svelte-13e1zdw");
     			add_location(ul, file$6, 9, 4, 346);
-    			attr_dev(h2, "class", "svelte-16avebn");
+    			attr_dev(h2, "class", "svelte-13e1zdw");
     			add_location(h2, file$6, 13, 4, 532);
-    			attr_dev(th0, "class", "svelte-16avebn");
+    			attr_dev(th0, "class", "svelte-13e1zdw");
     			add_location(th0, file$6, 16, 2, 581);
-    			attr_dev(th1, "class", "svelte-16avebn");
+    			attr_dev(th1, "class", "svelte-13e1zdw");
     			add_location(th1, file$6, 17, 2, 599);
-    			attr_dev(th2, "class", "svelte-16avebn");
+    			attr_dev(th2, "class", "svelte-13e1zdw");
     			add_location(th2, file$6, 18, 2, 621);
-    			attr_dev(th3, "class", "svelte-16avebn");
+    			attr_dev(th3, "class", "svelte-13e1zdw");
     			add_location(th3, file$6, 19, 2, 639);
-    			attr_dev(th4, "class", "svelte-16avebn");
+    			attr_dev(th4, "class", "svelte-13e1zdw");
     			add_location(th4, file$6, 20, 2, 657);
-    			attr_dev(th5, "class", "svelte-16avebn");
+    			attr_dev(th5, "class", "svelte-13e1zdw");
     			add_location(th5, file$6, 21, 2, 677);
-    			attr_dev(tr, "class", "svelte-16avebn");
+    			attr_dev(tr, "class", "svelte-13e1zdw");
     			add_location(tr, file$6, 15, 5, 574);
-    			attr_dev(table, "class", "svelte-16avebn");
+    			attr_dev(table, "class", "svelte-13e1zdw");
     			add_location(table, file$6, 14, 4, 561);
-    			attr_dev(div0, "class", "left-panel svelte-16avebn");
+    			attr_dev(div0, "class", "left-panel svelte-13e1zdw");
     			add_location(div0, file$6, 7, 4, 272);
+    			attr_dev(div1, "class", "calendar-container svelte-13e1zdw");
+    			add_location(div1, file$6, 55, 8, 1445);
+    			attr_dev(div2, "class", "right-panel svelte-13e1zdw");
+    			add_location(div2, file$6, 54, 4, 1411);
+    			add_location(br, file$6, 59, 4, 1552);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
-    			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[17] + "pg, .jpeg, .png");
-    			add_location(input, file$6, 62, 12, 1994);
-    			attr_dev(div1, "class", "profile-container svelte-16avebn");
-    			add_location(div1, file$6, 56, 8, 1446);
-    			attr_dev(h11, "class", "svelte-16avebn");
-    			add_location(h11, file$6, 64, 8, 2178);
-    			attr_dev(h3, "class", "svelte-16avebn");
-    			add_location(h3, file$6, 65, 8, 2204);
-    			attr_dev(hr, "class", "svelte-16avebn");
-    			add_location(hr, file$6, 66, 8, 2234);
-    			add_location(p0, file$6, 69, 16, 2330);
-    			add_location(p1, file$6, 70, 16, 2363);
-    			add_location(p2, file$6, 71, 16, 2401);
-    			attr_dev(div2, "class", "info-titles svelte-16avebn");
-    			add_location(div2, file$6, 68, 12, 2288);
-    			add_location(p3, file$6, 74, 16, 2488);
-    			add_location(p4, file$6, 75, 16, 2523);
-    			add_location(p5, file$6, 76, 16, 2562);
-    			attr_dev(div3, "class", "info svelte-16avebn");
-    			add_location(div3, file$6, 73, 12, 2453);
-    			attr_dev(div4, "class", "info-container svelte-16avebn");
-    			add_location(div4, file$6, 67, 8, 2247);
-    			attr_dev(div5, "class", "right-panel svelte-16avebn");
-    			add_location(div5, file$6, 54, 4, 1411);
-    			attr_dev(div6, "class", "panel-container svelte-16avebn");
-    			add_location(div6, file$6, 5, 4, 233);
-    			attr_dev(div7, "class", "load-animation svelte-16avebn");
-    			add_location(div7, file$6, 4, 4, 200);
-    			attr_dev(div8, "class", "background svelte-16avebn");
-    			add_location(div8, file$6, 3, 0, 171);
+    			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[18] + "pg, .jpeg, .png");
+    			add_location(input, file$6, 70, 12, 2154);
+    			attr_dev(div3, "class", "profile-container svelte-13e1zdw");
+    			add_location(div3, file$6, 64, 8, 1606);
+    			attr_dev(h11, "class", "svelte-13e1zdw");
+    			add_location(h11, file$6, 72, 8, 2338);
+    			attr_dev(h3, "class", "svelte-13e1zdw");
+    			add_location(h3, file$6, 73, 8, 2364);
+    			attr_dev(hr, "class", "svelte-13e1zdw");
+    			add_location(hr, file$6, 74, 8, 2394);
+    			add_location(p0, file$6, 77, 16, 2490);
+    			add_location(p1, file$6, 78, 16, 2523);
+    			add_location(p2, file$6, 79, 16, 2561);
+    			attr_dev(div4, "class", "info-titles svelte-13e1zdw");
+    			add_location(div4, file$6, 76, 12, 2448);
+    			add_location(p3, file$6, 82, 16, 2648);
+    			add_location(p4, file$6, 83, 16, 2683);
+    			add_location(p5, file$6, 84, 16, 2722);
+    			attr_dev(div5, "class", "info svelte-13e1zdw");
+    			add_location(div5, file$6, 81, 12, 2613);
+    			attr_dev(div6, "class", "info-container svelte-13e1zdw");
+    			add_location(div6, file$6, 75, 8, 2407);
+    			attr_dev(div7, "class", "right-panel svelte-13e1zdw");
+    			add_location(div7, file$6, 60, 4, 1561);
+    			attr_dev(div8, "class", "panel-container svelte-13e1zdw");
+    			add_location(div8, file$6, 5, 4, 233);
+    			attr_dev(div9, "class", "load-animation svelte-13e1zdw");
+    			add_location(div9, file$6, 4, 4, 200);
+    			attr_dev(div10, "class", "background svelte-13e1zdw");
+    			add_location(div10, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -45180,10 +46081,10 @@ var app = (function () {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, link1, anchor);
     			insert_dev(target, t1, anchor);
-    			insert_dev(target, div8, anchor);
-    			append_dev(div8, div7);
-    			append_dev(div7, div6);
-    			append_dev(div6, div0);
+    			insert_dev(target, div10, anchor);
+    			append_dev(div10, div9);
+    			append_dev(div9, div8);
+    			append_dev(div8, div0);
     			append_dev(div0, h10);
     			append_dev(div0, t3);
     			append_dev(div0, ul);
@@ -45214,52 +46115,59 @@ var app = (function () {
     				each_blocks[i].m(table, null);
     			}
 
-    			append_dev(div6, t21);
-    			append_dev(div6, div5);
-    			append_dev(div5, div1);
-    			if_block.m(div1, null);
-    			append_dev(div1, t22);
-    			append_dev(div1, input);
-    			/*input_binding*/ ctx[19](input);
-    			append_dev(div5, t23);
-    			append_dev(div5, h11);
-    			append_dev(h11, t24);
-    			append_dev(div5, t25);
-    			append_dev(div5, h3);
-    			append_dev(h3, t26);
-    			append_dev(div5, t27);
-    			append_dev(div5, hr);
-    			append_dev(div5, t28);
-    			append_dev(div5, div4);
-    			append_dev(div4, div2);
-    			append_dev(div2, p0);
-    			append_dev(div2, t30);
-    			append_dev(div2, p1);
-    			append_dev(div2, t32);
-    			append_dev(div2, p2);
+    			append_dev(div8, t21);
+    			append_dev(div8, div2);
+    			append_dev(div2, div1);
+    			mount_component(calendar, div1, null);
+    			append_dev(div8, t22);
+    			append_dev(div8, br);
+    			append_dev(div8, t23);
+    			append_dev(div8, div7);
+    			append_dev(div7, div3);
+    			if_block.m(div3, null);
+    			append_dev(div3, t24);
+    			append_dev(div3, input);
+    			/*input_binding*/ ctx[20](input);
+    			append_dev(div7, t25);
+    			append_dev(div7, h11);
+    			append_dev(h11, t26);
+    			append_dev(div7, t27);
+    			append_dev(div7, h3);
+    			append_dev(h3, t28);
+    			append_dev(div7, t29);
+    			append_dev(div7, hr);
+    			append_dev(div7, t30);
+    			append_dev(div7, div6);
+    			append_dev(div6, div4);
+    			append_dev(div4, p0);
+    			append_dev(div4, t32);
+    			append_dev(div4, p1);
     			append_dev(div4, t34);
-    			append_dev(div4, div3);
-    			append_dev(div3, p3);
-    			append_dev(p3, t35);
-    			append_dev(div3, t36);
-    			append_dev(div3, p4);
-    			append_dev(p4, t37);
-    			append_dev(div3, t38);
-    			append_dev(div3, p5);
-    			append_dev(p5, t39);
+    			append_dev(div4, p2);
+    			append_dev(div6, t36);
+    			append_dev(div6, div5);
+    			append_dev(div5, p3);
+    			append_dev(p3, t37);
+    			append_dev(div5, t38);
+    			append_dev(div5, p4);
+    			append_dev(p4, t39);
+    			append_dev(div5, t40);
+    			append_dev(div5, p5);
+    			append_dev(p5, t41);
+    			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*addConf*/ ctx[12], false, false, false),
-    					listen_dev(button1, "click", /*click_handler*/ ctx[13], false, false, false),
-    					listen_dev(input, "change", /*change_handler*/ ctx[18], false, false, false)
+    					listen_dev(button0, "click", /*addConf*/ ctx[13], false, false, false),
+    					listen_dev(button1, "click", /*click_handler*/ ctx[14], false, false, false),
+    					listen_dev(input, "change", /*change_handler*/ ctx[19], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*deleteConference, userConferences*/ 1025) {
+    			if (dirty & /*deleteConference, userConferences*/ 2049) {
     				each_value = /*userConferences*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
@@ -45291,31 +46199,39 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(div1, t22);
+    					if_block.m(div3, t24);
     				}
     			}
 
-    			if (dirty & /*fileinput*/ 64 && input_accept_value !== (input_accept_value = ".jon:click=" + /*func*/ ctx[17] + "pg, .jpeg, .png")) {
+    			if (!current || dirty & /*fileinput*/ 64 && input_accept_value !== (input_accept_value = ".jon:click=" + /*func*/ ctx[18] + "pg, .jpeg, .png")) {
     				attr_dev(input, "accept", input_accept_value);
     			}
 
-    			if (dirty & /*name*/ 4) set_data_dev(t24, /*name*/ ctx[2]);
-    			if (dirty & /*position*/ 8) set_data_dev(t26, /*position*/ ctx[3]);
-    			if (dirty & /*company*/ 16) set_data_dev(t35, /*company*/ ctx[4]);
-    			if (dirty & /*joiningDate*/ 32) set_data_dev(t37, /*joiningDate*/ ctx[5]);
-    			if (dirty & /*activeConferences*/ 128) set_data_dev(t39, /*activeConferences*/ ctx[7]);
+    			if (!current || dirty & /*name*/ 4) set_data_dev(t26, /*name*/ ctx[2]);
+    			if (!current || dirty & /*position*/ 8) set_data_dev(t28, /*position*/ ctx[3]);
+    			if (!current || dirty & /*company*/ 16) set_data_dev(t37, /*company*/ ctx[4]);
+    			if (!current || dirty & /*joiningDate*/ 32) set_data_dev(t39, /*joiningDate*/ ctx[5]);
+    			if (!current || dirty & /*activeConferences*/ 128) set_data_dev(t41, /*activeConferences*/ ctx[7]);
     		},
-    		i: noop$1,
-    		o: noop$1,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(calendar.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(calendar.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(link0);
     			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(link1);
     			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(div8);
+    			if (detaching) detach_dev(div10);
     			destroy_each(each_blocks, detaching);
+    			destroy_component(calendar);
     			if_block.d();
-    			/*input_binding*/ ctx[19](null);
+    			/*input_binding*/ ctx[20](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -45389,7 +46305,7 @@ var app = (function () {
     		console.log("changed");
     	};
 
-    	let avatar, fileinput;
+    	let fileinput;
 
     	const onFileSelected = e => {
     		let image = e.target.files[0];
@@ -45400,6 +46316,8 @@ var app = (function () {
     			firebase$1.database().ref("users/" + firebase$1.auth().currentUser.uid).update({ profilePicture: e.target.result });
     		};
     	};
+
+    	const today = new Date();
 
     	function deleteConference(index) {
     		let database = firebase$1.database();
@@ -45478,9 +46396,10 @@ var app = (function () {
     		profilePictureOnHover,
     		profilePictureOffHover,
     		changeProfilePicture,
-    		avatar,
     		fileinput,
     		onFileSelected,
+    		Calendar,
+    		today,
     		deleteConference,
     		logout,
     		addConf,
@@ -45496,7 +46415,6 @@ var app = (function () {
     		if ("joiningDate" in $$props) $$invalidate(5, joiningDate = $$props.joiningDate);
     		if ("userConferences" in $$props) $$invalidate(0, userConferences = $$props.userConferences);
     		if ("option" in $$props) option = $$props.option;
-    		if ("avatar" in $$props) avatar = $$props.avatar;
     		if ("fileinput" in $$props) $$invalidate(6, fileinput = $$props.fileinput);
     		if ("activeConferences" in $$props) $$invalidate(7, activeConferences = $$props.activeConferences);
     	};
@@ -45522,6 +46440,7 @@ var app = (function () {
     		activeConferences,
     		defaultProfilePicture,
     		onFileSelected,
+    		today,
     		deleteConference,
     		logout,
     		addConf,
