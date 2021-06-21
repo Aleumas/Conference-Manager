@@ -52,16 +52,13 @@
 
     </table>
     </div>
+<div class='right'>
     <div class='right-panel'>
         <div class='calendar-container'>
             <Calendar {today} year={2021}/>
         </div>
     </div>
-    <br>
     <div class='right-panel'>
-
-        
-
         <div class='profile-container'>
             {#if userProfilePicture}
                 <img on:click={()=>{fileinput.click();}} on:mouseover={profilePictureOnHover} on:mouseleave={profilePictureOffHover} src={userProfilePicture} alt='profile picture' title="Change Profile Picture"/>
@@ -84,6 +81,7 @@
                 <p> {joiningDate} </p>
                 <p> {activeConferences} </p>
             </div>
+        </div>
         </div>
     </div>
     </div>
@@ -188,8 +186,8 @@
     }
 
     .right-rounded-corners {
-	border-top-right-radius: 3vh;
-	border-bottom-right-radius: 3vh;
+	      border-top-right-radius: 3vh;
+	      border-bottom-right-radius: 3vh;
     }
 
     .text {
@@ -249,6 +247,11 @@
     .add-event {
         margin: 0;
         margin-top: 1vw;
+    }
+
+    .right {
+        position: relative;
+        margin-right: 2vmax;
     }
 
     .delete {
@@ -355,15 +358,17 @@
 
     .right-panel {
         flex: 1;
+        margin-top: 1vmax;
+        margin-bottom: 1vmax;
         background-color: white;
-        width:20vmax;
+        width:30vmax;
         height: 25vmax;
         border-radius: 3vh;
     }
 
     .left-panel {
         flex: 1;
-        width: 90vmax;
+        width: 60vmax;
         height: 100vmax;
         margin-right: 1vw;
     }
