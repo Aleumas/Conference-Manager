@@ -1,11 +1,13 @@
 <script>
 	import calendarize from 'calendarize';
 	import Arrow from './Arrow.svelte';
+	import firebase from 'firebase/app';
 	
 	export let year = 2019;
-	export let month = 0; // Jan
-	export let offset = 0; // Sun
-	export let today = null; // Date
+	export let month = 0; 
+	export let offset = 0; 
+	export let today = null; 
+	let events = [];
 	
 	export let labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	export let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -17,7 +19,7 @@
 	let prev = calendarize(new Date(year, month-1), offset);
 	let current = calendarize(new Date(year, month), offset);
 	let next = calendarize(new Date(year, month+1), offset);
-	
+
 	function toPrev() {
 		[current, next] = [prev, current];
 		
@@ -43,6 +45,32 @@
 	function isToday(day) {
 		return today && today_year === year && today_month === month && today_day === day;
 	}
+
+	function isEvent() {
+		if (events != []) {
+			var i;
+			for (i = 0; i < events.length; i++) {
+				event_day = events[i].date.slice(0,2);
+				if (event_day.charAt(0) == '0') {
+					event_day = event_day.charAt(1);
+				}
+				if (today && today_year === year && today_month === month && today_day === event_day) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	firebase.auth().onAuthStateChanged(user => {
+		(firebase.database().ref('users/' + user.uid + '/conferences')).on('value', (snapshot) => {
+			if (snapshot.val() != null) {
+				events = snapshot.val().conference;
+			}  
+		});
+	})
+
 </script>
 
 <header>
@@ -56,11 +84,11 @@
 		<span class="label">{ labels[(idx + offset) % 7] }</span>
 	{/each}
 
-	{#each { length:6 } as w,idxw (idxw)}
+	{#each { length:6 } as w, idxw (idxw)}
 		{#if current[idxw]}
 			{#each { length:7 } as d,idxd (idxd)}
 				{#if current[idxw][idxd] != 0}
-					<span class="date" class:today={isToday(current[idxw][idxd])}>
+					<span class="date" class:today={isToday(current[idxw][idxd])} class:event={isEvent(current[idxw][idxd])}>
 						{ current[idxw][idxd] }
 					</span>
 				{:else if (idxw < 1)}
@@ -117,6 +145,12 @@
 	
 	.date.today {
 		color: #5286fa;
+		background: #c4d9fd;
+		border-color: currentColor;
+	}
+
+	.date.event {
+		color: #6452fa;
 		background: #c4d9fd;
 		border-color: currentColor;
 	}

@@ -44753,29 +44753,29 @@ var app = (function () {
 
     function get_each_context$5(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[15] = list[i];
-    	child_ctx[17] = i;
+    	child_ctx[17] = list[i];
+    	child_ctx[19] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[18] = list[i];
-    	child_ctx[20] = i;
+    	child_ctx[20] = list[i];
+    	child_ctx[22] = i;
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[21] = list[i];
-    	child_ctx[23] = i;
+    	child_ctx[23] = list[i];
+    	child_ctx[25] = i;
     	return child_ctx;
     }
 
-    // (55:1) {#each labels as txt, idx (txt)}
+    // (83:1) {#each labels as txt, idx (txt)}
     function create_each_block_2(key_1, ctx) {
     	let span;
-    	let t_value = /*labels*/ ctx[3][(/*idx*/ ctx[23] + /*offset*/ ctx[2]) % 7] + "";
+    	let t_value = /*labels*/ ctx[3][(/*idx*/ ctx[25] + /*offset*/ ctx[2]) % 7] + "";
     	let t;
 
     	const block = {
@@ -44784,8 +44784,8 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			t = text(t_value);
-    			attr_dev(span, "class", "label svelte-eg2bz8");
-    			add_location(span, file$7, 55, 2, 1351);
+    			attr_dev(span, "class", "label svelte-1teslmo");
+    			add_location(span, file$7, 83, 2, 1985);
     			this.first = span;
     		},
     		m: function mount(target, anchor) {
@@ -44794,7 +44794,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*labels, offset*/ 12 && t_value !== (t_value = /*labels*/ ctx[3][(/*idx*/ ctx[23] + /*offset*/ ctx[2]) % 7] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*labels, offset*/ 12 && t_value !== (t_value = /*labels*/ ctx[3][(/*idx*/ ctx[25] + /*offset*/ ctx[2]) % 7] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(span);
@@ -44805,21 +44805,21 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(55:1) {#each labels as txt, idx (txt)}",
+    		source: "(83:1) {#each labels as txt, idx (txt)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (60:2) {#if current[idxw]}
+    // (88:2) {#if current[idxw]}
     function create_if_block$3(ctx) {
     	let each_blocks = [];
     	let each_1_lookup = new Map();
     	let each_1_anchor;
     	let each_value_1 = { length: 7 };
     	validate_each_argument(each_value_1);
-    	const get_key = ctx => /*idxd*/ ctx[20];
+    	const get_key = ctx => /*idxd*/ ctx[22];
     	validate_each_keys(ctx, each_value_1, get_each_context_1, get_key);
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -44844,7 +44844,7 @@ var app = (function () {
     			insert_dev(target, each_1_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*isToday, current, prev, next*/ 1248) {
+    			if (dirty & /*isToday, current, isEvent, prev, next*/ 3296) {
     				each_value_1 = { length: 7 };
     				validate_each_argument(each_value_1);
     				validate_each_keys(ctx, each_value_1, get_each_context_1, get_key);
@@ -44864,32 +44864,32 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(60:2) {#if current[idxw]}",
+    		source: "(88:2) {#if current[idxw]}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (68:4) {:else}
+    // (96:4) {:else}
     function create_else_block$2(ctx) {
     	let span;
-    	let t_value = /*next*/ ctx[7][0][/*idxd*/ ctx[20]] + "";
+    	let t_value = /*next*/ ctx[7][0][/*idxd*/ ctx[22]] + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			span = element("span");
     			t = text(t_value);
-    			attr_dev(span, "class", "date other svelte-eg2bz8");
-    			add_location(span, file$7, 68, 5, 1779);
+    			attr_dev(span, "class", "date other svelte-1teslmo");
+    			add_location(span, file$7, 96, 5, 2457);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
     			append_dev(span, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*next*/ 128 && t_value !== (t_value = /*next*/ ctx[7][0][/*idxd*/ ctx[20]] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*next*/ 128 && t_value !== (t_value = /*next*/ ctx[7][0][/*idxd*/ ctx[22]] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(span);
@@ -44900,32 +44900,32 @@ var app = (function () {
     		block,
     		id: create_else_block$2.name,
     		type: "else",
-    		source: "(68:4) {:else}",
+    		source: "(96:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (66:25) 
+    // (94:25) 
     function create_if_block_2(ctx) {
     	let span;
-    	let t_value = /*prev*/ ctx[5][/*prev*/ ctx[5].length - 1][/*idxd*/ ctx[20]] + "";
+    	let t_value = /*prev*/ ctx[5][/*prev*/ ctx[5].length - 1][/*idxd*/ ctx[22]] + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			span = element("span");
     			t = text(t_value);
-    			attr_dev(span, "class", "date other svelte-eg2bz8");
-    			add_location(span, file$7, 66, 5, 1698);
+    			attr_dev(span, "class", "date other svelte-1teslmo");
+    			add_location(span, file$7, 94, 5, 2376);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
     			append_dev(span, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*prev*/ 32 && t_value !== (t_value = /*prev*/ ctx[5][/*prev*/ ctx[5].length - 1][/*idxd*/ ctx[20]] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*prev*/ 32 && t_value !== (t_value = /*prev*/ ctx[5][/*prev*/ ctx[5].length - 1][/*idxd*/ ctx[22]] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(span);
@@ -44936,17 +44936,17 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(66:25) ",
+    		source: "(94:25) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (62:4) {#if current[idxw][idxd] != 0}
+    // (90:4) {#if current[idxw][idxd] != 0}
     function create_if_block_1$1(ctx) {
     	let span;
-    	let t0_value = /*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]] + "";
+    	let t0_value = /*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]] + "";
     	let t0;
     	let t1;
 
@@ -44955,9 +44955,10 @@ var app = (function () {
     			span = element("span");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr_dev(span, "class", "date svelte-eg2bz8");
-    			toggle_class(span, "today", /*isToday*/ ctx[10](/*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]]));
-    			add_location(span, file$7, 62, 5, 1561);
+    			attr_dev(span, "class", "date svelte-1teslmo");
+    			toggle_class(span, "today", /*isToday*/ ctx[10](/*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]]));
+    			toggle_class(span, "event", /*isEvent*/ ctx[11](/*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]]));
+    			add_location(span, file$7, 90, 5, 2196);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -44965,10 +44966,14 @@ var app = (function () {
     			append_dev(span, t1);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*current*/ 64 && t0_value !== (t0_value = /*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]] + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*current*/ 64 && t0_value !== (t0_value = /*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]] + "")) set_data_dev(t0, t0_value);
 
     			if (dirty & /*isToday, current*/ 1088) {
-    				toggle_class(span, "today", /*isToday*/ ctx[10](/*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]]));
+    				toggle_class(span, "today", /*isToday*/ ctx[10](/*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]]));
+    			}
+
+    			if (dirty & /*isEvent, current*/ 2112) {
+    				toggle_class(span, "event", /*isEvent*/ ctx[11](/*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]]));
     			}
     		},
     		d: function destroy(detaching) {
@@ -44980,21 +44985,21 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(62:4) {#if current[idxw][idxd] != 0}",
+    		source: "(90:4) {#if current[idxw][idxd] != 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (61:3) {#each { length:7 } as d,idxd (idxd)}
+    // (89:3) {#each { length:7 } as d,idxd (idxd)}
     function create_each_block_1(key_1, ctx) {
     	let first;
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*current*/ ctx[6][/*idxw*/ ctx[17]][/*idxd*/ ctx[20]] != 0) return create_if_block_1$1;
-    		if (/*idxw*/ ctx[17] < 1) return create_if_block_2;
+    		if (/*current*/ ctx[6][/*idxw*/ ctx[19]][/*idxd*/ ctx[22]] != 0) return create_if_block_1$1;
+    		if (/*idxw*/ ctx[19] < 1) return create_if_block_2;
     		return create_else_block$2;
     	}
 
@@ -45041,18 +45046,18 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(61:3) {#each { length:7 } as d,idxd (idxd)}",
+    		source: "(89:3) {#each { length:7 } as d,idxd (idxd)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (59:1) {#each { length:6 } as w,idxw (idxw)}
+    // (87:1) {#each { length:6 } as w, idxw (idxw)}
     function create_each_block$5(key_1, ctx) {
     	let first;
     	let if_block_anchor;
-    	let if_block = /*current*/ ctx[6][/*idxw*/ ctx[17]] && create_if_block$3(ctx);
+    	let if_block = /*current*/ ctx[6][/*idxw*/ ctx[19]] && create_if_block$3(ctx);
 
     	const block = {
     		key: key_1,
@@ -45071,7 +45076,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (/*current*/ ctx[6][/*idxw*/ ctx[17]]) {
+    			if (/*current*/ ctx[6][/*idxw*/ ctx[19]]) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -45095,7 +45100,7 @@ var app = (function () {
     		block,
     		id: create_each_block$5.name,
     		type: "each",
-    		source: "(59:1) {#each { length:6 } as w,idxw (idxw)}",
+    		source: "(87:1) {#each { length:6 } as w, idxw (idxw)}",
     		ctx
     	});
 
@@ -45127,7 +45132,7 @@ var app = (function () {
     	arrow1.$on("click", /*toNext*/ ctx[9]);
     	let each_value_2 = /*labels*/ ctx[3];
     	validate_each_argument(each_value_2);
-    	const get_key = ctx => /*txt*/ ctx[21];
+    	const get_key = ctx => /*txt*/ ctx[23];
     	validate_each_keys(ctx, each_value_2, get_each_context_2, get_key);
 
     	for (let i = 0; i < each_value_2.length; i += 1) {
@@ -45138,7 +45143,7 @@ var app = (function () {
 
     	let each_value = { length: 6 };
     	validate_each_argument(each_value);
-    	const get_key_1 = ctx => /*idxw*/ ctx[17];
+    	const get_key_1 = ctx => /*idxw*/ ctx[19];
     	validate_each_keys(ctx, each_value, get_each_context$5, get_key_1);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -45171,12 +45176,12 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(h4, "class", "svelte-eg2bz8");
-    			add_location(h4, file$7, 49, 1, 1223);
-    			attr_dev(header, "class", "svelte-eg2bz8");
-    			add_location(header, file$7, 47, 0, 1179);
-    			attr_dev(div, "class", "month svelte-eg2bz8");
-    			add_location(div, file$7, 53, 0, 1295);
+    			attr_dev(h4, "class", "svelte-1teslmo");
+    			add_location(h4, file$7, 77, 1, 1857);
+    			attr_dev(header, "class", "svelte-1teslmo");
+    			add_location(header, file$7, 75, 0, 1813);
+    			attr_dev(div, "class", "month svelte-1teslmo");
+    			add_location(div, file$7, 81, 0, 1929);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -45217,7 +45222,7 @@ var app = (function () {
     				each_blocks_1 = update_keyed_each(each_blocks_1, dirty, get_key, 1, ctx, each_value_2, each0_lookup, div, destroy_block, create_each_block_2, t6, get_each_context_2);
     			}
 
-    			if (dirty & /*isToday, current, prev, next*/ 1248) {
+    			if (dirty & /*isToday, current, isEvent, prev, next*/ 3296) {
     				each_value = { length: 6 };
     				validate_each_argument(each_value);
     				validate_each_keys(ctx, each_value, get_each_context$5, get_key_1);
@@ -45270,9 +45275,10 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Calendar", slots, []);
     	let { year = 2019 } = $$props;
-    	let { month = 0 } = $$props; // Jan
-    	let { offset = 0 } = $$props; // Sun
-    	let { today = null } = $$props; // Date
+    	let { month = 0 } = $$props;
+    	let { offset = 0 } = $$props;
+    	let { today = null } = $$props;
+    	let events = [];
     	let { labels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] } = $$props;
 
     	let { months = [
@@ -45320,6 +45326,34 @@ var app = (function () {
     		return today && today_year === year && today_month === month && today_day === day;
     	}
 
+    	function isEvent() {
+    		if (events != []) {
+    			var i;
+
+    			for (i = 0; i < events.length; i++) {
+    				event_day = events[i].date.slice(0, 2);
+
+    				if (event_day.charAt(0) == "0") {
+    					event_day = event_day.charAt(1);
+    				}
+
+    				if (today && today_year === year && today_month === month && today_day === event_day) {
+    					return true;
+    				}
+    			}
+    		}
+
+    		return false;
+    	}
+
+    	firebase$1.auth().onAuthStateChanged(user => {
+    		firebase$1.database().ref("users/" + user.uid + "/conferences").on("value", snapshot => {
+    			if (snapshot.val() != null) {
+    				events = snapshot.val().conference;
+    			}
+    		});
+    	});
+
     	const writable_props = ["year", "month", "offset", "today", "labels", "months"];
 
     	Object.keys($$props).forEach(key => {
@@ -45330,7 +45364,7 @@ var app = (function () {
     		if ("year" in $$props) $$invalidate(0, year = $$props.year);
     		if ("month" in $$props) $$invalidate(1, month = $$props.month);
     		if ("offset" in $$props) $$invalidate(2, offset = $$props.offset);
-    		if ("today" in $$props) $$invalidate(11, today = $$props.today);
+    		if ("today" in $$props) $$invalidate(12, today = $$props.today);
     		if ("labels" in $$props) $$invalidate(3, labels = $$props.labels);
     		if ("months" in $$props) $$invalidate(4, months = $$props.months);
     	};
@@ -45338,10 +45372,12 @@ var app = (function () {
     	$$self.$capture_state = () => ({
     		calendarize,
     		Arrow,
+    		firebase: firebase$1,
     		year,
     		month,
     		offset,
     		today,
+    		events,
     		labels,
     		months,
     		prev,
@@ -45350,6 +45386,7 @@ var app = (function () {
     		toPrev,
     		toNext,
     		isToday,
+    		isEvent,
     		today_month,
     		today_year,
     		today_day
@@ -45359,7 +45396,8 @@ var app = (function () {
     		if ("year" in $$props) $$invalidate(0, year = $$props.year);
     		if ("month" in $$props) $$invalidate(1, month = $$props.month);
     		if ("offset" in $$props) $$invalidate(2, offset = $$props.offset);
-    		if ("today" in $$props) $$invalidate(11, today = $$props.today);
+    		if ("today" in $$props) $$invalidate(12, today = $$props.today);
+    		if ("events" in $$props) events = $$props.events;
     		if ("labels" in $$props) $$invalidate(3, labels = $$props.labels);
     		if ("months" in $$props) $$invalidate(4, months = $$props.months);
     		if ("prev" in $$props) $$invalidate(5, prev = $$props.prev);
@@ -45375,15 +45413,15 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*today*/ 2048) {
+    		if ($$self.$$.dirty & /*today*/ 4096) {
     			today_month = today && today.getMonth();
     		}
 
-    		if ($$self.$$.dirty & /*today*/ 2048) {
+    		if ($$self.$$.dirty & /*today*/ 4096) {
     			today_year = today && today.getFullYear();
     		}
 
-    		if ($$self.$$.dirty & /*today*/ 2048) {
+    		if ($$self.$$.dirty & /*today*/ 4096) {
     			today_day = today && today.getDate();
     		}
     	};
@@ -45400,6 +45438,7 @@ var app = (function () {
     		toPrev,
     		toNext,
     		isToday,
+    		isEvent,
     		today
     	];
     }
@@ -45412,7 +45451,7 @@ var app = (function () {
     			year: 0,
     			month: 1,
     			offset: 2,
-    			today: 11,
+    			today: 12,
     			labels: 3,
     			months: 4
     		});
@@ -45481,16 +45520,16 @@ var app = (function () {
 
     function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[22] = list[i];
-    	child_ctx[24] = i;
+    	child_ctx[23] = list[i];
+    	child_ctx[25] = i;
     	return child_ctx;
     }
 
-    // (38:12) {:else}
+    // (38:0) {:else}
     function create_else_block_1(ctx) {
     	let td;
     	let div;
-    	let t_value = /*conf*/ ctx[22].access + "";
+    	let t_value = /*conf*/ ctx[23].access + "";
     	let t;
 
     	const block = {
@@ -45498,10 +45537,10 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "public svelte-1wqqyzo");
-    			add_location(div, file$6, 39, 6, 1086);
-    			attr_dev(td, "class", "svelte-1wqqyzo");
-    			add_location(td, file$6, 38, 2, 1075);
+    			attr_dev(div, "class", "public svelte-45rxx9");
+    			add_location(div, file$6, 39, 0, 895);
+    			attr_dev(td, "class", "svelte-45rxx9");
+    			add_location(td, file$6, 38, 0, 890);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -45509,7 +45548,7 @@ var app = (function () {
     			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[22].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[23].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -45520,18 +45559,18 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(38:12) {:else}",
+    		source: "(38:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (32:12) {#if conf.access == 'Private'}
+    // (32:0) {#if conf.access == 'Private'}
     function create_if_block_1(ctx) {
     	let td;
     	let div;
-    	let t_value = /*conf*/ ctx[22].access + "";
+    	let t_value = /*conf*/ ctx[23].access + "";
     	let t;
 
     	const block = {
@@ -45539,10 +45578,10 @@ var app = (function () {
     			td = element("td");
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "private svelte-1wqqyzo");
-    			add_location(div, file$6, 33, 6, 980);
-    			attr_dev(td, "class", "svelte-1wqqyzo");
-    			add_location(td, file$6, 32, 6, 969);
+    			attr_dev(div, "class", "private svelte-45rxx9");
+    			add_location(div, file$6, 33, 0, 832);
+    			attr_dev(td, "class", "svelte-45rxx9");
+    			add_location(td, file$6, 32, 0, 827);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -45550,7 +45589,7 @@ var app = (function () {
     			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[22].access + "")) set_data_dev(t, t_value);
+    			if (dirty & /*userConferences*/ 1 && t_value !== (t_value = /*conf*/ ctx[23].access + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -45561,30 +45600,30 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(32:12) {#if conf.access == 'Private'}",
+    		source: "(32:0) {#if conf.access == 'Private'}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (25:1) {#each userConferences as conf, index}
+    // (25:0) {#each userConferences as conf, index}
     function create_each_block$4(ctx) {
     	let tr;
     	let td0;
-    	let t0_value = /*conf*/ ctx[22].name + "";
+    	let t0_value = /*conf*/ ctx[23].name + "";
     	let t0;
     	let t1;
     	let td1;
-    	let t2_value = /*conf*/ ctx[22].location + "";
+    	let t2_value = /*conf*/ ctx[23].location + "";
     	let t2;
     	let t3;
     	let td2;
-    	let t4_value = /*conf*/ ctx[22].date + "";
+    	let t4_value = /*conf*/ ctx[23].date + "";
     	let t4;
     	let t5;
     	let td3;
-    	let t6_value = /*conf*/ ctx[22].time + "";
+    	let t6_value = /*conf*/ ctx[23].time + "";
     	let t6;
     	let t7;
     	let t8;
@@ -45597,7 +45636,7 @@ var app = (function () {
     	let dispose;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*conf*/ ctx[22].access == "Private") return create_if_block_1;
+    		if (/*conf*/ ctx[23].access == "Private") return create_if_block_1;
     		return create_else_block_1;
     	}
 
@@ -45605,7 +45644,7 @@ var app = (function () {
     	let if_block = current_block_type(ctx);
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[15](/*index*/ ctx[24]);
+    		return /*click_handler_1*/ ctx[15](/*index*/ ctx[25]);
     	}
 
     	const block = {
@@ -45629,23 +45668,23 @@ var app = (function () {
     			button = element("button");
     			img = element("img");
     			t9 = space();
-    			attr_dev(td0, "class", "left-rounded-corners svelte-1wqqyzo");
-    			add_location(td0, file$6, 26, 12, 757);
-    			attr_dev(td1, "class", "svelte-1wqqyzo");
-    			add_location(td1, file$6, 27, 12, 821);
-    			attr_dev(td2, "class", "svelte-1wqqyzo");
-    			add_location(td2, file$6, 28, 12, 860);
-    			attr_dev(td3, "class", "svelte-1wqqyzo");
-    			add_location(td3, file$6, 29, 12, 895);
-    			attr_dev(img, "class", "delete-image svelte-1wqqyzo");
+    			attr_dev(td0, "class", "left-rounded-corners svelte-45rxx9");
+    			add_location(td0, file$6, 26, 0, 669);
+    			attr_dev(td1, "class", "svelte-45rxx9");
+    			add_location(td1, file$6, 27, 0, 721);
+    			attr_dev(td2, "class", "svelte-45rxx9");
+    			add_location(td2, file$6, 28, 0, 748);
+    			attr_dev(td3, "class", "svelte-45rxx9");
+    			add_location(td3, file$6, 29, 0, 771);
+    			attr_dev(img, "class", "delete-image svelte-45rxx9");
     			if (img.src !== (img_src_value = "delete.svg")) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$6, 46, 6, 1290);
-    			attr_dev(button, "class", "delete svelte-1wqqyzo");
-    			add_location(button, file$6, 45, 5, 1217);
-    			attr_dev(td4, "class", "right-rounded-corners svelte-1wqqyzo");
-    			add_location(td4, file$6, 44, 1, 1177);
-    			attr_dev(tr, "class", "svelte-1wqqyzo");
-    			add_location(tr, file$6, 25, 1, 740);
+    			add_location(img, file$6, 46, 0, 1052);
+    			attr_dev(button, "class", "delete svelte-45rxx9");
+    			add_location(button, file$6, 45, 0, 985);
+    			attr_dev(td4, "class", "right-rounded-corners svelte-45rxx9");
+    			add_location(td4, file$6, 44, 0, 950);
+    			attr_dev(tr, "class", "svelte-45rxx9");
+    			add_location(tr, file$6, 25, 0, 664);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -45675,10 +45714,10 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[22].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[22].location + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[22].date + "")) set_data_dev(t4, t4_value);
-    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[22].time + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*userConferences*/ 1 && t0_value !== (t0_value = /*conf*/ ctx[23].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*userConferences*/ 1 && t2_value !== (t2_value = /*conf*/ ctx[23].location + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*userConferences*/ 1 && t4_value !== (t4_value = /*conf*/ ctx[23].date + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*userConferences*/ 1 && t6_value !== (t6_value = /*conf*/ ctx[23].time + "")) set_data_dev(t6, t6_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -45704,14 +45743,14 @@ var app = (function () {
     		block,
     		id: create_each_block$4.name,
     		type: "each",
-    		source: "(25:1) {#each userConferences as conf, index}",
+    		source: "(25:0) {#each userConferences as conf, index}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (65:12) {:else}
+    // (65:0) {:else}
     function create_else_block$1(ctx) {
     	let img;
     	let img_src_value;
@@ -45724,8 +45763,8 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*defaultProfilePicture*/ ctx[8])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
     			attr_dev(img, "title", "Change Profile Picture");
-    			attr_dev(img, "class", "svelte-1wqqyzo");
-    			add_location(img, file$6, 65, 16, 1924);
+    			attr_dev(img, "class", "svelte-45rxx9");
+    			add_location(img, file$6, 65, 0, 1604);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -45752,14 +45791,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(65:12) {:else}",
+    		source: "(65:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (63:12) {#if userProfilePicture}
+    // (63:0) {#if userProfilePicture}
     function create_if_block$2(ctx) {
     	let img;
     	let img_src_value;
@@ -45772,8 +45811,8 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*userProfilePicture*/ ctx[1])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "profile picture");
     			attr_dev(img, "title", "Change Profile Picture");
-    			attr_dev(img, "class", "svelte-1wqqyzo");
-    			add_location(img, file$6, 63, 16, 1691);
+    			attr_dev(img, "class", "svelte-45rxx9");
+    			add_location(img, file$6, 63, 0, 1399);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -45804,7 +45843,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(63:12) {#if userProfilePicture}",
+    		source: "(63:0) {#if userProfilePicture}",
     		ctx
     	});
 
@@ -45894,7 +45933,11 @@ var app = (function () {
     	}
 
     	calendar = new Calendar({
-    			props: { today: /*today*/ ctx[10], year: 2021 },
+    			props: {
+    				today: /*today*/ ctx[10],
+    				year: /*today*/ ctx[10].getFullYear(),
+    				month: /*today*/ ctx[10].getMonth()
+    			},
     			$$inline: true
     		});
 
@@ -46001,75 +46044,75 @@ var app = (function () {
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
     			add_location(link1, file$6, 1, 0, 57);
-    			attr_dev(h10, "class", "pageTitle svelte-1wqqyzo");
-    			add_location(h10, file$6, 8, 4, 301);
-    			attr_dev(button0, "class", "add-event svelte-1wqqyzo");
-    			add_location(button0, file$6, 10, 12, 363);
-    			attr_dev(li0, "class", "svelte-1wqqyzo");
-    			add_location(li0, file$6, 10, 8, 359);
-    			attr_dev(button1, "class", "logout svelte-1wqqyzo");
-    			add_location(button1, file$6, 11, 12, 448);
-    			attr_dev(li1, "class", "svelte-1wqqyzo");
-    			add_location(li1, file$6, 11, 8, 444);
-    			attr_dev(ul, "class", "svelte-1wqqyzo");
-    			add_location(ul, file$6, 9, 4, 346);
-    			attr_dev(h2, "class", "svelte-1wqqyzo");
-    			add_location(h2, file$6, 13, 4, 532);
-    			attr_dev(th0, "class", "svelte-1wqqyzo");
-    			add_location(th0, file$6, 16, 2, 581);
-    			attr_dev(th1, "class", "svelte-1wqqyzo");
-    			add_location(th1, file$6, 17, 2, 599);
-    			attr_dev(th2, "class", "svelte-1wqqyzo");
-    			add_location(th2, file$6, 18, 2, 621);
-    			attr_dev(th3, "class", "svelte-1wqqyzo");
-    			add_location(th3, file$6, 19, 2, 639);
-    			attr_dev(th4, "class", "svelte-1wqqyzo");
-    			add_location(th4, file$6, 20, 2, 657);
-    			attr_dev(th5, "class", "svelte-1wqqyzo");
-    			add_location(th5, file$6, 21, 2, 677);
-    			attr_dev(tr, "class", "svelte-1wqqyzo");
-    			add_location(tr, file$6, 15, 5, 574);
-    			attr_dev(table, "class", "svelte-1wqqyzo");
-    			add_location(table, file$6, 14, 4, 561);
-    			attr_dev(div0, "class", "left-panel svelte-1wqqyzo");
-    			add_location(div0, file$6, 7, 4, 272);
-    			attr_dev(div1, "class", "calendar-container svelte-1wqqyzo");
-    			add_location(div1, file$6, 56, 8, 1465);
-    			attr_dev(div2, "class", "right-panel svelte-1wqqyzo");
-    			add_location(div2, file$6, 55, 4, 1431);
+    			attr_dev(h10, "class", "pageTitle svelte-45rxx9");
+    			add_location(h10, file$6, 8, 0, 281);
+    			attr_dev(button0, "class", "add-event svelte-45rxx9");
+    			add_location(button0, file$6, 10, 4, 331);
+    			attr_dev(li0, "class", "svelte-45rxx9");
+    			add_location(li0, file$6, 10, 0, 327);
+    			attr_dev(button1, "class", "logout svelte-45rxx9");
+    			add_location(button1, file$6, 11, 4, 408);
+    			attr_dev(li1, "class", "svelte-45rxx9");
+    			add_location(li1, file$6, 11, 0, 404);
+    			attr_dev(ul, "class", "svelte-45rxx9");
+    			add_location(ul, file$6, 9, 0, 322);
+    			attr_dev(h2, "class", "svelte-45rxx9");
+    			add_location(h2, file$6, 13, 0, 484);
+    			attr_dev(th0, "class", "svelte-45rxx9");
+    			add_location(th0, file$6, 16, 0, 522);
+    			attr_dev(th1, "class", "svelte-45rxx9");
+    			add_location(th1, file$6, 17, 0, 538);
+    			attr_dev(th2, "class", "svelte-45rxx9");
+    			add_location(th2, file$6, 18, 0, 558);
+    			attr_dev(th3, "class", "svelte-45rxx9");
+    			add_location(th3, file$6, 19, 0, 574);
+    			attr_dev(th4, "class", "svelte-45rxx9");
+    			add_location(th4, file$6, 20, 0, 590);
+    			attr_dev(th5, "class", "svelte-45rxx9");
+    			add_location(th5, file$6, 21, 0, 608);
+    			attr_dev(tr, "class", "svelte-45rxx9");
+    			add_location(tr, file$6, 15, 0, 517);
+    			attr_dev(table, "class", "svelte-45rxx9");
+    			add_location(table, file$6, 14, 0, 509);
+    			attr_dev(div0, "class", "left-panel svelte-45rxx9");
+    			add_location(div0, file$6, 7, 0, 256);
+    			attr_dev(div1, "class", "calendar-container");
+    			add_location(div1, file$6, 56, 0, 1193);
+    			attr_dev(div2, "class", "right-panel svelte-45rxx9");
+    			add_location(div2, file$6, 55, 0, 1167);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", input_accept_value = ".jon:click=" + /*func*/ ctx[18] + "pg, .jpeg, .png");
-    			add_location(input, file$6, 67, 12, 2154);
-    			attr_dev(div3, "class", "profile-container svelte-1wqqyzo");
-    			add_location(div3, file$6, 61, 8, 1606);
-    			attr_dev(h11, "class", "svelte-1wqqyzo");
-    			add_location(h11, file$6, 69, 8, 2338);
-    			attr_dev(h3, "class", "svelte-1wqqyzo");
-    			add_location(h3, file$6, 70, 8, 2364);
-    			attr_dev(hr, "class", "svelte-1wqqyzo");
-    			add_location(hr, file$6, 71, 8, 2394);
-    			add_location(p0, file$6, 74, 16, 2490);
-    			add_location(p1, file$6, 75, 16, 2523);
-    			add_location(p2, file$6, 76, 16, 2561);
-    			attr_dev(div4, "class", "info-titles svelte-1wqqyzo");
-    			add_location(div4, file$6, 73, 12, 2448);
-    			add_location(p3, file$6, 79, 16, 2648);
-    			add_location(p4, file$6, 80, 16, 2683);
-    			add_location(p5, file$6, 81, 16, 2722);
-    			attr_dev(div5, "class", "info svelte-1wqqyzo");
-    			add_location(div5, file$6, 78, 12, 2613);
-    			attr_dev(div6, "class", "info-container svelte-1wqqyzo");
-    			add_location(div6, file$6, 72, 8, 2407);
-    			attr_dev(div7, "class", "right-panel svelte-1wqqyzo");
-    			add_location(div7, file$6, 60, 4, 1572);
-    			attr_dev(div8, "class", "right svelte-1wqqyzo");
-    			add_location(div8, file$6, 54, 0, 1407);
-    			attr_dev(div9, "class", "panel-container svelte-1wqqyzo");
-    			add_location(div9, file$6, 5, 4, 233);
-    			attr_dev(div10, "class", "load-animation svelte-1wqqyzo");
-    			add_location(div10, file$6, 4, 4, 200);
-    			attr_dev(div11, "class", "background svelte-1wqqyzo");
+    			add_location(input, file$6, 67, 0, 1810);
+    			attr_dev(div3, "class", "profile-container svelte-45rxx9");
+    			add_location(div3, file$6, 61, 0, 1342);
+    			attr_dev(h11, "class", "svelte-45rxx9");
+    			add_location(h11, file$6, 69, 0, 1978);
+    			attr_dev(h3, "class", "svelte-45rxx9");
+    			add_location(h3, file$6, 70, 0, 1996);
+    			attr_dev(hr, "class", "svelte-45rxx9");
+    			add_location(hr, file$6, 71, 0, 2018);
+    			add_location(p0, file$6, 74, 0, 2078);
+    			add_location(p1, file$6, 75, 0, 2095);
+    			add_location(p2, file$6, 76, 0, 2117);
+    			attr_dev(div4, "class", "info-titles svelte-45rxx9");
+    			add_location(div4, file$6, 73, 0, 2052);
+    			add_location(p3, file$6, 79, 0, 2164);
+    			add_location(p4, file$6, 80, 0, 2183);
+    			add_location(p5, file$6, 81, 0, 2206);
+    			attr_dev(div5, "class", "info svelte-45rxx9");
+    			add_location(div5, file$6, 78, 0, 2145);
+    			attr_dev(div6, "class", "info-container svelte-45rxx9");
+    			add_location(div6, file$6, 72, 0, 2023);
+    			attr_dev(div7, "class", "right-panel svelte-45rxx9");
+    			add_location(div7, file$6, 60, 0, 1316);
+    			attr_dev(div8, "class", "right svelte-45rxx9");
+    			add_location(div8, file$6, 54, 0, 1147);
+    			attr_dev(div9, "class", "panel-container svelte-45rxx9");
+    			add_location(div9, file$6, 5, 0, 225);
+    			attr_dev(div10, "class", "load-animation svelte-45rxx9");
+    			add_location(div10, file$6, 4, 0, 196);
+    			attr_dev(div11, "class", "background svelte-45rxx9");
     			add_location(div11, file$6, 3, 0, 171);
     		},
     		l: function claim(nodes) {
@@ -46260,6 +46303,7 @@ var app = (function () {
 
     function instance$7($$self, $$props, $$invalidate) {
     	let activeConferences;
+    	let events;
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Planner", slots, []);
     	let defaultProfilePicture = "/defaultProfilePicture.jpg";
@@ -46401,7 +46445,8 @@ var app = (function () {
     		deleteConference,
     		logout,
     		addConf,
-    		activeConferences
+    		activeConferences,
+    		events
     	});
 
     	$$self.$inject_state = $$props => {
@@ -46415,6 +46460,7 @@ var app = (function () {
     		if ("option" in $$props) option = $$props.option;
     		if ("fileinput" in $$props) $$invalidate(6, fileinput = $$props.fileinput);
     		if ("activeConferences" in $$props) $$invalidate(7, activeConferences = $$props.activeConferences);
+    		if ("events" in $$props) events = $$props.events;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -46424,6 +46470,10 @@ var app = (function () {
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*userConferences*/ 1) {
     			$$invalidate(7, activeConferences = userConferences.length);
+    		}
+
+    		if ($$self.$$.dirty & /*userConferences*/ 1) {
+    			events = userConferences;
     		}
     	};
 
