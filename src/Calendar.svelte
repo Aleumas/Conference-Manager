@@ -20,6 +20,16 @@
 	let current = calendarize(new Date(year, month), offset);
 	let next = calendarize(new Date(year, month+1), offset);
 
+	async function loadEvents(user) {
+		var conferences = firebase.database().ref('users/' + user.uid + '/conferences/conference');
+		var snapshot = await conferences.once('value');
+		return snapshot;
+	}
+
+	
+	
+
+
 	function toPrev() {
 		[current, next] = [prev, current];
 		
@@ -46,30 +56,26 @@
 		return today && today_year === year && today_month === month && today_day === day;
 	}
 
-	function isEvent() {
-		if (events != []) {
-			var i;
-			for (i = 0; i < events.length; i++) {
-				event_day = events[i].date.slice(0,2);
-				if (event_day.charAt(0) == '0') {
-					event_day = event_day.charAt(1);
-				}
-				if (today && today_year === year && today_month === month && today_day === event_day) {
-					return true;
-				}
-			}
-		}
+	function isEvent(day) {
+		var i;
+		firebase.auth().onAuthStateChanged((user) => {
+				loadEvents(user).then( function(value) {
+					events = value.val();
+					Promise.all(events);
+					for (i = 0; i < events.length; i++) {
+						let event_day = events[i].date.slice(0,2);
+						if (event_day.charAt(0) == '0') {
+							event_day = event_day.charAt(1);
+						}
 
+						if (today && today_year === year && today_month === month && day == event_day) {
+							return true;
+						}
+					}			
+				})
+		})
 		return false;
 	}
-
-	firebase.auth().onAuthStateChanged(user => {
-		(firebase.database().ref('users/' + user.uid + '/conferences')).on('value', (snapshot) => {
-			if (snapshot.val() != null) {
-				events = snapshot.val().conference;
-			}  
-		});
-	})
 
 </script>
 
