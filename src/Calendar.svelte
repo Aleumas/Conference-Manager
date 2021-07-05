@@ -27,9 +27,6 @@
 	}
 
 	
-	
-
-
 	function toPrev() {
 		[current, next] = [prev, current];
 		
@@ -61,22 +58,21 @@
 		firebase.auth().onAuthStateChanged((user) => {
 				loadEvents(user).then( function(value) {
 					events = value.val();
-					Promise.all(events);
 					for (i = 0; i < events.length; i++) {
 						let event_day = events[i].date.slice(0,2);
 						if (event_day.charAt(0) == '0') {
 							event_day = event_day.charAt(1);
 						}
-
 						if (today && today_year === year && today_month === month && day == event_day) {
+							console.log("wot");
 							return true;
-						}
+						} 
 					}			
+					return false;
 				})
 		})
-		return false;
+		return isEvent
 	}
-
 </script>
 
 <header>
