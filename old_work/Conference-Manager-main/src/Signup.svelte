@@ -63,7 +63,7 @@
         width: 100%;
         height: 100%;
         background-image: url('/hero.jpg') ; 
-        background-size:contain;
+        background-size: contain;
         background-color: #4C82F8;
         background-blend-mode: multiply;
     }

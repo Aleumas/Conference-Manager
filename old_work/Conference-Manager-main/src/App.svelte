@@ -1,5 +1,5 @@
 <script>
-	// Firebase imports 
+		// Firebase imports 
     import firebase from "firebase/app";
     import "firebase/analytics";
     import "firebase/auth";
