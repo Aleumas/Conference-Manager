@@ -43463,7 +43463,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Sign up succesful!";
-    			attr_dev(p, "class", "success svelte-1ots9yc");
+    			attr_dev(p, "class", "success svelte-1k4ixu6");
     			add_location(p, file$a, 19, 20, 985);
     		},
     		m: function mount(target, anchor) {
@@ -43495,7 +43495,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			t = text(/*errorMessage*/ ctx[6]);
-    			attr_dev(p, "class", "error svelte-1ots9yc");
+    			attr_dev(p, "class", "error svelte-1k4ixu6");
     			attr_dev(p, "id", "error");
     			add_location(p, file$a, 17, 20, 892);
     		},
@@ -43593,47 +43593,47 @@ var app = (function () {
     			a.textContent = "Login";
     			attr_dev(link0, "rel", "preconnect");
     			attr_dev(link0, "href", "https://fonts.gstatic.com");
-    			attr_dev(link0, "class", "svelte-1ots9yc");
+    			attr_dev(link0, "class", "svelte-1k4ixu6");
     			add_location(link0, file$a, 0, 0, 0);
     			attr_dev(link1, "href", "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
     			attr_dev(link1, "rel", "stylesheet");
-    			attr_dev(link1, "class", "svelte-1ots9yc");
+    			attr_dev(link1, "class", "svelte-1k4ixu6");
     			add_location(link1, file$a, 1, 0, 57);
-    			attr_dev(h1, "class", "svelte-1ots9yc");
+    			attr_dev(h1, "class", "svelte-1k4ixu6");
     			add_location(h1, file$a, 6, 12, 295);
     			attr_dev(input0, "placeholder", "First name");
-    			attr_dev(input0, "class", "svelte-1ots9yc");
+    			attr_dev(input0, "class", "svelte-1k4ixu6");
     			add_location(input0, file$a, 7, 12, 338);
     			attr_dev(input1, "placeholder", "Last name");
-    			attr_dev(input1, "class", "svelte-1ots9yc");
+    			attr_dev(input1, "class", "svelte-1k4ixu6");
     			add_location(input1, file$a, 8, 12, 406);
     			attr_dev(input2, "placeholder", "Company name");
-    			attr_dev(input2, "class", "svelte-1ots9yc");
+    			attr_dev(input2, "class", "svelte-1k4ixu6");
     			add_location(input2, file$a, 9, 12, 472);
     			attr_dev(input3, "placeholder", "Company position name");
-    			attr_dev(input3, "class", "svelte-1ots9yc");
+    			attr_dev(input3, "class", "svelte-1k4ixu6");
     			add_location(input3, file$a, 10, 12, 540);
     			attr_dev(input4, "placeholder", "Email");
-    			attr_dev(input4, "class", "svelte-1ots9yc");
+    			attr_dev(input4, "class", "svelte-1k4ixu6");
     			add_location(input4, file$a, 11, 12, 618);
     			attr_dev(input5, "type", "password");
     			attr_dev(input5, "placeholder", "Password");
-    			attr_dev(input5, "class", "svelte-1ots9yc");
+    			attr_dev(input5, "class", "svelte-1k4ixu6");
     			add_location(input5, file$a, 12, 12, 677);
-    			attr_dev(button, "class", "svelte-1ots9yc");
+    			attr_dev(button, "class", "svelte-1k4ixu6");
     			add_location(button, file$a, 13, 12, 758);
-    			attr_dev(hr, "class", "svelte-1ots9yc");
+    			attr_dev(hr, "class", "svelte-1k4ixu6");
     			add_location(hr, file$a, 23, 12, 1082);
     			attr_dev(a, "href", "./");
-    			attr_dev(a, "class", "svelte-1ots9yc");
+    			attr_dev(a, "class", "svelte-1k4ixu6");
     			add_location(a, file$a, 24, 33, 1120);
-    			attr_dev(p, "class", "svelte-1ots9yc");
+    			attr_dev(p, "class", "svelte-1k4ixu6");
     			add_location(p, file$a, 24, 12, 1099);
-    			attr_dev(div0, "class", "sign-in__content load-animation svelte-1ots9yc");
+    			attr_dev(div0, "class", "sign-in__content load-animation svelte-1k4ixu6");
     			add_location(div0, file$a, 5, 8, 237);
-    			attr_dev(div1, "class", "sign-in__container svelte-1ots9yc");
+    			attr_dev(div1, "class", "sign-in__container svelte-1k4ixu6");
     			add_location(div1, file$a, 4, 4, 196);
-    			attr_dev(div2, "class", "background svelte-1ots9yc");
+    			attr_dev(div2, "class", "background svelte-1k4ixu6");
     			add_location(div2, file$a, 3, 0, 167);
     		},
     		l: function claim(nodes) {
@@ -50250,7 +50250,7 @@ var app = (function () {
     	// 		Router.redirect('/Signup');
     	// 	}
     	// }, 
-    	() => $$invalidate(0, page$1 = Login));
+    	() => $$invalidate(0, page$1 = Role));
 
     	page(
     		"/Signup",

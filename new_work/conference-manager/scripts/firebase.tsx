@@ -1,16 +1,14 @@
 // Firebase import
 import { app } from "../scripts/firebaseInit.tsx";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, inMemoryPersistence} from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, onAuthStateChanged, browserSessionPersistence, signOut} from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 
 // Variables
 var analytics = getAnalytics(app); 
 var auth = getAuth(app); 
 var firestore = getFirestore(app); 
-var database = getDatabase(app); 
 
 
 // Date
@@ -22,70 +20,88 @@ today = mm + '/' + dd + '/' + yyyy;
 
 // Login with firebase
 export async function handleSignin(email, password) {
-		let signinMessage = signInWithEmailAndPassword(auth, email, password) .then((userCredential) => {
+		// Make login persistant 
+		let persistMessage = setPersistence(auth, browserSessionPersistence)
+		.then(() => {
 
-				// Make login persistant 
-				let persistMessage = setPersistence(auth, inMemoryPersistence)
-				.then(() => {
-						signInWithEmailAndPassword(auth, email, password);
+				return signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
 						return 'Successful!';
 				})
 				.catch((error) => {
-						// Handle Errors here.
-						return error.message;
+					return error.code;
 				});
-				
-				return persistMessage;
 
 		})
 		.catch((error) => {
-			return error.code;
+				return error.message;
 		});
 
-		return await signinMessage;
+		return await persistMessage;
 }
 
 // Signup with firebase
 export async function handleSignup(firstName, lastName, company, position, email, password) {
-				createUserWithEmailAndPassword(auth, email, password) .then((userCredential) => {
 
-				// Change login state
-				auth.onAuthStateChanged((user) => {
-						if (user) {
-								// Logged in
-							console.log('logged in');
-						} else {
-								// Logged out
-								console.log('logged out');
-						}
-				});
+			let user = auth.curentUser;
+			// Make login persistant 
+			let persistMessage = setPersistence(auth, browserSessionPersistence)
+			.then(() => {
+					return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+										return 'Successful!';	
 
-				// Make login persistant 
-				auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-				.then(() => {
-						console.log('persisted');
-						return signInWithEmailAndPassword(auth, email, password);
 				})
 				.catch((error) => {
-						// Handle Errors here.
-						console.log(error.message);
+					return error.code;
 				});
 
-				// Add user information to firebase 
-				var user = auth.currentUser;
-				database.ref('users/' + user.uid).set({
-								firstName: firstName,
-								lastName: lastName,
-								company: company,
-								position: position,
-								joiningDate: today
+			})
+			.catch((error) => {
+					return error.message;
+			});
 
-				});
+			
+			onAuthStateChanged(auth, (user) => {
+					if (user) {
+						// Add user information to firebase 
+						setDoc(doc(firestore, 'users', user.uid), {
+							firstName: firstName,
+							lastName: lastName,
+							company: company,
+							position: position,
+							joiningDate: today
+						});
+					}
+			});
 
-		})
-		.catch((error) => {
-			// status update
-			console.log(error.message);
+		return await persistMessage;
+}
+
+export async function signout() {
+		await signOut(auth).then(function() {
+				const lastIndex = window.location.href.lastIndexOf('/');
+				const home = window.location.href.slice(0, lastIndex).slice(0, lastIndex).slice(0, lastIndex);
+				window.location.replace(home);
+				console.log('Signed Out');
+		}, function(error) {
+				console.error('Sign Out Error', error);
 		});
 }
 
+export async function createConference() {
+
+		var user = auth.currentUser;
+
+		console.log(document.getElementById('name').value);
+		setDoc(doc(firestore, 'conferences', `${user.uid}`, 'added', `${document.getElementById('name').value}`) , {
+			name: document.getElementById('name').value,
+			location: document.getElementById('location').value,
+			time: document.getElementById('time').value,
+			date: document.getElementById('date').value,
+			access: document.getElementById('access').value 
+			});
+		
+			const lastIndex = window.location.href.lastIndexOf('/');
+			const home = window.location.href.slice(0, lastIndex).slice(0, lastIndex);
+			window.location.replace(home + '/dashboard');
+
+}

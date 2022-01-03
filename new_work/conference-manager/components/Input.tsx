@@ -1,6 +1,6 @@
 function Input(props) {
 
-	return <input id={props.id} type={props.type} placeholder={props.placeholder} ></input>
+	return <input className={props.className} id={props.id} type={props.type} placeholder={props.placeholder} ></input>
 
 }
 
