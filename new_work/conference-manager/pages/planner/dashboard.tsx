@@ -1,8 +1,11 @@
 import Background from '../../components/Background.tsx';
 import Button from '../../components/Button.tsx';
-import { signout } from '../../scripts/firebase.tsx';
+import Table from '../../components/Table';
+import { signout, getConferences } from '../../scripts/firebase.tsx';
+import React, { useState, useEffect, useMemo } from 'react';
 
 function planner() {
+
   return (
     <Background type='plain' color='#EEEEEE'>
       <div className='fade content'>
@@ -19,6 +22,9 @@ function planner() {
               signout();
             }}/>
           </div>
+        </div>
+        <div>
+          <Table/> 
         </div>
       </div>
 

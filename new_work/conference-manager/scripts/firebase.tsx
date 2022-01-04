@@ -2,7 +2,7 @@
 import { app } from "../scripts/firebaseInit.tsx";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, onAuthStateChanged, browserSessionPersistence, signOut} from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDocs, collection } from "firebase/firestore";
 
 
 // Variables
@@ -79,7 +79,9 @@ export async function handleSignup(firstName, lastName, company, position, email
 export async function signout() {
 		await signOut(auth).then(function() {
 				const lastIndex = window.location.href.lastIndexOf('/');
-				const home = window.location.href.slice(0, lastIndex).slice(0, lastIndex).slice(0, lastIndex);
+				const home = window.location.href.slice(0, lastIndex);
+				lastIndex = home.lastIndexOf('/');
+				home = home.slice(0, lastIndex);
 				window.location.replace(home);
 				console.log('Signed Out');
 		}, function(error) {
@@ -87,21 +89,30 @@ export async function signout() {
 		});
 }
 
+
 export async function createConference() {
 
 		var user = auth.currentUser;
 
-		console.log(document.getElementById('name').value);
-		setDoc(doc(firestore, 'conferences', `${user.uid}`, 'added', `${document.getElementById('name').value}`) , {
-			name: document.getElementById('name').value,
-			location: document.getElementById('location').value,
-			time: document.getElementById('time').value,
-			date: document.getElementById('date').value,
-			access: document.getElementById('access').value 
-			});
-		
-			const lastIndex = window.location.href.lastIndexOf('/');
-			const home = window.location.href.slice(0, lastIndex).slice(0, lastIndex);
-			window.location.replace(home + '/dashboard');
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+				console.log(user.uid, document.getElementById('name').value);
+				console.log(doc(firestore, 'conferences', user.uid, 'added', document.getElementById('name').value));
+				setDoc(doc(firestore, 'conferences', user.uid, 'added', document.getElementById('name').value) , {
+						name: document.getElementById('name').value,
+						location: document.getElementById('location').value,
+						time: document.getElementById('time').value,
+						date: document.getElementById('date').value,
+						access: document.getElementById('access').value 
+				}).then(() => {
+					console.log('done');
+					const lastIndex = window.location.href.lastIndexOf('/');
+					const home = window.location.href.slice(0, lastIndex);
+					window.location.replace(home + '/dashboard');
+				});
+				
+			}
+		});
+		}
 
-}
+

@@ -99,6 +99,50 @@ option {
     color: #7d7975;
 }
 
+
+th, td {
+    margin: 1vmax 2vmax 1vmax 2vmax;
+    text-align: center;
+    font-size: 1.2vmax;
+}
+
+td {
+    background-color: white;
+    padding-right: 2vmax;
+    padding-left: 2vmax;
+}
+
+tr {
+    margin-bottom: 2vmax;
+}
+
+table {
+    border-spacing: 0 15px;
+    margin-left: 1vmax;
+}
+
+.left-rounded-corners {
+border-top-left-radius: 3vh;
+border-bottom-left-radius: 3vh;
+}
+
+.right-rounded-corners {
+border-top-right-radius: 3vh;
+border-bottom-right-radius: 3vh;
+}
+
+.text {
+color: white;
+font-size: 20px;
+position: absolute;
+top: 50%;
+left: 50%;
+-webkit-transform: translate(-50%, -50%);
+-ms-transform: translate(-50%, -50%);
+transform: translate(-50%, -50%);
+text-align: center;
+}
+
 ::placeholder {
         color: #BFBFBF;
 }
