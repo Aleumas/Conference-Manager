@@ -74,7 +74,7 @@
 	Router('/AddConference', (ctx, next) => {
 		params = ctx.params;
 		next();
-	}, () => page = AddConference);
+	}, () => page = Planner);
 	Router.start();
 </script>
 

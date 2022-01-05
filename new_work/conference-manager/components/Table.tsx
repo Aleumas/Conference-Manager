@@ -6,13 +6,15 @@ function Table() {
 
 	const [conferences, updateConferences] = useState(<tr><td>loading...</td></tr>);
 
+	
 	useEffect(() => {
-		console.log("hello world");
+
 		let auth = getAuth();
 		let user = auth.currentUser;
 
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
+
 				let data = [];
 				const querySnapshot = getDocs(collection(getFirestore(), 'conferences', user.uid, 'added' ));
 
@@ -22,15 +24,18 @@ function Table() {
 								data.push(doc.data());
 							});	
 
-							const rows = data.map((conference) => {
+							const rows = data.map((conference, index) => {
 								return (
-									<Fragment>
+									<Fragment key={index}>
 										<tr>
 											<td className='left-rounded-corners'> { conference.name } </td>
 											<td> { conference.location } </td>
 											<td> { conference.date } </td>
 											<td> { conference.time } </td>
-											<td className='right-rounded-corners'> { conference.access} </td>
+											<td className='right-rounded-corner'> 
+												{conference.access == 'Public' ? <div className='public'> { conference.access} </div> : <div className=' private'> { conference.access} </div> 
+												}
+											</td>
 										</tr>
 									</Fragment>
 								)}
@@ -42,9 +47,6 @@ function Table() {
 				}
 			});
 
-
-
-	
 	}, []);
 
 	return (
@@ -59,7 +61,7 @@ function Table() {
 				</tr>
 			</thead>
 			<tbody>
-					{conferences}
+				{conferences}
 			</tbody>
 		</table>
 	);

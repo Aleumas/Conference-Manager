@@ -23,7 +23,7 @@ function planner() {
             }}/>
           </div>
         </div>
-        <div>
+        <div className='scroll'>
           <Table/> 
         </div>
       </div>

@@ -107,9 +107,13 @@ th, td {
 }
 
 td {
-    background-color: white;
     padding-right: 2vmax;
     padding-left: 2vmax;
+    padding-top: 1vmax;
+    padding-bottom: 1vmax;
+
+    background-color: white;
+    font-weight: 500;
 }
 
 tr {
@@ -122,13 +126,18 @@ table {
 }
 
 .left-rounded-corners {
-border-top-left-radius: 3vh;
-border-bottom-left-radius: 3vh;
+    border-top-left-radius: 3vh;
+    border-bottom-left-radius: 3vh;
 }
 
 .right-rounded-corners {
-border-top-right-radius: 3vh;
-border-bottom-right-radius: 3vh;
+    border-top-right-radius: 3vh;
+    border-bottom-right-radius: 3vh;
+}
+
+.scroll {
+    height: 83vh;
+    overflow: scroll;
 }
 
 .text {
@@ -233,6 +242,35 @@ text-align: center;
     white-space: nowrap;
     margin-left: 2vw;
     margin-right: 2vw;
+}
+
+
+.private {
+    height: 40%;
+    padding-left: 1vmax;
+    padding-right: 1vmax;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 0.5vmax;
+    font-weight: 600;
+    background-color: #E1BEBE;
+    color: #976666;
+}
+
+.public {
+    height: 40%;
+    padding-left: 1vmax;
+    padding-right: 1vmax;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1vh;
+    text-align: center;
+    font-weight: 600;
+    background-color: #C2E1BE;
+    color: #5a9554;
 }
 
 .choose {

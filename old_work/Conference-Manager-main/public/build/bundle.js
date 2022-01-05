@@ -50285,7 +50285,7 @@ var app = (function () {
     			$$invalidate(1, params = ctx.params);
     			next();
     		},
-    		() => $$invalidate(0, page$1 = AddConference)
+    		() => $$invalidate(0, page$1 = Planner)
     	);
 
     	page.start();

@@ -96,9 +96,7 @@ export async function createConference() {
 
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-				console.log(user.uid, document.getElementById('name').value);
-				console.log(doc(firestore, 'conferences', user.uid, 'added', document.getElementById('name').value));
-				setDoc(doc(firestore, 'conferences', user.uid, 'added', document.getElementById('name').value) , {
+				setDoc(doc(firestore, 'conferences', user.uid, 'added', `${document.getElementById('name').value}`) , {
 						name: document.getElementById('name').value,
 						location: document.getElementById('location').value,
 						time: document.getElementById('time').value,
