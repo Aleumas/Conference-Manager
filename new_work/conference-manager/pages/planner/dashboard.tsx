@@ -1,8 +1,15 @@
-import Background from '../../components/Background.tsx';
-import Button from '../../components/Button.tsx';
+import Background from '../../components/Background';
+import Button from '../../components/Button';
 import Table from '../../components/Table';
-import { signout, getConferences } from '../../scripts/firebase.tsx';
+import Calendar from '../../components/Calendar'
+import { signout, getConferences } from '../../scripts/firebase';
 import React, { useState, useEffect, useMemo } from 'react';
+
+
+// TODO: Add user summary. i.e. ID and stats (number of conferences, )
+// TODO: Add number of attendee's column
+// TODO: Fix the 0 conferences table issue
+
 
 function planner() {
 

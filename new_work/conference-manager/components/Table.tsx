@@ -1,69 +1,130 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, getDocs, collection } from "firebase/firestore";
+import DataTable from 'react-data-table-component';
 
 function Table() {
 
-	const [conferences, updateConferences] = useState(<tr><td>loading...</td></tr>);
+	const [pending, setPending] = React.useState(true);
+	const [rows, setRows] = React.useState([]);
+	const columns = [
+		{
+			name: 'Name',
+			selector: row => row.name,
+			sortable: true,
+			grow: 2,
+			style: {
+				color: '#5C5C5C',
+				fontSize: '14px',
+				fontWeight: 600,
+			},
+		},
+		{
+			name: 'Location',
+			selector: row => row.location,
+			style: {
+				color: '#5C5C5C',
+				fontSize: '14px',
+				fontWeight: 600,
+			},
+		},
+		{
+			name: 'Date',
+			selector: row => row.date,
+			sortable: true,
+			style: {
+				color: '#5C5C5C',
+				fontSize: '14px',
+				fontWeight: 600,
+			},
+		},
+		{
+			name: 'Time',
+			selector: row => row.time,
+			sortable: true,
+			style: {
+				color: '#5C5C5C',
+				fontSize: '14px',
+				fontWeight: 600,
+			},
+		},
+		{
+			name: 'Access',
+			selector: row => row.access,
+			style: {
+				color: '#5C5C5C',
+				fontSize: '14px',
+				fontWeight: 600,
+			},
+		}
+	];
 
-	
+	const customStyles = {
+			headRow: {
+				style: {
+					fontWeight: 600,
+				},
+			},
+			headCells: {
+				style: {
+					color: '#3A3A3A',
+					fontSize: '14px',
+				},
+			},
+			rows: {
+				highlightOnHoverStyle: {
+					backgroundColor: 'rgb(230, 244, 244)',
+					borderBottomColor: '#FFFFFF',
+					outline: '1px solid #FFFFFF',
+				},
+			},
+			pagination: {
+				style: {
+					border: 'none',
+				 },
+			},
+		};
+
 	useEffect(() => {
 
 		let auth = getAuth();
 		let user = auth.currentUser;
 
-		onAuthStateChanged(auth, (user) => {
-			if (user) {
+		const timeout = setTimeout(() => {
 
-				let data = [];
-				const querySnapshot = getDocs(collection(getFirestore(), 'conferences', user.uid, 'added' ));
+			onAuthStateChanged(auth, (user) => {
+				if (user) {
 
-				querySnapshot.then( (result) => {
-						if (!result.empty) {
-							result.forEach((doc) => {
-								data.push(doc.data());
-							});	
+					const querySnapshot = getDocs(collection(getFirestore(), 'conferences', user.uid, 'added' ));
 
-							const rows = data.map((conference, index) => {
-								return (
-									<Fragment key={index}>
-										<tr>
-											<td className='left-rounded-corners'> { conference.name } </td>
-											<td> { conference.location } </td>
-											<td> { conference.date } </td>
-											<td> { conference.time } </td>
-											<td className='right-rounded-corner'> 
-												{conference.access == 'Public' ? <div className='public'> { conference.access} </div> : <div className=' private'> { conference.access} </div> 
-												}
-											</td>
-										</tr>
-									</Fragment>
-								)}
-							);
-							updateConferences(rows);
-						}
-					});
+					querySnapshot.then( (result) => {
+							if (!result.empty) {
 
-				}
-			});
+								const data = result.docs.map((doc) => { return doc.data() });
+								setRows(data);
+								setPending(false);
+								
+							}
+						});
 
-	}, []);
+					}
+				});
+		});
+
+		return () => clearTimeout(timeout);
+		}, []);
 
 	return (
-		<table id='table'>
-			<thead>
-				<tr>
-					<th> name </th>
-					<th> location </th>
-					<th> date </th>
-					<th> time </th>
-					<th> access </th>
-				</tr>
-			</thead>
-			<tbody>
-				{conferences}
-			</tbody>
-		</table>
+		<div className='table'>
+			<DataTable 
+				columns={columns}
+				data={rows}
+				customStyles={customStyles}
+				progressPending={pending}
+				highlightOnHover
+				pointerOnHover
+			/>
+		</div>
 	);
 
 }
