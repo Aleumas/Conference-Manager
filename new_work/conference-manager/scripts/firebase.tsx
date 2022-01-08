@@ -2,7 +2,7 @@
 import { app } from "../scripts/firebaseInit.tsx";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, onAuthStateChanged, browserSessionPersistence, signOut} from "firebase/auth";
-import { getFirestore, doc, setDoc, getDocs, collection } from "firebase/firestore";
+import { getFirestore, doc, setDoc, updateDoc, getDoc, getDocs, collection } from "firebase/firestore";
 
 
 // Variables
@@ -42,12 +42,21 @@ export async function handleSignin(email, password) {
 // Signup with firebase
 export async function handleSignup(firstName, lastName, company, position, email, password) {
 
-			let user = auth.curentUser;
 			// Make login persistant 
 			let persistMessage = setPersistence(auth, browserSessionPersistence)
 			.then(() => {
 					return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-										return 'Successful!';	
+					const user = userCredential.user;
+					return setDoc(doc(firestore, 'users', user.uid), {
+							firstName: firstName,
+							lastName: lastName,
+							company: company,
+							position: position,
+							joiningDate: today,
+							conferences: 0,
+					}).then(() => {
+						return 'Successful!';	
+					});
 
 				})
 				.catch((error) => {
@@ -57,20 +66,6 @@ export async function handleSignup(firstName, lastName, company, position, email
 			})
 			.catch((error) => {
 					return error.message;
-			});
-
-			
-			onAuthStateChanged(auth, (user) => {
-					if (user) {
-						// Add user information to firebase 
-						setDoc(doc(firestore, 'users', user.uid), {
-							firstName: firstName,
-							lastName: lastName,
-							company: company,
-							position: position,
-							joiningDate: today
-						});
-					}
 			});
 
 		return await persistMessage;
@@ -96,6 +91,8 @@ export async function createConference() {
 
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
+
+
 				setDoc(doc(firestore, 'conferences', user.uid, 'added', `${document.getElementById('name').value}`) , {
 						name: document.getElementById('name').value,
 						location: document.getElementById('location').value,
@@ -103,10 +100,17 @@ export async function createConference() {
 						date: document.getElementById('date').value,
 						access: document.getElementById('access').value 
 				}).then(() => {
-					console.log('done');
-					const lastIndex = window.location.href.lastIndexOf('/');
-					const home = window.location.href.slice(0, lastIndex);
-					window.location.replace(home + '/dashboard');
+					const querySnapshot = getDoc(doc(firestore, 'users', user.uid));
+					querySnapshot.then((result) => {
+						updateDoc(doc(firestore, 'users', user.uid), {
+								conferences:  result.data().conferences + 1
+						});
+
+						const lastIndex = window.location.href.lastIndexOf('/');
+						const home = window.location.href.slice(0, lastIndex);
+						window.location.replace(home + '/dashboard');
+					})
+					
 				});
 				
 			}

@@ -1,15 +1,12 @@
 import Background from '../../components/Background';
 import Button from '../../components/Button';
 import Table from '../../components/Table';
-import Calendar from '../../components/Calendar'
+import Calendar from '../../components/Calendar';
+import User from '../../components/User';
 import { signout, getConferences } from '../../scripts/firebase';
 import React, { useState, useEffect, useMemo } from 'react';
 
-
-// TODO: Add user summary. i.e. ID and stats (number of conferences, )
 // TODO: Add number of attendee's column
-// TODO: Fix the 0 conferences table issue
-
 
 function planner() {
 
@@ -25,13 +22,21 @@ function planner() {
             <Button className='signout' title='+ conference' color='#4c82f8' onclick={() => {
               window.location.replace(window.location.href.slice(0,window.location.href.lastIndexOf('/')) + "/add_conference");
             }}/>
+            <Button className='signout' title='back' color='#f86d4c' onclick={() => {
+              const lastIndex = window.location.href.lastIndexOf('/');
+              const home = window.location.href.slice(0, lastIndex);
+              lastIndex = home.lastIndexOf('/');
+              home = home.slice(0, lastIndex);
+              window.location.replace(home + '/role');
+            }}/>
             <Button className='signout' title='sign out' color='#f8554c' onclick={() => {
               signout();
             }}/>
           </div>
         </div>
-        <div className='scroll'>
+        <div className='scroll planner-content'>
           <Table/> 
+          <User/>
         </div>
       </div>
 

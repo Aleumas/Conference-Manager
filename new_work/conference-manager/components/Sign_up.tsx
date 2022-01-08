@@ -40,8 +40,9 @@ function Sign_up(props) {
 				<Input id='password' type='password' placeholder='Password'/>
 				<Button className='' title='Sign up' color='#4C82F8' onclick={() => { 
 
-					handleSignup(document.getElementById('first_name').value, document.getElementById('last_name').value, document.getElementById('company').value, document.getElementById('position').value, document.getElementById('email').value, document.getElementById('password').value).then( (message) => {
-						console.log("Message: " + message);
+				handleSignup(document.getElementById('first_name').value, document.getElementById('last_name').value, document.getElementById('company').value, document.getElementById('position').value, document.getElementById('email').value, document.getElementById('password').value).then( (message) => {
+
+						if (message == 'Successful!') window.location.replace(window.location.href + '/role');
 						updateStatus(message);
 					});
 					

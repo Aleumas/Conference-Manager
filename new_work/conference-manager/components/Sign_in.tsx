@@ -27,16 +27,6 @@ function Sign_in(props) {
 			currentStatus.style.color = (statusMessage == 'Successful!') ? "green" : "red";
 		}
 
-		onAuthStateChanged(auth, (user) => {
-				if (user) {
-					window.location.replace(window.location.href + '/role');
-					console.log('Logged in');
-				} else {
-					console.log('Logged out');
-				}
-		});
-
-
 	}, [statusMessage]);	
 
 	return (
@@ -48,6 +38,8 @@ function Sign_in(props) {
 				<Button className='' title='Sign in' color='#4C82F8' onclick={() => { 
 
 					handleSignin(document.getElementById('email').value, document.getElementById('password').value).then( (message) => {
+						console.log(message);
+						if (message == 'Successful!') window.location.replace(window.location.href + '/role');
 						updateStatus(message);
 					});
 					

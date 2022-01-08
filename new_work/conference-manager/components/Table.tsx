@@ -99,14 +99,15 @@ function Table() {
 
 					querySnapshot.then( (result) => {
 							if (!result.empty) {
-
+							
 								const data = result.docs.map((doc) => { return doc.data() });
 								setRows(data);
-								setPending(false);
 								
 							}
-						});
 
+							setPending(false);
+
+					});
 					}
 				});
 		});
@@ -117,11 +118,13 @@ function Table() {
 	return (
 		<div className='table'>
 			<DataTable 
+				title='Your Conferences'
 				columns={columns}
 				data={rows}
 				customStyles={customStyles}
 				progressPending={pending}
 				highlightOnHover
+				selectableRows
 				pointerOnHover
 			/>
 		</div>

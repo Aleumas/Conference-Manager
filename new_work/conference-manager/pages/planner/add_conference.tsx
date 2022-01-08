@@ -19,7 +19,7 @@ function add_conference() {
           }}/>
        
         </div>
-        <div>
+        <div className='conference-survey'>
             <Input className='conference' type='normal' id='name' placeholder='name'/>
             <Input className='conference' type='normal' id='location' placeholder='location'/>
             <Input className='conference' type='normal' id='time' placeholder='time'/>
