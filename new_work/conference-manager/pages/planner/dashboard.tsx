@@ -1,15 +1,14 @@
 import Background from '../../components/Background';
 import Button from '../../components/Button';
 import Table from '../../components/Table';
-import Calendar from '../../components/Calendar';
 import User from '../../components/User';
-import { signout, getConferences } from '../../scripts/firebase';
-import React, { useState, useEffect, useMemo } from 'react';
+import { signout } from '../../scripts/firebase';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // TODO: Add number of attendee's column
 
 function planner() {
-
+  
   return (
     <Background type='plain' color='#EEEEEE'>
       <div className='fade content'>

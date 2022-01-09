@@ -43,7 +43,7 @@ function User() {
 
 											<div className='info-row' style={{ marginBottom: '0.5rem' }}>
 												<p> Conferences </p>
-												<p className='info'> {data.conferences} </p>
+												<p id='numberOfConferences' className='info'> {data.conferences} </p>
 											</div>
 										</div>
 										

@@ -2,7 +2,7 @@
 import { app } from "../scripts/firebaseInit.tsx";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, onAuthStateChanged, browserSessionPersistence, signOut} from "firebase/auth";
-import { getFirestore, doc, setDoc, updateDoc, getDoc, getDocs, collection } from "firebase/firestore";
+import { getFirestore, doc, setDoc, updateDoc, getDoc, getDocs, collection, deleteDoc } from "firebase/firestore";
 
 
 // Variables
@@ -84,6 +84,28 @@ export async function signout() {
 		});
 }
 
+export async function deleteConference(conferences) {
+
+		var user = auth.currentUser;
+		
+		onAuthStateChanged(auth, (user) => {
+			if (user) {
+
+				for ( let i = 0; i < conferences.length; i++) {
+					deleteDoc(doc(firestore, 'conferences', user.uid, 'added', conferences[i].name));
+				}
+
+				const querySnapshot = getDoc(doc(firestore, 'users', user.uid));
+				querySnapshot.then((result) => {
+					updateDoc(doc(firestore, 'users', user.uid), {
+						conferences:  result.data().conferences - conferences.length
+					});
+				});
+			}
+		})
+	
+}
+
 
 export async function createConference() {
 
@@ -91,7 +113,6 @@ export async function createConference() {
 
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
-
 
 				setDoc(doc(firestore, 'conferences', user.uid, 'added', `${document.getElementById('name').value}`) , {
 						name: document.getElementById('name').value,

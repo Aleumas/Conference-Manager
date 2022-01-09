@@ -20,7 +20,7 @@ function add_conference() {
        
         </div>
         <div className='conference-survey'>
-            <Input className='conference' type='normal' id='name' placeholder='name'/>
+            <Input className='conference' type='normal' id='name' placeholder="name (don't include '/')"/>
             <Input className='conference' type='normal' id='location' placeholder='location'/>
             <Input className='conference' type='normal' id='time' placeholder='time'/>
             <Input className='conference date' type='date' id='date' placeholder='date'/>
