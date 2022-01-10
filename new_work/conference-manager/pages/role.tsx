@@ -14,7 +14,10 @@ function role() {
               window.location.replace(home + '/planner/dashboard');
             }}/>
             <p className='or'> — or — </p>
-            <Button className='choice' color='#4C82F8' title='Attendee'/>
+            <Button className='choice' color='#4C82F8' title='Attendee' onclick={() => {
+              const home = window.location.href.slice(0,-4);
+              window.location.replace(home + '/attendee/booking');
+            }}/>
           </div>
         </div>
       </Background>
