@@ -10,7 +10,7 @@ function Table() {
 	const [pending, setPending] = useState(true);
 	const [rows, setRows] = useState([]);
 	const [selectedRows, setSelectedRows] = useState(false);
-  const [toggledClearRows, setToggleClearRows] = useState(false);
+  	const [toggledClearRows, setToggleClearRows] = useState(false);
 
 	const handleRowSelected = React.useCallback(state => {
 			setSelectedRows(state.selectedRows);
