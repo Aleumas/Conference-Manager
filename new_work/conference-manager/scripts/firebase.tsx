@@ -114,28 +114,58 @@ export async function createConference() {
 		onAuthStateChanged(auth, (user) => {
 			if (user) {
 
-				setDoc(doc(firestore, 'conferences', user.uid, 'added', `${document.getElementById('name').value}`) , {
-						name: document.getElementById('name').value,
-						location: document.getElementById('location').value,
-						time: document.getElementById('time').value,
-						date: document.getElementById('date').value,
-						access: document.getElementById('access').value 
-				}).then(() => {
-					const querySnapshot = getDoc(doc(firestore, 'users', user.uid));
-					querySnapshot.then((result) => {
-						updateDoc(doc(firestore, 'users', user.uid), {
-								conferences:  result.data().conferences + 1
-						});
+				const querySnapshot = getDoc(doc(firestore, 'conferences', user.uid));
+				querySnapshot.then((result) => {
+					if (!result.data() || Object.keys(result.data()).length == 0) {
+						setDoc(doc(firestore, 'conferences', user.uid) , {
+							conferences: [ 
+								{
+									name: document.getElementById('name').value,
+									location: document.getElementById('location').value,
+									time: document.getElementById('time').value,
+									date: document.getElementById('date').value,
+									access: document.getElementById('access').value 
+								}
+							]
+						}).then(() => {
+							updateDoc(doc(firestore, 'users', user.uid), {
+								conferences: 1 
+							}).then(() => {
+								const lastIndex = window.location.href.lastIndexOf('/');
+								const home = window.location.href.slice(0, lastIndex);
+								window.location.replace(home + '/dashboard');
+							});
+						})
+					} else {
+						const  updatedConferences = result.data().conferences;
+						updatedConferences.push(
+								{
+									name: document.getElementById('name').value,
+									location: document.getElementById('location').value,
+									time: document.getElementById('time').value,
+									date: document.getElementById('date').value,
+									access: document.getElementById('access').value 
+								}
+							) 
 
-						const lastIndex = window.location.href.lastIndexOf('/');
-						const home = window.location.href.slice(0, lastIndex);
-						window.location.replace(home + '/dashboard');
-					})
-					
-				});
+						updateDoc(doc(firestore, 'conferences', user.uid), {
+							conferences: updatedConferences 
+						}).then(() => {
+							updateDoc(doc(firestore, 'users', user.uid), {
+								conferences:  result.data().conferences.length + 1
+							}).then(() => {
+								const lastIndex = window.location.href.lastIndexOf('/');
+								const home = window.location.href.slice(0, lastIndex);
+								window.location.replace(home + '/dashboard');
+							});
+						});
+					}
+
+				})
+				
 				
 			}
 		});
-		}
+	}
 
 

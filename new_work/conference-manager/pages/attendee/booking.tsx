@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import Conference_card from '../../components/Conference_card.tsx';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
@@ -8,12 +9,19 @@ function booking() {
   const firestore = getFirestore();
   const user = auth.currentUser;
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-
-     
-    }  
-  });
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const querySnapshot = getDocs(collection(firestore, 'conferences'));
+          querySnapshot.then((result) => {
+              result.forEach((doc) => {
+                console.log(doc.data().conferences)
+            })
+        })
+      }  
+    });
+  },[])
+  
 
 
 

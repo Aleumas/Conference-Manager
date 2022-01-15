@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, getDocs, collection, deleteDoc } from "firebase/firestore";
+import { getFirestore, getDoc, doc, deleteDoc } from "firebase/firestore";
 import { deleteConference } from '../scripts/firebase'
 import differenceBy from 'lodash/differenceBy';
 import DataTable from 'react-data-table-component';
@@ -124,17 +124,14 @@ function Table() {
 				console.log('read');
 				if (user) {
 
-					const querySnapshot = getDocs(collection(getFirestore(), 'conferences', user.uid, 'added' ));
+					const querySnapshot = getDoc(doc(getFirestore(), 'conferences', user.uid ));
 
 					querySnapshot.then( (result) => {
-							if (!result.empty) {
 							
-								const data = result.docs.map((doc) => { return doc.data() });
-								setRows(data);
-								
-							}
-
-							setPending(false);
+						if (result.data()) {
+							setRows(result.data().conferences);
+						}
+						setPending(false);
 
 					});
 					}
