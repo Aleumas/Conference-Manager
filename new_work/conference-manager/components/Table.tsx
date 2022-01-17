@@ -130,7 +130,7 @@ function Table() {
 							
 						if (result.data()) {
 							setRows(result.data().conferences);
-						}
+							{}		}
 						setPending(false);
 
 					});
