@@ -237,12 +237,17 @@ p {
 }
 
 .card-details {
-    width: 60%;
+    width: 70%;
 }
 
 .details {
     margin: 0;
     color: #3A3A3A;
+    font-size: min(0.8rem);
+}
+
+.details_container {
+    display: block;
 }
 
 .book-conference {

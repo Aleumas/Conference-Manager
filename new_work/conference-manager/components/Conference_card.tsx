@@ -1,8 +1,7 @@
-import location_icon from '../public/Location.svg';
 function Conference_card(props) {
-	const date_icon = require('../public/Date.svg');
-	const time_icon = require('../public/Time.svg');
-
+	const location_icon = require('../public/Location.svg').default.src;
+	const date_icon = require('../public/Date.svg').default.src;
+	const time_icon = require('../public/Time.svg').default.src;
 
 	return (
 		<div className={'card-container'}>
