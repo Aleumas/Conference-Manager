@@ -15,17 +15,17 @@ function Conference_card(props) {
 					<div className='card-details'>
 
 						<div className='details-container'>
-							<img src={location_icon}/>
+							<img className='icon' src={location_icon}/>
 							<h4 className='details'>{'Location: ' + props.location}</h4>
 						</div>
 
 						<div className='details-container'>
-							<img src={date_icon}/>
+							<img className='icon' src={date_icon}/>
 							<h4 className='details'>{'Date: ' + props.date}</h4>
 						</div>
 
 						<div className='details-container'>
-							<img src={time_icon}/>
+							<img className='icon' src={time_icon}/>
 							<h4 className='details'>{'Time: ' + props.time}</h4>
 						</div>
 					</div>

@@ -218,26 +218,29 @@ p {
 
 .card-container {
     background-color: blue;
-    max-width: 20vw;
-    max-height: 20vw;
+    width: 20vw;
+    height: 20vw;
+    margin: 5%;
     border-radius: 1rem;
 }
 
 .card-content {
-}
-
-.card-details {
+    padding: 5%;
+    box-sizing: content-box;
 }
 
 .card-details-container {
     display: flex;
     align-items: center;
-
-
 }
 
 .card-details {
-    width: 70%;
+    width: 50%;
+}
+
+.all-conferences {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .details {
@@ -246,13 +249,22 @@ p {
     font-size: min(0.8rem);
 }
 
-.details_container {
-    display: block;
+.details-container {
+    display: flex;
+    gap: min(0.8rem);
+    flex-grow: 2;
 }
 
 .book-conference {
     background-color: #5A9554;
     margin-bottom: 0;
+    width: auto;
+    margin: auto;
+}
+
+.icon {
+    width: min(0.8rem);
+    height: min(0.8rem);
 }
 
 .text {

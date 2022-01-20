@@ -37,12 +37,12 @@ function booking() {
           <h3 className='sub-title'> Booking </h3>
         </div>
       </div>
-        <Fragment>
+        <div className='all-conferences'>
           {conferenceCardData.map((cardInfo) => {
             console.log(cardInfo);
             return <Conference_card title={cardInfo.name} location={cardInfo.location} date={cardInfo.date} time={cardInfo.time}/>
           })}
-        </Fragment>
+        </div>
     </div>
   );
 }
