@@ -124,7 +124,8 @@ export async function createConference() {
 									location: document.getElementById('location').value,
 									time: document.getElementById('time').value,
 									date: document.getElementById('date').value,
-									access: document.getElementById('access').value 
+									access: document.getElementById('access').value,
+									summary: document.getElementById('summary').value
 								}
 							]
 						}).then(() => {
@@ -144,7 +145,8 @@ export async function createConference() {
 									location: document.getElementById('location').value,
 									time: document.getElementById('time').value,
 									date: document.getElementById('date').value,
-									access: document.getElementById('access').value 
+									access: document.getElementById('access').value,
+									summary: document.getElementById('summary').value
 								}
 							) 
 
