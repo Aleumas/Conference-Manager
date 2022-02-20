@@ -54,6 +54,7 @@ export async function handleSignup(firstName, lastName, company, position, email
 							position: position,
 							joiningDate: today,
 							conferences: 0,
+							bookedConferences: []
 					}).then(() => {
 						return 'Successful!';	
 					});
@@ -125,7 +126,10 @@ export async function createConference() {
 									time: document.getElementById('time').value,
 									date: document.getElementById('date').value,
 									access: document.getElementById('access').value,
-									summary: document.getElementById('summary').value
+									summary: document.getElementById('summary').value,
+									attendees: 0,
+									ownerId: user.uid,
+									conferenceIndex: 0
 								}
 							]
 						}).then(() => {
@@ -146,7 +150,10 @@ export async function createConference() {
 									time: document.getElementById('time').value,
 									date: document.getElementById('date').value,
 									access: document.getElementById('access').value,
-									summary: document.getElementById('summary').value
+									summary: document.getElementById('summary').value,
+									attendees: 0,
+									ownerId: user.uid,
+									conferenceIndex: updatedConferences.length
 								}
 							) 
 
@@ -170,4 +177,61 @@ export async function createConference() {
 		});
 	}
 
+export async function book(conference, ownerId, conferenceIndex) {
+	var user = auth.currentUser;
 
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			const querySnapshot = getDoc(doc(firestore, 'conferences', ownerId));
+				querySnapshot.then((result) => {
+
+					const  updatedConferences = result.data().conferences;
+					const userSnapshot = getDoc(doc(firestore, 'users', user.uid));
+					updatedConferences[conferenceIndex].attendees = updatedConferences[conferenceIndex].attendees + 1;
+
+					updateDoc(doc(firestore, 'conferences', ownerId), {
+						conferences: updatedConferences
+					});
+
+					userSnapshot.then((result) => {
+						const updatedBookedConferences = result.data().bookedConferences;
+						updatedBookedConferences.push(conference);
+						updateDoc(doc(firestore, 'users', user.uid), {
+							bookedConferences: updatedBookedConferences 
+						});
+					})
+					
+
+				});
+		}
+	});
+}
+
+
+export async function unbook(ownerId, conferenceIndex) {
+	var user = auth.currentUser;
+
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			const querySnapshot = getDoc(doc(firestore, 'conferences', ownerId));
+				querySnapshot.then((result) => {
+
+					const  updatedConferences = result.data().conferences;
+					const userSnapshot = getDoc(doc(firestore, 'users', user.uid));
+					updatedConferences[conferenceIndex].attendees = updatedConferences[conferenceIndex].attendees - 1;
+
+					updateDoc(doc(firestore, 'conferences', ownerId), {
+						conferences: updatedConferences
+					});
+					userSnapshot.then((result) => {
+						const updatedBookedConferences = result.data().bookedConferences;
+						updatedBookedConferences.splice(conferenceIndex,1);
+						updateDoc(doc(firestore, 'users', user.uid), {
+							bookedConferences: updatedBookedConferences 
+						});
+					})
+
+				});
+		}
+	});
+}

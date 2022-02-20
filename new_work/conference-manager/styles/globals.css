@@ -266,6 +266,13 @@ p {
     margin: auto;
 }
 
+.unbook-conference {
+    background-color: #955454;
+    margin-bottom: 0;
+    width: auto;
+    margin: auto;
+}
+
 .icon {
     width: min(0.8rem);
     height: min(0.8rem);

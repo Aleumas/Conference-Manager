@@ -54,7 +54,7 @@ function booking() {
         <div className='all-conferences'>
           {conferenceCardData.map((cardInfo) => {
             console.log(cardInfo);
-            return <Conference_card summary={cardInfo.summary} title={cardInfo.name} location={cardInfo.location} date={cardInfo.date} time={cardInfo.time}/>
+            return <Conference_card ownerId={cardInfo.ownerId} conferenceIndex={cardInfo.conferenceIndex} attendees={cardInfo.attendees} summary={cardInfo.summary} title={cardInfo.name} location={cardInfo.location} date={cardInfo.date} time={cardInfo.time}/>
           })}
         </div>
     </Background>
