@@ -32,6 +32,7 @@ function booking() {
   console.log(conferenceCardData);
 
   return (
+    <div className='fade'>
     <Background type='plain' color='#EEEEEE'>
       <div className='header'>
         <div>
@@ -58,6 +59,7 @@ function booking() {
           })}
         </div>
     </Background>
+    </div>
   );
 }
 

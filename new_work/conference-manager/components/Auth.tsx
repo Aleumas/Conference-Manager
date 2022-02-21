@@ -10,7 +10,6 @@ function Auth(props) {
 		
 		return (
 			<SignIn>	
-				<hr/>
 				<p> Don't have an account? <a onClick={() => {updateAuth('sign_up');}}> Sign up </a></p>
 			</SignIn>
 		)

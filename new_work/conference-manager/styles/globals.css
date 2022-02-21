@@ -217,6 +217,9 @@ p {
 }
 
 .card-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: white;
     width: 20vw;
     height: 20vw;
@@ -229,13 +232,22 @@ p {
     box-sizing: content-box;
 }
 
+.card-title {
+    margin-top: 0;
+    font-size: 3vw;
+}
+
 .card-details-container {
     display: flex;
     align-items: center;
 }
 
 .card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
     width: 50%;
+    flex-grow: 2;
 }
 
 .all-conferences {
@@ -245,12 +257,13 @@ p {
 
 .card-summary {
     margin-top: -10%;
+    font-size: 1.3vw;
 }
 
 .details {
     margin: 0;
     color: #3A3A3A;
-    font-size: min(0.8rem);
+    font-size: 1vw;
 }
 
 .details-container {
@@ -260,22 +273,26 @@ p {
 }
 
 .book-conference {
-    background-color: #5A9554;
+    background-color: #4c93f8;
     margin-bottom: 0;
-    width: auto;
-    margin: auto;
+    width: 5vw;
+    height: 4.5vw;
+    font-size: 1vw;
+    margin-right: 0;
 }
 
 .unbook-conference {
-    background-color: #955454;
+    background-color: #f86d4c;
     margin-bottom: 0;
-    width: auto;
-    margin: auto;
+    width: 5vw;
+    height: 4.5vw;
+    font-size: 1vw;
+    margin-right: 0;
 }
 
 .icon {
-    width: min(0.8rem);
-    height: min(0.8rem);
+    width: 1vw;
+    height: 1vw;
 }
 
 .text {
@@ -366,6 +383,7 @@ text-align: center;
 .status {
     margin-bottom: 5vh;
     margin-top: -1vh;
+    margin-bottom: -2.8vh;
     color: green;
 }
 

@@ -13,13 +13,13 @@ function Conference_card(props) {
 						book(props.title, props.ownerId, props.conferenceIndex);
 						updateAttendees(attendees + 1);
 						updateBooked('true');
-					}}>Book</button>
+					}}>book now</button>
 
 	const unbookButton = <button className='unbook-conference' onClick={() => {
 						unbook(props.ownerId, props.conferenceIndex);
 						updateAttendees(attendees - 1);
 						updateBooked('false');
-					}}>Unbook</button> 
+					}}>cancel booking</button> 
 	const [booked, updateBooked] = useState('');
 
 	var firestore = getFirestore(app); 
@@ -42,7 +42,7 @@ function Conference_card(props) {
 		<div className={'card-container'}>
 			<div className={'card-content'}>
 
-				<h1>{props.title}</h1>
+				<h1 className='card-title'>{props.title}</h1>
 				<p className='card-summary'>{props.summary}</p>
 
 				<div className='card-details-container'>

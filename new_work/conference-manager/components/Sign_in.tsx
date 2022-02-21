@@ -6,46 +6,18 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 function Sign_in(props) {
 	
-	const [statusMessage, updateStatus] = useState('');
-
-	const statusMapping = {
-		"auth/internal-error" : "Empty field",
-		"auth/wrong-password" : "Wrong username or password",
-		"auth/invalid-email" : "Invalid email",
-		"Successful!" :  "Successful!"
-	};
-
-	useEffect(() => {
-
-	
-		var auth = getAuth();
-		var user = auth.currentUser;
-		let currentStatus = document.getElementById('status_message');
-
-		if (currentStatus != undefined) {
-			currentStatus.innerHTML = statusMapping[statusMessage];
-			currentStatus.style.color = (statusMessage == 'Successful!') ? "green" : "red";
-		}
-
-	}, [statusMessage]);	
-
-	return (
+		return (
 		<div className='sign-in__container'>
 			<div className='sign-in__content load-animation'>
 				<h1>Conference Manager</h1>
-				<Input id='email' type='normal' placeholder='Email'/>
-				<Input id='password' type='password' placeholder='Password'/>
-				<Button className='' title='Sign in' color='#4C82F8' onclick={() => { 
-
-					handleSignin(document.getElementById('email').value, document.getElementById('password').value).then( (message) => {
-						console.log(message);
-						if (message == 'Successful!') window.location.replace(window.location.href + '/role');
-						updateStatus(message);
-					});
-					
-				}}/>
-
-				{ (statusMessage != '') && <p id='status_message' className='status fade'></p> }
+				<form id='signin'>
+					<Input id='email' type='normal' placeholder='Email'/>
+					<Input id='password' type='password' placeholder='Password'/>
+					<Button type='submit' className='' title='Sign in' color='#4C82F8' onclick={() => { 
+						handleSignin();
+					}}/>
+				</form>
+				<p id='status_message' className='status fade'></p> 
 				{props.children} 
 			</div>
 		</div>

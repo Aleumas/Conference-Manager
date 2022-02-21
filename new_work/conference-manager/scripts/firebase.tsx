@@ -19,31 +19,60 @@ var yyyy = today.getFullYear();
 today = mm + '/' + dd + '/' + yyyy;
 
 // Login with firebase
-export async function handleSignin(email, password) {
-		// Make login persistant 
-		let persistMessage = setPersistence(auth, browserSessionPersistence)
-		.then(() => {
+export async function handleSignin() {
+		const signinForm = document.getElementById('signin');
+		signinForm?.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const email = signinForm.elements['email'].value;
+			const password = signinForm.elements['password'].value;
+			// Make login persistant 
+			let persistMessage = await setPersistence(auth, browserSessionPersistence)
+			.then(() => {
 
-				return signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-						return 'Successful!';
-				})
-				.catch((error) => {
-					return error.code;
-				});
+					return signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+							return 'Successful!';
+					})
+					.catch((error) => {
+						return error.code;
+					});
 
-		})
-		.catch((error) => {
-				return error.message;
+			})
+			.catch((error) => {
+					return error.message;
+			});
+
+			const statusMapping = {
+					"auth/internal-error" : "Empty field",
+					"auth/email-already-in-use" : "Email is already in use",
+					"auth/weak-password" : "Weak password",
+					"auth/invalid-email" : "Invalid email",
+					"Successful!" :  "Successful!"
+				};
+
+			let currentStatus = document.getElementById('status_message');
+			console.log(persistMessage)
+			if (currentStatus != undefined) {
+				currentStatus.innerHTML = statusMapping[persistMessage];
+				currentStatus.style.color = (persistMessage == 'Successful!') ? "green" : "red";
+				if (persistMessage == 'Successful!') window.location.replace(window.location.href + '/role');
+			}
 		});
-
-		return await persistMessage;
 }
 
 // Signup with firebase
-export async function handleSignup(firstName, lastName, company, position, email, password) {
+export async function handleSignup() {
+		const signupForm = document.getElementById('signup');
+			signupForm?.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const firstName = signupForm.elements['first_name'].value;
+			const lastName = signupForm.elements['last_name'].value;
+			const company = signupForm.elements['company'].value;
+			const position = signupForm.elements['position'].value;
+			const email = signupForm.elements['email'].value;
+			const password = signupForm.elements['password'].value;
 
 			// Make login persistant 
-			let persistMessage = setPersistence(auth, browserSessionPersistence)
+			const persistMessage = await setPersistence(auth, browserSessionPersistence)
 			.then(() => {
 					return createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
 					const user = userCredential.user;
@@ -68,8 +97,23 @@ export async function handleSignup(firstName, lastName, company, position, email
 			.catch((error) => {
 					return error.message;
 			});
+			const statusMapping = {
+				"auth/internal-error" : "Empty field",
+				"auth/email-already-in-use" : "Email is already in use",
+				"auth/weak-password" : "Weak password",
+				"auth/invalid-email" : "Invalid email",
+				"Successful!" :  "Successful!"
+			};
 
-		return await persistMessage;
+			let currentStatus = document.getElementById('status_message');
+			if (currentStatus != undefined) {
+				currentStatus.innerHTML = statusMapping[persistMessage];
+				currentStatus.style.color = (persistMessage == 'Successful!') ? "green" : "red";
+				if (persistMessage == 'Successful!') window.location.replace(window.location.href + '/role');
+			}
+		});
+
+
 }
 
 export async function signout() {

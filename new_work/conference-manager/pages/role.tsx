@@ -5,7 +5,7 @@ function role() {
   return (
     <div>
       <Background type='plain' color='#EEEEEE'>
-        <div className='role-container load-animation'>
+        <div className='role-container fade'>
           <h1 className='role-title'>Conference Manager</h1>
           <h3 className='choose'>choose a role</h3>
           <div className='choice-container'>
