@@ -1,6 +1,6 @@
-import Button from '../components/Button.tsx'
-import Input from '../components/Input.tsx'
-import { handleSignup, handleSignin } from '../scripts/firebase.tsx';
+import Button from './Button';
+import Input from './Input';
+import { handleSignup, handleSignin } from '../scripts/firebase';
 import React, { useState, useEffect } from 'react';
 
 function Sign_up(props) {

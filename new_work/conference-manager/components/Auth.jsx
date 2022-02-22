@@ -1,6 +1,6 @@
-import SignIn from '../components/Sign_in.tsx'
-import SignUp from '../components/Sign_up.tsx'
-import React, { useState } from 'react'
+import SignIn from './Sign_in';
+import SignUp from './Sign_up';
+import React, { useState } from 'react';
 
 function Auth(props) {
 
@@ -10,7 +10,7 @@ function Auth(props) {
 		
 		return (
 			<SignIn>	
-				<p> Don't have an account? <a onClick={() => {updateAuth('sign_up');}}> Sign up </a></p>
+				<p> Don&apos;t have an account? <a onClick={() => {updateAuth('sign_up')}}> Sign up </a></p>
 			</SignIn>
 		)
 

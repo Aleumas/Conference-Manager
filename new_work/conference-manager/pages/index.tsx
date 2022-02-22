@@ -1,9 +1,6 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import Background from '../components/Background.tsx'
-import Auth from '../components/Auth.tsx'
+import type { NextPage } from 'next';
+import Background from '../components/Background';
+import Auth from '../components/Auth';
 
 const Home: NextPage = () => {
   return (

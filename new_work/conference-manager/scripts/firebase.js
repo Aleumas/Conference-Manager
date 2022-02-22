@@ -1,5 +1,5 @@
 // Firebase import
-import { app } from "../scripts/firebaseInit.tsx";
+import { app } from "./firebaseInit.js";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, setPersistence, onAuthStateChanged, browserSessionPersistence, signOut} from "firebase/auth";
 import { getFirestore, doc, setDoc, updateDoc, getDoc, getDocs, collection, deleteDoc } from "firebase/firestore";
@@ -42,12 +42,12 @@ export async function handleSignin() {
 			});
 
 			const statusMapping = {
-					"auth/internal-error" : "Empty field",
-					"auth/email-already-in-use" : "Email is already in use",
-					"auth/weak-password" : "Weak password",
-					"auth/invalid-email" : "Invalid email",
-					"Successful!" :  "Successful!"
-				};
+				"auth/internal-error" : "Empty field",
+				"auth/wrong-password" : "Wrong username or password",
+				"auth/user-not-found" : "Wrong username or password",
+				"auth/invalid-email" : "Invalid email",
+				"Successful!" :  "Successful!"
+			};
 
 			let currentStatus = document.getElementById('status_message');
 			console.log(persistMessage)

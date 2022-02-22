@@ -1,5 +1,5 @@
-import Background from '../components/Background.tsx';
-import Button from '../components/Button.tsx';
+import Background from '../components/Background';
+import Button from '../components/Button';
 
 function role() {
   return (

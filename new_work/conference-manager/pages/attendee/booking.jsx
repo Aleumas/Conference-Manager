@@ -6,7 +6,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { signout } from '../../scripts/firebase';
 import Button from '../../components/Button';
 
-function booking() {
+function Booking() {
 
   const auth = getAuth();
   const firestore = getFirestore();
@@ -54,8 +54,7 @@ function booking() {
       </div>
         <div className='all-conferences'>
           {conferenceCardData.map((cardInfo) => {
-            console.log(cardInfo);
-            return <Conference_card ownerId={cardInfo.ownerId} conferenceIndex={cardInfo.conferenceIndex} attendees={cardInfo.attendees} summary={cardInfo.summary} title={cardInfo.name} location={cardInfo.location} date={cardInfo.date} time={cardInfo.time}/>
+            return <Conference_card key='1' ownerId={cardInfo.ownerId} conferenceIndex={cardInfo.conferenceIndex} attendees={cardInfo.attendees} summary={cardInfo.summary} title={cardInfo.name} location={cardInfo.location} date={cardInfo.date} time={cardInfo.time}/>
           })}
         </div>
     </Background>
@@ -63,4 +62,4 @@ function booking() {
   );
 }
 
-export default booking;
+export default Booking;

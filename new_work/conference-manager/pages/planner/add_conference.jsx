@@ -1,7 +1,7 @@
-import Background from '../../components/Background.tsx';
-import Button from '../../components/Button.tsx';
-import Input from '../../components/Input.tsx';
-import{ createConference } from '../../scripts/firebase.tsx';
+import Background from '../../components/Background';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import{ createConference } from '../../scripts/firebase';
 
 function add_conference() {
   return (

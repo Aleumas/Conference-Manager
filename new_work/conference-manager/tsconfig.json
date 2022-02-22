@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/Auth.jsx", "components/Background.jsx", "components/Button.jsx", "components/Conference_card.jsx", "components/Input.jsx", "components/Sign_in.jsx", "components/Sign_up.jsx", "components/Table.jsx", "components/User.jsx", "pages/attendee/booking.jsx", "pages/planner/add_conference.jsx", "pages/planner/dashboard.jsx", "pages/_app.tsx", "pages/role.js", "scripts/firebase.js", "scripts/firebaseInit.js"],
   "exclude": ["node_modules"]
 }

@@ -51,7 +51,7 @@ h1 {
 
 button {
     display: block;
-    width: 70%;
+    width: 75%;
     height: 7vh;
     margin-left: auto;
     margin-right: auto;
@@ -383,7 +383,7 @@ text-align: center;
 .status {
     margin-bottom: 5vh;
     margin-top: -1vh;
-    margin-bottom: -2.8vh;
+    margin-bottom: -1vh;
     color: green;
 }
 
